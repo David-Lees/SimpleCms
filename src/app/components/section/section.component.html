@@ -1,0 +1,15 @@
+<ng-container [ngSwitch]="section.name">
+    <ng-container *ngSwitchCase="GallerySection">
+        <div class="container-fluid">
+            <app-gallery [sourceData]="section"></app-gallery>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchDetault>
+        <!-- assume text -->
+        <div [style.background-color="section.backgroundColour" ]>
+            <div class="container" [style.color]="section.colour" [style.text-align]="section.align">
+                <markdown *ngIf="section.text" [data]="section.text"></markdown>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

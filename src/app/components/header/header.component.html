@@ -1,0 +1,16 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" routerLink="/">{{ site.name }}</a>
+    <ng-container *ngIf="site.pages.length > 1">
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto" *ngFor="let page in site.pages">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/',page.url]">{{ page.name }}</a>
+                </li>
+            </ul>
+        </div>
+    </ng-container>
+</nav>
