@@ -5,7 +5,7 @@ import { AdminViewComponent } from './components/admin-view/admin-view.component
 
 const routes: Routes = [
   { path: 'admin', component: AdminViewComponent },
-  { path: ':id', component: PublicViewComponent }
+  { path: ':id', component: PublicViewComponent },
 ];
 
 @NgModule({
