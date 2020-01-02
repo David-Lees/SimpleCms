@@ -1,6 +1,5 @@
 export interface GalleryImageDetails {
-    path: string;
-    width: number;
-    height: number;
-  }
-  
+  path: string;
+  width: number;
+  height: number;
+}
