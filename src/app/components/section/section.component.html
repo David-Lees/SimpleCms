@@ -1,14 +1,15 @@
-section name: {{ section.name }}
 <ng-container [ngSwitch]="section.name">
     <ng-container *ngSwitchCase="sectionTypes.GallerySection">
         <strong>Gallery</strong>
         <div class="container-fluid">
-            <app-gallery [sourceData]="section"></app-gallery>
+            <h2 *ngIf="gallerySection.galleryName">{{gallerySection.galleryName}}</h2>
+            <app-gallery [sourceData]="gallerySection" [imageMargin]="gallerySection.imageMargin"
+                [imageSize]="gallerySection.imageSize" [galleryName]="gallerySection.galleryName"
+                [rowsPerPage]="gallerySection.rowsPerPage"></app-gallery>
         </div>
     </ng-container>
     <ng-container *ngSwitchDefault>
         <!-- assume text -->
-       <p>Text</p> 
         <div [style.background-color]="textSection.backgroundColour">
             <div class="container" [style.color]="textSection.colour" [style.text-align]="textSection.align">
                 <markdown *ngIf="textSection.text" [data]="textSection.text"></markdown>
