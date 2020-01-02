@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SectionTypes } from 'src/app/enums/sections';
 import { Section } from 'src/app/models/section';
+import { TextSection } from 'src/app/models/text-section';
+import { GallerySection } from 'src/app/models/gallery-section';
 
 @Component({
   selector: 'app-section',
@@ -15,4 +17,12 @@ export class SectionComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  get textSection(): TextSection {
+    return this.section as TextSection;
+  }
+
+  get gallerySection(): GallerySection {
+    return this.section as GallerySection;
+  }
 }

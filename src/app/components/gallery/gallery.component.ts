@@ -17,12 +17,13 @@ import {
 import { ImageService } from '../../services/image.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { HttpClient } from '@angular/common/http';
-import { GallerySection, GalleryImage } from 'src/app/models/section';
+import { GalleryImage } from 'src/app/models/gallery-image';
+import { GallerySection } from 'src/app/models/gallery-section';
 
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.sass'],
+  styleUrls: ['./gallery.component.scss'],
 })
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   gallery: Array<any> = [];
@@ -37,13 +38,11 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   leftArrowInactive = false;
 
   @Input() sourceData: GallerySection;
-  // tslint:disable:no-input-rename
-  @Input('flexBorderSize') providedImageMargin = 3;
-  @Input('flexImageSize') providedImageSize = 7;
-  @Input('galleryName') providedGalleryName = '';
-  @Input('metadataUri') providedMetadataUri: string = undefined;
-  @Input('maxRowsPerPage') rowsPerPage = 200;
-  // tslint:enable:no-input-rename
+  @Input() imageMargin = 3;
+  @Input() imageSize = 7;
+  @Input() galleryName = '';
+  @Input() metadataUri: string = undefined;
+  @Input() rowsPerPage = 200;
 
   @Output() viewerChange = new EventEmitter<boolean>();
 
@@ -101,16 +100,16 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   calcImageMargin(): number {
     const galleryWidth = this.getGalleryWidth();
     const ratio = galleryWidth / 1920;
-    return Math.round(Math.max(1, this.providedImageMargin * ratio));
+    return Math.round(Math.max(1, this.imageMargin * ratio));
   }
 
   private fetchDataAndRender(): void {
-    this.imageDataCompletePath = this.providedMetadataUri;
+    this.imageDataCompletePath = this.metadataUri;
 
-    if (!this.providedMetadataUri) {
+    if (!this.metadataUri) {
       this.imageDataCompletePath =
-        this.providedGalleryName !== ''
-          ? `${this.imageDataStaticPath + this.providedGalleryName}/${this.dataFileName}`
+        this.galleryName !== ''
+          ? `${this.imageDataStaticPath + this.galleryName}/${this.dataFileName}`
           : this.imageDataStaticPath + this.dataFileName;
     }
 
@@ -129,8 +128,8 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         this.render();
       },
       err => {
-        if (this.providedMetadataUri) {
-          console.error(`Provided endpoint '${this.providedMetadataUri}' did not serve metadata correctly or in the expected format.
+        if (this.metadataUri) {
+          console.error(`Provided endpoint '${this.metadataUri}' did not serve metadata correctly or in the expected format.
     See here for more information: https://github.com/BenjaminBrandmeier/angular2-image-gallery/blob/master/docs/externalDataSource.md,
     Original error: ${err}`);
         } else {
@@ -193,7 +192,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private calcIdealHeight(): number {
-    return this.getGalleryWidth() / (80 / this.providedImageSize) + 100;
+    return this.getGalleryWidth() / (80 / this.imageSize) + 100;
   }
 
   private getGalleryWidth(): number {
