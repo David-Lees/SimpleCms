@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SiteService } from 'src/app/services/site.service';
-import { Page } from 'src/app/models/site';
 import { ActivatedRoute } from '@angular/router';
+import { Page } from 'src/app/models/page';
 
 @Component({
   selector: 'app-public-view',
