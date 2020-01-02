@@ -1,5 +1,10 @@
 <ng-container *ngIf="page">
-    <ng-container *ngFor="let section in page.sections">
+    <ng-container *ngFor="let section of page.sections">
         <app-section [section]="section"></app-section>
+        section: {{ section | json }}
     </ng-container>
 </ng-container>
+
+<p>
+    page {{ page | json }}
+</p>

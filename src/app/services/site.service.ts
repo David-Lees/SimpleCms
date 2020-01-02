@@ -10,7 +10,7 @@ export class SiteService {
   private loaded = false;
 
   constructor(private http: HttpClient) {
-    http.get<Site>('assests/site.json').subscribe((x: Site) => {
+    http.get<Site>('assets/site.json').subscribe((x: Site) => {
       this.SITE = x;
       this.loaded = true;
     });

@@ -1,14 +1,17 @@
+section name: {{ section.name }}
 <ng-container [ngSwitch]="section.name">
-    <ng-container *ngSwitchCase="GallerySection">
+    <ng-container *ngSwitchCase="sectionTypes.GallerySection">
+        <strong>Gallery</strong>
         <div class="container-fluid">
             <app-gallery [sourceData]="section"></app-gallery>
         </div>
     </ng-container>
-    <ng-container *ngSwitchDetault>
+    <ng-container *ngSwitchDefault>
         <!-- assume text -->
-        <div [style.background-color="section.backgroundColour" ]>
-            <div class="container" [style.color]="section.colour" [style.text-align]="section.align">
-                <markdown *ngIf="section.text" [data]="section.text"></markdown>
+       <p>Text</p> 
+        <div [style.background-color]="textSection.backgroundColour">
+            <div class="container" [style.color]="textSection.colour" [style.text-align]="textSection.align">
+                <markdown *ngIf="textSection.text" [data]="textSection.text"></markdown>
             </div>
         </div>
     </ng-container>

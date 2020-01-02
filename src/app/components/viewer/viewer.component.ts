@@ -5,7 +5,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 @Component({
   selector: 'app-viewer',
   templateUrl: './viewer.component.html',
-  styleUrls: ['./viewer.component.sass'],
+  styleUrls: ['./viewer.component.scss'],
   animations: [
     trigger('imageTransition', [
       state(
@@ -188,7 +188,7 @@ export class ViewerComponent {
     this.imageService.showImageViewer(false);
   }
 
-  @HostListener('document:keydown')
+  @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     const prevent = ['ArrowLeft', 'ArrowRight', 'Escape', 'Home', 'End'].find(no => no === event.key);
     if (prevent) {

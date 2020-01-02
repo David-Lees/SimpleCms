@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Site } from 'src/app/models/site';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.sass'],
 })
 export class HeaderComponent implements OnInit {
   public isMenuCollapsed = true;
+
+  @Input() site: Site;
 
   constructor() {}
 
