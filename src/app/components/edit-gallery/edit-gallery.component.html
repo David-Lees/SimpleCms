@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Available images</h4>
+        <div class="list-group scroll-list">
+            <ng-container *ngFor="let img of images">
+                <button (click)="add(img)" class="list-group-item list-group-item-action">
+                    <img [src]="img.preview_xxs.path" />
+                </button>
+            </ng-container>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h4>Selected images</h4>
+        <div class="list-group scroll-list">
+            <ng-container *ngFor="let img2 of section.images; let i = index">
+                <div class="list-group-item row">
+                    <div class="col-sm-6">
+                        <img [src]="img2.preview_xxs.path" />
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <button class="btn btn-danger" (click)="remove(i)">Remove</button>
+                        <button class="btn btn-secondary ml-3" (click)="up(i)">Move up</button>
+                        <button class="btn btn-secondary ml-3" (click)="down(i)">Move down</button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<div class="form-group row mt-3">
+    <label class="col-sm-3">Margin:</label>
+    <div class="col-sm-8">
+        <input class="form-control-range" type="range" min="0" max="50" step="1" [(ngModel)]="section.imageMargin"
+            (ngModelChange)="change()" />
+    </div>
+    <div class="col-sm-1">
+        {{ section.imageMargin }}
+    </div>
+</div>
+<small class="form-text text-muted mt-0">The gap between the images when displayed in the gallery</small>
+
+<div class="form-group row mt-3">
+    <label class="col-sm-3">Image size:</label>
+    <div class="col-sm-8">
+        <input class="form-control-range" type="range" min="0" max="300" step="1" [(ngModel)]="section.imageSize"
+            (ngModelChange)="change()" />
+    </div>
+    <div class="col-sm-1">
+        {{ section.imageSize }}
+    </div>
+</div>
+<small class="form-text text-muted mt-0">The hieght of the row of images</small>
+
+<div class="form-group row mt-3">
+    <label class="col-sm-3">Name:</label>
+    <div class="col-sm-3">
+        <input class="form-control" type="text" [(ngModel)]="section.galleryName" (ngModelChange)="change()" />
+    </div>
+</div>
+<small class="form-text text-muted mt-0">If set, this name will appear as a heading above the gallery.</small>
+
+<div class="form-group row mt-3">
+    <label class="col-sm-3">Rows per page:</label>
+    <div class="col-sm-3">
+        <input class="form-control" type="number" [(ngModel)]="section.rowsPerPage" (ngModelChange)="change()" />
+    </div>
+</div>
+<small class="form-text text-muted mt-0">The number of rows to show on gallery before splitting into multiple pages</small>
