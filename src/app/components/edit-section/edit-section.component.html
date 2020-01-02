@@ -1,1 +1,9 @@
-<p>edit-section works!</p>
+<ng-container [ngSwitch]="section.name">
+    <ng-container *ngSwitchCase="sectionTypes.GallerySection">
+        <app-edit-gallery [(section)]="gallerySection"></app-edit-gallery>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <!-- assume text -->
+        <app-edit-text [(section)]="textSection"></app-edit-text>
+    </ng-container>
+</ng-container>

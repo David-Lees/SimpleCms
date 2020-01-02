@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
@@ -16,6 +15,10 @@ import { SectionComponent } from './components/section/section.component';
 import { EditSectionComponent } from './components/edit-section/edit-section.component';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { HeaderComponent } from './components/header/header.component';
+import { EditTextComponent } from './components/edit-text/edit-text.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditGalleryComponent } from './components/edit-gallery/edit-gallery.component';
+import { EditPageComponent } from './components/edit-page/edit-page.component';
 
 @NgModule({
   declarations: [
@@ -28,9 +31,14 @@ import { HeaderComponent } from './components/header/header.component';
     SectionComponent,
     EditSectionComponent,
     HeaderComponent,
+    EditTextComponent,
+    EditGalleryComponent,
+    EditPageComponent,
   ],
   imports: [
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     AzureStorageModule,
     LMarkdownEditorModule,

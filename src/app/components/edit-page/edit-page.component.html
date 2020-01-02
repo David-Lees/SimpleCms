@@ -1,0 +1,42 @@
+<div class="row form-group">
+    <label for="colour" class="col-md-3 col-sm-6 col-form-label">Name:</label>
+    <div class="col-md-3 col-sm-6">
+        <input [(ngModel)]="page.name" (ngModelChange)="change()" type="text" class="fom-control" />
+    </div>
+</div>
+<small class="form-text text-muted mt-0">
+    The name of the page is displayed as the title. It is also displayed in the
+    navigation bar at the top if the is more than a single page in the site.
+</small>
+
+<div class="row form-group">
+    <label for="colour" class="col-md-3 col-sm-6 col-form-label">Url:</label>
+    <div class="col-md-3 col-sm-6">
+        <input [(ngModel)]="page.url" (ngModelChange)="change()" type="text" class="fom-control" />
+    </div>
+</div>
+<small class="form-text text-muted mt-0">
+    The Url is the identifier for the page that appears in the browsers navigation bar. 
+    It should be short and not containing any spaces.
+</small>
+
+<h3>Sections</h3>
+<ngb-accordion #acc="ngbAccordion">
+    <ng-container *ngFor="let s of page.sections; let idx = index">
+        <ngb-panel [title]="s.name">
+            <ng-template ngbPanelContent>
+                <app-edit-section [section]="s" (sectionChange)="update($event, idx)"></app-edit-section>
+                <div class="text-right mt-3">
+                    <button class="btn btn-danger" (click)="remove(idx)">Remove section</button>
+                    <button class="btn btn-secondary" (click)="up(idx)">Move up</button>
+                    <button class="btn btn-secondary" (click)="down(idx)">Move up</button>
+                </div>
+            </ng-template>
+        </ngb-panel>
+    </ng-container>
+</ngb-accordion>
+
+<div class="text-right mt-4">
+    <button (click)="addText()" class="btn btn-success">Add text block</button>
+    <button (click)="addGallery()" class="btn btn-success">Add image gallery</button>
+</div>
