@@ -1,9 +1,30 @@
-<h2>Upload Media</h2>
-
-<app-input-file class="input-file"></app-input-file>
-
-<h2>
+<h2 class="mt-4">Upload Media</h2>
+<div class="mt-4">
+    <input type="file" id="file" name="file" multiple="multiple" (change)="handleFileInput($event.target.files)"
+        #inputFile />
+    <button (click)="upload()">Upload</button>
+</div>
+<h2 class="mt-4">
     Existing Media
 </h2>
+<div class="mt-4" *ngIf="images && images.imageSize && images.imageMargin">
+    <app-gallery [isAdmin]="true" [sourceData]="images" [imageMargin]="images.imageMargin" [imageSize]="images.imageSize"></app-gallery>
+</div>
 
-<app-gallery [metadataUri]="'images.json'"></app-gallery>
+<div class="form-group mt-3">
+    <label>Margin:</label>
+    <input class="form-control-range" type="range" min="1" max="20" step="1" [(ngModel)]="images.imageMargin" />
+    <small class="form-text text-muted mt-0">
+        The gap between the images when displayed in the gallery:
+        {{ images.imageMargin }}.
+    </small>
+
+</div>
+
+<div class="form-group mt-3">
+    <label>Image size:</label>
+    <input class="form-control-range" type="range" min="1" max="20" step="1" [(ngModel)]="images.imageSize" />
+    <small class="form-text text-muted">
+        The hieght of the row of images: {{ images.imageSize }}.
+    </small>
+</div>

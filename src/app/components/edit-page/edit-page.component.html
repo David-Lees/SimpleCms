@@ -1,42 +1,49 @@
-<div class="row form-group">
-    <label for="colour" class="col-md-3 col-sm-6 col-form-label">Name:</label>
-    <div class="col-md-3 col-sm-6">
-        <input [(ngModel)]="page.name" (ngModelChange)="change()" type="text" class="fom-control" />
-    </div>
-</div>
-<small class="form-text text-muted mt-0">
-    The name of the page is displayed as the title. It is also displayed in the
-    navigation bar at the top if the is more than a single page in the site.
-</small>
+<div *ngIf="page">
 
-<div class="row form-group">
-    <label for="colour" class="col-md-3 col-sm-6 col-form-label">Url:</label>
-    <div class="col-md-3 col-sm-6">
-        <input [(ngModel)]="page.url" (ngModelChange)="change()" type="text" class="fom-control" />
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="colour">Name:</label>
+                <input [(ngModel)]="page.name" (ngModelChange)="change()" type="text" class="form-control" />
+                <small class="form-text text-muted">
+                    The name of the page is displayed as the title. It is also displayed in the
+                    navigation bar at the top if the is more than a single page in the site.
+                </small>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="colour">Url:</label>
+                <input [(ngModel)]="page.url" (ngModelChange)="change()" type="text" class="form-control" />
+                <small class="form-text text-muted">
+                    The Url is the identifier for the page that appears in the browsers navigation bar.
+                    It should be short and not containing any spaces. It must be unique and for the home page can be
+                    empty.
+                </small>
+            </div>
+        </div>
     </div>
-</div>
-<small class="form-text text-muted mt-0">
-    The Url is the identifier for the page that appears in the browsers navigation bar. 
-    It should be short and not containing any spaces.
-</small>
 
-<h3>Sections</h3>
-<ngb-accordion #acc="ngbAccordion">
+    <h3>Sections</h3>
+
     <ng-container *ngFor="let s of page.sections; let idx = index">
-        <ngb-panel [title]="s.name">
-            <ng-template ngbPanelContent>
-                <app-edit-section [section]="s" (sectionChange)="update($event, idx)"></app-edit-section>
+        <div *ngIf="s" class="card mb-4">
+            <div class="card-body">
+                <h5 *ngIf="s.name" class="card-title">{{ s.name.replace('Section',' Section') }}</h5>
+                <app-edit-section [section]="page.sections[idx]" (sectionChange)="update($event, idx)">
+                </app-edit-section>
                 <div class="text-right mt-3">
                     <button class="btn btn-danger" (click)="remove(idx)">Remove section</button>
-                    <button class="btn btn-secondary" (click)="up(idx)">Move up</button>
-                    <button class="btn btn-secondary" (click)="down(idx)">Move up</button>
+                    <button class="btn btn-secondary ml-2" (click)="up(idx)">Move section up</button>
+                    <button class="btn btn-secondary ml-2" (click)="down(idx)">Move section up</button>
                 </div>
-            </ng-template>
-        </ngb-panel>
+            </div>
+        </div>
     </ng-container>
-</ngb-accordion>
 
-<div class="text-right mt-4">
-    <button (click)="addText()" class="btn btn-success">Add text block</button>
-    <button (click)="addGallery()" class="btn btn-success">Add image gallery</button>
+    <div class="text-right mt-4">
+        <button (click)="addBanner()" class="btn btn-success ml-2">Add banner</button>
+        <button (click)="addText()" class="btn btn-success ml-2">Add text block</button>
+        <button (click)="addGallery()" class="btn btn-success ml-2">Add image gallery</button>
+    </div>
 </div>

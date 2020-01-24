@@ -1,5 +1,7 @@
 {
   "name": "David Lees",
+  "headerBackground": "#FF6600",
+  "headerColor": "#000000",
   "pages": [
     {
       "name": "Home",
@@ -9,7 +11,8 @@
           "name": "TextSection",
           "text": "# David Lees \r\n\r\n Hello World",
           "backgroundColour": "#FFFFFF",
-          "colour": "#000"
+          "colour": "#000",
+          "align": "left"
         }
       ]
     }

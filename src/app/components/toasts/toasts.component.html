@@ -1,0 +1,15 @@
+<div class="toasts-list">
+    <div class="pb-3" *ngIf="toasts.length > 1">
+      <button type="button" (click)="removeAll()" class="btn btn-block btn-info">Close all</button>
+    </div>
+    <ngb-toast *ngFor="let message of toasts; let i = index;" class="text-light" [ngClass]="{ 'bg-danger': message.state === 40, 'bg-success': message.state ===
+      20,'bg-warning': message.state === 30, 'bg-info' : message.state === 10 }"
+      [autohide]="isErrorOrWarning(message.state)" [delay]="message.delay || 10000" (hide)="remove(message)"
+      [style.top]="(i * 40 + 50) + 'px'">
+      <ng-template ngbToastHeader>
+        {{message.header || getDefaultHeaderForState(message.state)}}
+      </ng-template>
+      <div [innerHTML]="message.body"></div>
+    </ngb-toast>
+  </div>
+  

@@ -1,6 +1,8 @@
 import { ImageService } from '../../services/image.service';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { environment } from 'src/environments/environment';
+import { MediaService } from 'src/app/services/media.service';
 
 @Component({
   selector: 'app-viewer',
@@ -92,6 +94,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ],
 })
 export class ViewerComponent {
+  @Input() isAdmin = false;
   showViewer: boolean;
   images: Array<any> = [{}];
   currentIdx = 0;
@@ -103,7 +106,7 @@ export class ViewerComponent {
   private qualitySelectorShown = false;
   private qualitySelected = 'auto';
 
-  constructor(private imageService: ImageService) {
+  constructor(private imageService: ImageService, private mediaService: MediaService) {
     imageService.imagesUpdated$.subscribe(images => {
       this.images = images;
     });
@@ -126,6 +129,11 @@ export class ViewerComponent {
 
   get rightArrowActive(): boolean {
     return this.currentIdx < this.images.length - 1;
+  }
+
+  delete() {
+    this.mediaService.delete(this.images[this.currentIdx].id);
+    this.closeViewer();
   }
 
   pan(swipe: any): void {
@@ -244,6 +252,10 @@ export class ViewerComponent {
         }
       });
     }, 500);
+  }
+
+  getImagePath(file: string) {
+    return environment.storageUrl + '/images/' + file;
   }
 
   private updateQuality(): void {

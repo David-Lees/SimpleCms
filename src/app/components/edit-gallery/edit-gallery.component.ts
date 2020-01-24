@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { GalleryImage } from 'src/app/models/gallery-image';
-import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { MediaService } from 'src/app/services/media.service';
 
 @Component({
   selector: 'app-edit-gallery',
@@ -13,17 +14,18 @@ export class EditGalleryComponent implements OnInit {
   @Output() sectionChange = new EventEmitter<GallerySection>();
 
   images: GalleryImage[];
+  prefix = environment.storageUrl + '/images/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private media: MediaService) {}
 
   ngOnInit() {
-    this.http.get<GalleryImage[]>('images.json').subscribe(x => {
+    this.media.images.subscribe(x => {
       this.images = x;
     });
   }
 
   change() {
-    this.sectionChange.emit({ ...this.section });
+    this.sectionChange.emit(this.section);
   }
 
   add(img: GalleryImage) {
@@ -32,7 +34,7 @@ export class EditGalleryComponent implements OnInit {
   }
 
   remove(x: number) {
-    this.section.images = this.section.images.splice(x);
+    this.section.images.splice(x, 1);
     this.change();
   }
 
@@ -51,6 +53,7 @@ export class EditGalleryComponent implements OnInit {
   }
 
   move(from: number, to: number) {
-    this.section.images = [...this.section.images.splice(to, 0, this.section.images.splice(from, 1)[0])];
+    const removedElement = this.section.images.splice(from, 1)[0];
+    this.section.images.splice(to, 0, removedElement);
   }
 }

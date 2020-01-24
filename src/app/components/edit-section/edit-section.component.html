@@ -2,6 +2,9 @@
     <ng-container *ngSwitchCase="sectionTypes.GallerySection">
         <app-edit-gallery [(section)]="gallerySection"></app-edit-gallery>
     </ng-container>
+    <ng-container *ngSwitchCase="sectionTypes.BannerSection">
+        <app-edit-banner [(section)]="bannerSection"></app-edit-banner>
+    </ng-container>
     <ng-container *ngSwitchDefault>
         <!-- assume text -->
         <app-edit-text [(section)]="textSection"></app-edit-text>

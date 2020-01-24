@@ -14,4 +14,10 @@ export interface GalleryImage {
   galleryImageLoaded?: boolean;
   viewerImageLoaded?: boolean;
   srcAfterFocus?: string;
+
+  description: string;
+}
+
+export interface Files {
+  
 }

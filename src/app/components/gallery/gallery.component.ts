@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { HttpClient } from '@angular/common/http';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { GallerySection } from 'src/app/models/gallery-section';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-gallery',
@@ -27,9 +28,6 @@ import { GallerySection } from 'src/app/models/gallery-section';
 })
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   gallery: Array<any> = [];
-  imageDataStaticPath = 'assets/img/gallery/';
-  imageDataCompletePath = '';
-  dataFileName = 'data.json';
   images: Array<GalleryImage> = [];
   minimalQualityCategory = 'preview_xxs';
   viewerSubscription: Subscription;
@@ -41,8 +39,8 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() imageMargin = 3;
   @Input() imageSize = 7;
   @Input() galleryName = '';
-  @Input() metadataUri: string = undefined;
   @Input() rowsPerPage = 200;
+  @Input() isAdmin = false;
 
   @Output() viewerChange = new EventEmitter<boolean>();
 
@@ -104,40 +102,20 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private fetchDataAndRender(): void {
-    this.imageDataCompletePath = this.metadataUri;
-
-    if (!this.metadataUri) {
-      this.imageDataCompletePath =
-        this.galleryName !== ''
-          ? `${this.imageDataStaticPath + this.galleryName}/${this.dataFileName}`
-          : this.imageDataStaticPath + this.dataFileName;
+    if (this.sourceData && this.sourceData.images) {
+      this.images = this.sourceData.images;
+    } else {
+      this.images = [];
     }
-
-    this.http.get(this.imageDataCompletePath).subscribe(
-      (data: Array<any>) => {
-        this.images = this.sourceData.images;
-        this.imageService.updateImages(this.images);
-
-        this.images.forEach(image => {
-          image.galleryImageLoaded = false;
-          image.viewerImageLoaded = false;
-          image.srcAfterFocus = '';
-        });
-        // twice, single leads to different strange browser behaviour
-        this.render();
-        this.render();
-      },
-      err => {
-        if (this.metadataUri) {
-          console.error(`Provided endpoint '${this.metadataUri}' did not serve metadata correctly or in the expected format.
-    See here for more information: https://github.com/BenjaminBrandmeier/angular2-image-gallery/blob/master/docs/externalDataSource.md,
-    Original error: ${err}`);
-        } else {
-          console.error(`Did you run the convert script from angular2-image-gallery for your images first? Original error: ${err}`);
-        }
-      },
-      () => undefined
-    );
+    this.imageService.updateImages(this.images);
+    this.images.forEach(image => {
+      image.galleryImageLoaded = false;
+      image.viewerImageLoaded = false;
+      image.srcAfterFocus = '';
+    });
+    // twice, single leads to different strange browser behaviour
+    this.render();
+    this.render();
   }
 
   private render(): void {
@@ -155,10 +133,8 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
         tempRow.pop();
       }
       this.gallery[currentRowIndex++] = tempRow;
-
       tempRow = [this.images[i + 1]];
     }
-
     this.scaleGallery();
   }
 
@@ -236,14 +212,13 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private checkForAsyncLoading(image: any, imageCounter: number): void {
-    const imageElements = this.imageElements.toArray();
-
+    const imageElements = (this.imageElements || new QueryList<any>()).toArray();
     if (
       image.galleryImageLoaded ||
       (imageElements.length > 0 && imageElements[imageCounter] && this.isScrolledIntoView(imageElements[imageCounter].nativeElement))
     ) {
       image.galleryImageLoaded = true;
-      image.srcAfterFocus = image[this.minimalQualityCategory].path;
+      image.srcAfterFocus = environment.storageUrl + '/images/' + image[this.minimalQualityCategory].path;
     } else {
       image.srcAfterFocus = '';
     }

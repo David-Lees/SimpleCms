@@ -3,12 +3,11 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
-import { AzureStorageModule } from './azure-storage/azure-storage.module';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AppRoutingModule } from './app-routing.module';
 import { PublicViewComponent } from './components/public-view/public-view.component';
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MediaComponent } from './components/media/media.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SectionComponent } from './components/section/section.component';
@@ -19,6 +18,25 @@ import { EditTextComponent } from './components/edit-text/edit-text.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditGalleryComponent } from './components/edit-gallery/edit-gallery.component';
 import { EditPageComponent } from './components/edit-page/edit-page.component';
+import { MsAdalAngular6Module } from 'microsoft-adal-angular6';
+import { environment } from 'src/environments/environment';
+import { AuthenticationGuard } from 'microsoft-adal-angular6';
+import { ToastsComponent } from './components/toasts/toasts.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EditBannerComponent } from './components/edit-banner/edit-banner.component';
+import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatInputModule } from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
+export function getAdalConfig() {
+  return {
+    ...environment.config,
+    redirectUri: window.location.origin,
+  };
+}
 
 @NgModule({
   declarations: [
@@ -34,13 +52,20 @@ import { EditPageComponent } from './components/edit-page/edit-page.component';
     EditTextComponent,
     EditGalleryComponent,
     EditPageComponent,
+    ToastsComponent,
+    EditBannerComponent,
   ],
   imports: [
+    MatButtonModule,
+    MatInputModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatGridListModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
-    AzureStorageModule,
+    BrowserAnimationsModule,
     LMarkdownEditorModule,
     AppRoutingModule,
     NgbModule,
@@ -52,8 +77,9 @@ import { EditPageComponent } from './components/edit-page/edit-page.component';
         },
       },
     }),
+    MsAdalAngular6Module.forRoot(getAdalConfig),
   ],
-  providers: [],
+  providers: [AuthenticationGuard, { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

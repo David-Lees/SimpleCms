@@ -4,11 +4,11 @@ import { GallerySection } from 'src/app/models/gallery-section';
 import { TextSection } from 'src/app/models/text-section';
 import { SectionTypes } from 'src/app/enums/sections';
 import { Section } from 'src/app/models/section';
+import { BannerSection } from 'src/app/models/banner-section';
 
 @Component({
   selector: 'app-edit-page',
   templateUrl: './edit-page.component.html',
-  styleUrls: ['./edit-page.component.scss'],
 })
 export class EditPageComponent implements OnInit {
   @Input() page: Page;
@@ -19,11 +19,22 @@ export class EditPageComponent implements OnInit {
   ngOnInit() {}
 
   change() {
-    this.pageChange.emit({ ...this.page });
+    this.pageChange.emit(this.page);
   }
 
   update(s: Section, idx: number) {
-    this.page.sections[idx] = s;
+    //if (this.page.sections[idx] != s) {
+      Object.assign(this.page.sections[idx], s);
+    //}
+  }
+
+  addBanner() {
+    const b: BannerSection = {
+      name: SectionTypes.BannerSection,
+      image: null,
+    };
+    this.page.sections.push(b);
+    this.change();
   }
 
   addGallery() {
@@ -31,6 +42,9 @@ export class EditPageComponent implements OnInit {
       name: SectionTypes.GallerySection,
       galleryName: 'Gallery',
       images: [],
+      imageMargin: 3,
+      imageSize: 200,
+      rowsPerPage: 200
     };
     this.page.sections.push(g);
     this.change();
@@ -68,6 +82,7 @@ export class EditPageComponent implements OnInit {
   }
 
   move(from: number, to: number) {
-    this.page.sections = [...this.page.sections.splice(to, 0, this.page.sections.splice(from, 1)[0])];
+    const removedElement = this.page.sections.splice(from, 1)[0];
+    this.page.sections.splice(to, 0, removedElement);    
   }
 }

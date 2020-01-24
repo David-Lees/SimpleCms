@@ -3,6 +3,7 @@ import { SectionTypes } from 'src/app/enums/sections';
 import { TextSection } from 'src/app/models/text-section';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { Section } from 'src/app/models/section';
+import { BannerSection } from 'src/app/models/banner-section';
 
 @Component({
   selector: 'app-edit-section',
@@ -29,6 +30,15 @@ export class EditSectionComponent {
   }
 
   set gallerySection(v: GallerySection) {
+    this.section = v;
+    this.sectionChange.emit(v);
+  }
+
+  get bannerSection(): BannerSection {
+    return this.section as BannerSection;
+  }
+
+  set bannerSection(v: BannerSection) {
     this.section = v;
     this.sectionChange.emit(v);
   }

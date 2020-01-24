@@ -1,4 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light" [style.backgroundColor]="site.headerBackground"
+    [style.color]="site.headerColour">
     <a class="navbar-brand" routerLink="/">{{ site.name }}</a>
     <ng-container *ngIf="site.pages.length > 1">
         <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
