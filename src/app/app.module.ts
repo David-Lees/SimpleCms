@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './modules/app-routing.module';
 import { PublicViewComponent } from './components/public-view/public-view.component';
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,11 +25,8 @@ import { ToastsComponent } from './components/toasts/toasts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditBannerComponent } from './components/edit-banner/edit-banner.component';
 import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatButtonModule } from '@angular/material/button';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatInputModule } from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { AngularMaterialModule } from './modules/angular-material.module';
+import { MaterialFileUploadComponent } from './components/material-file-upload/material-file-upload.component';
 
 export function getAdalConfig() {
   return {
@@ -54,13 +51,10 @@ export function getAdalConfig() {
     EditPageComponent,
     ToastsComponent,
     EditBannerComponent,
+    MaterialFileUploadComponent,
   ],
   imports: [
-    MatButtonModule,
-    MatInputModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    MatGridListModule,
+    AngularMaterialModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -81,5 +75,6 @@ export function getAdalConfig() {
   ],
   providers: [AuthenticationGuard, { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true }],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

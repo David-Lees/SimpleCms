@@ -1,18 +1,13 @@
-<div class="row">
-    <div class="col-sm-6">
-        <h4>Available images</h4>
-        <div class="list-group scroll-list">
-            <ng-container *ngFor="let img of images">
-                <button (click)="set(img)" class="list-group-item list-group-item-action">
-                    <img [src]="prefix + img.preview_xxs.path" />
+
+<div class="container-fluid">
+    <h4>Select banner image:</h4>
+    <div class="row">
+        <div class="col-sm-4" *ngFor="let img of images">
+            <mat-card [ngClass]="{ 'card-active': img.id === section.image.id }" [style.height.%]="100">
+                <button mat-button (click)="set(img)">
+                    <img [src]="prefix + img.preview_xxs.path" class="img-fluid" />
                 </button>
-            </ng-container>
+            </mat-card>
         </div>
-    </div>
-    <div class="col-sm-6">
-        <h4>Selected image</h4>
-        <ng-container *ngIf="section && section.image">
-            <img [src]="prefix + section.image.preview_xxs.path" />
-        </ng-container>
     </div>
 </div>

@@ -8,8 +8,8 @@
         </div>
     </ng-container>
     <ng-container *ngSwitchCase="sectionTypes.BannerSection">
-        <div class="jumbotron jumbotron-fluid banner" [style.height.px]="height"
-            [style.backgroundImage]="bannerUrl">
+        <div class="jumbotron jumbotron-fluid banner">
+            <img [attr.src]="bannerUrl" />
         </div>
     </ng-container>
     <ng-container *ngSwitchDefault>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PublicViewComponent } from './components/public-view/public-view.component';
-import { AdminViewComponent } from './components/admin-view/admin-view.component';
+import { PublicViewComponent } from '../components/public-view/public-view.component';
+import { AdminViewComponent } from '../components/admin-view/admin-view.component';
 import { AuthenticationGuard } from 'microsoft-adal-angular6';
 
 const routes: Routes = [

@@ -3,6 +3,9 @@ import { SiteService } from 'src/app/services/site.service';
 import { Site } from 'src/app/models/site';
 import { Page } from 'src/app/models/page';
 import { MediaService } from 'src/app/services/media.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { ToastService } from 'src/app/services/toast.service';
+import { ToastState } from 'src/app/enums/toast-state.enum';
 
 @Component({
   selector: 'app-admin-view',
@@ -12,7 +15,7 @@ export class AdminViewComponent implements OnInit {
   site: Site;
   loaded = false;
   activePage = 0;
-  constructor(private siteService: SiteService, private mediaService: MediaService) {}
+  constructor(private siteService: SiteService, private mediaService: MediaService, private toastService: ToastService) {}
 
   save() {
     console.log('saving site', this.site);
@@ -58,21 +61,11 @@ export class AdminViewComponent implements OnInit {
     }
   }
 
-  up(x: number) {
-    if (x > 0) {
-      this.move(x, x - 1);
-      this.change();
-    }
+  dropPage(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.site.pages, event.previousIndex, event.currentIndex);
   }
 
-  down(x: number) {
-    if (x < this.site.pages.length) {
-      this.move(x, x + 1);
-      this.change();
-    }
-  }
-
-  move(from: number, to: number) {
-    this.site.pages = [...this.site.pages.splice(to, 0, this.site.pages.splice(from, 1)[0])];
+  toast() {
+    this.toastService.post({ body: 'test', state: ToastState.Information });
   }
 }

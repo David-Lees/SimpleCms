@@ -22,7 +22,9 @@
 
           <div *ngFor='let img of images; let j = index' class="image" [class.active]="img['active']"
                [style.background-image]="img['viewerImageLoaded'] ? 'url('+getImagePath(img[categorySelected]['path'])+')' : math.abs(currentIdx-j) <=1 ? 'url('+getImagePath(img['preview_xxs']['path'])+')' : ''"
-               [style.left]="transform+'px'" [@imageTransition]="img['transition']"></div>
+               [style.left]="transform+'px'" [@imageTransition]="img['transition']">
+               <span *ngIf="img.description" class="description">{{ img.description }}</span>
+          </div>
 
           <img *ngFor='let img of images; let j = index' class="preloading-image" (load)="imageLoaded(img)"
                src="{{ math.abs(currentIdx-j) <=1 ? getImagePath(img[categorySelected]['path']) : ''}}" />

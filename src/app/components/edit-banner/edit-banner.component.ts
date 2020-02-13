@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-edit-banner',
   templateUrl: './edit-banner.component.html',
-  styleUrls: ['./edit-banner.component.scss']
+  styleUrls: ['./edit-banner.component.scss'],
 })
 export class EditBannerComponent implements OnInit {
   @Input() section: BannerSection;
@@ -16,11 +16,14 @@ export class EditBannerComponent implements OnInit {
   images: GalleryImage[];
   prefix = environment.storageUrl + '/images/';
 
-  constructor(private media: MediaService) { }
+  constructor(private media: MediaService) {}
 
   ngOnInit() {
     this.media.images.subscribe(x => {
       this.images = x;
+      if (this.section && this.section.image) {
+        this.section.image = this.images.find(x => x.id === this.section.image.id);
+      }
     });
   }
 
@@ -32,5 +35,4 @@ export class EditBannerComponent implements OnInit {
     this.section.image = img;
     this.change();
   }
-
 }

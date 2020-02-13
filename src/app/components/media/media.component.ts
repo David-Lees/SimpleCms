@@ -16,8 +16,6 @@ import { SectionTypes } from 'src/app/enums/sections';
   templateUrl: './media.component.html',
 })
 export class MediaComponent implements OnInit, OnDestroy {
-  @ViewChild('inputFile', { static: false }) private inputFile: ElementRef;
-  filesToUpload: FileList;
   constructor(public adalService: MsAdalAngular6Service, private mediaService: MediaService) {}
   images: GallerySection;
   subscription: Subscription;
@@ -40,11 +38,7 @@ export class MediaComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  handleFileInput(files: FileList) {
-    this.filesToUpload = files;
-  }
+  onFileComplete(event: any) {
 
-  upload() {
-    this.mediaService.upload(this.filesToUpload);
   }
 }

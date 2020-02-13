@@ -212,23 +212,14 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private checkForAsyncLoading(image: any, imageCounter: number): void {
+    console.log('checkForAsyncLoading');
     const imageElements = (this.imageElements || new QueryList<any>()).toArray();
-    if (
-      image.galleryImageLoaded ||
-      (imageElements.length > 0 && imageElements[imageCounter] && this.isScrolledIntoView(imageElements[imageCounter].nativeElement))
-    ) {
+    if (image.galleryImageLoaded || (imageElements.length > 0 && imageElements[imageCounter])) {
       image.galleryImageLoaded = true;
       image.srcAfterFocus = environment.storageUrl + '/images/' + image[this.minimalQualityCategory].path;
     } else {
       image.srcAfterFocus = '';
     }
-  }
-
-  private isScrolledIntoView(element: any): boolean {
-    const elementTop = element.getBoundingClientRect().top;
-    const elementBottom = element.getBoundingClientRect().bottom;
-
-    return elementTop < window.innerHeight && elementBottom >= 0 && (elementBottom > 0 || elementTop > 0);
   }
 
   private refreshNavigationErrorState(): void {

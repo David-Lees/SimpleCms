@@ -4,7 +4,6 @@ import { Section } from 'src/app/models/section';
 import { TextSection } from 'src/app/models/text-section';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { BannerSection } from 'src/app/models/banner-section';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,7 +24,8 @@ export class SectionComponent implements OnInit {
       const h = s.image.raw.height;
       const w = s.image.raw.width;
       const ww = window.innerWidth;
-      this.height = (w / ww) * h;
+      const ar = h / w;
+      this.height = ar * ww;
     }
   }
 
@@ -48,6 +48,22 @@ export class SectionComponent implements OnInit {
   }
 
   get bannerUrl(): string {
-    return `url(${environment.storageUrl}/images/${this.bannerSection.image.raw.path})`;
+    const width = window.innerWidth;
+    switch (true) {
+      case width < this.bannerSection.image.preview_xxs.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xxs.path}`;
+      case width < this.bannerSection.image.preview_xs.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xs.path}`;
+      case width < this.bannerSection.image.preview_s.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_s.path}`;
+      case width < this.bannerSection.image.preview_m.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_m.path}`;
+      case width < this.bannerSection.image.preview_l.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_l.path}`;
+      case width < this.bannerSection.image.preview_xl.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xl.path}`;
+      default:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;
+    }
   }
 }

@@ -3,6 +3,7 @@ import { GallerySection } from 'src/app/models/gallery-section';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-gallery',
@@ -14,6 +15,7 @@ export class EditGalleryComponent implements OnInit {
   @Output() sectionChange = new EventEmitter<GallerySection>();
 
   images: GalleryImage[];
+  availableImages: GalleryImage[];
   prefix = environment.storageUrl + '/images/';
 
   constructor(private media: MediaService) {}
@@ -21,7 +23,21 @@ export class EditGalleryComponent implements OnInit {
   ngOnInit() {
     this.media.images.subscribe(x => {
       this.images = x;
+      this.availableImages = [...this.images];
     });
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log(event);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {    
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);                        
+      this.availableImages = [...this.images];
+    }
   }
 
   change() {

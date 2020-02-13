@@ -5,14 +5,18 @@ import { TextSection } from 'src/app/models/text-section';
 import { SectionTypes } from 'src/app/enums/sections';
 import { Section } from 'src/app/models/section';
 import { BannerSection } from 'src/app/models/banner-section';
+import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-page',
-  templateUrl: './edit-page.component.html',
+  templateUrl: './edit-page.component.html',  
+  styleUrls: ['./edit-page.component.scss'],
 })
 export class EditPageComponent implements OnInit {
   @Input() page: Page;
   @Output() pageChange = new EventEmitter<Page>();
+
+  activeSection = 0;
 
   constructor() {}
 
@@ -22,10 +26,12 @@ export class EditPageComponent implements OnInit {
     this.pageChange.emit(this.page);
   }
 
+  select(idx: number) {
+    this.activeSection = idx;
+  }
+
   update(s: Section, idx: number) {
-    //if (this.page.sections[idx] != s) {
-      Object.assign(this.page.sections[idx], s);
-    //}
+    Object.assign(this.page.sections[idx], s);    
   }
 
   addBanner() {
@@ -66,23 +72,8 @@ export class EditPageComponent implements OnInit {
     this.page.sections = this.page.sections.splice(x);
     this.change();
   }
-
-  up(x: number) {
-    if (x > 0) {
-      this.move(x, x - 1);
-      this.change();
-    }
-  }
-
-  down(x: number) {
-    if (x < this.page.sections.length) {
-      this.move(x, x + 1);
-      this.change();
-    }
-  }
-
-  move(from: number, to: number) {
-    const removedElement = this.page.sections.splice(from, 1)[0];
-    this.page.sections.splice(to, 0, removedElement);    
+  
+  drop(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.page.sections, event.previousIndex, event.currentIndex);
   }
 }

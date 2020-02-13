@@ -1,34 +1,29 @@
-<form [formGroup]="formGroup">
-    <md-editor name="Content" formControlName="text" [height]="'300px'"></md-editor>
+<div class="container-fluid">
+    <form [formGroup]="formGroup">
+        <md-editor name="Content" formControlName="text" [height]="'300px'"></md-editor>
 
-    <div class="row form-group">
-        <label for="colour" class="col-md-3 col-sm-6 col-form-label">Text colour:</label>
-        <div class="col-md-3 col-sm-6">
-            <input formControlName="colour" type="color" />
+        <div class="row">
+            <div class="col-3">
+                <mat-form-field appearance="outline" class="width-100">
+                    <mat-label>Text</mat-label>
+                    <input matInput formControlName="colour" type="color" />
+                </mat-form-field>
+            </div>
+            <div class="col-3">
+                <mat-form-field appearance="outline" class="width-100">
+                    <mat-label>Background</mat-label>
+                    <input matInput formControlName="backgroundColour" type="color" />
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <label id="justify{{id}}" class="width-100">Alignment</label>
+                <mat-radio-group formControlName="align" aria-labelledby="justify{{id}}">
+                    <mat-radio-button value="left">Left</mat-radio-button>
+                    <mat-radio-button value="center">Centred</mat-radio-button>
+                    <mat-radio-button value="right">Right</mat-radio-button>
+                </mat-radio-group>            
+            </div>
         </div>
-    </div>
 
-    <div class="row form-group">
-        <label for="backgroundColour" class="col-md-3 col-sm-6 col-form-label">Background colour:</label>
-        <div class="col-md-3 col-sm-6">
-            <input formControlName="backgroundColour" type="color" />
-        </div>
-    </div>
-
-    <p class="mt-3">Text alignment:</p>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="align" id="{{id}}1" value="left"
-        formControlName="align">
-        <label class="form-check-label" for="{{id}}1">Left</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="align" id="{{id}}2" value="center"
-        formControlName="align">
-        <label class="form-check-label" for="{{id}}2">Centred</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="align" id="{{id}}3" value="right"
-        formControlName="align">
-        <label class="form-check-label" for="{{id}}3">Right</label>
-    </div>
-</form>
+    </form>
+</div>
