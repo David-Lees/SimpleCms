@@ -100,7 +100,7 @@ export class ViewerComponent {
   currentIdx = 0;
   leftArrowVisible = true;
   rightArrowVisible = true;
-  categorySelected = 'preview_xxs';
+  categorySelected = 'preview_small';
   transform: number;
   math: Math;
   private qualitySelectorShown = false;
@@ -264,45 +264,35 @@ export class ViewerComponent {
 
     switch (this.qualitySelected) {
       case 'auto': {
-        this.categorySelected = 'preview_xxs';
-
+        this.categorySelected = 'preview_small';
         if (
-          screenWidth > this.images[this.currentIdx].preview_xxs.width &&
-          screenHeight > this.images[this.currentIdx].preview_xxs.height
+          screenWidth > this.images[this.currentIdx].preview_small.width ||
+          screenHeight > this.images[this.currentIdx].preview_small.height
         ) {
-          this.categorySelected = 'preview_xs';
+          this.categorySelected = 'preview_sd';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_xs.width && screenHeight > this.images[this.currentIdx].preview_xs.height) {
-          this.categorySelected = 'preview_s';
+        if (screenWidth > this.images[this.currentIdx].preview_sd.width || screenHeight > this.images[this.currentIdx].preview_sd.height) {
+          this.categorySelected = 'preview_hd';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_s.width && screenHeight > this.images[this.currentIdx].preview_s.height) {
-          this.categorySelected = 'preview_m';
-        }
-        if (screenWidth > this.images[this.currentIdx].preview_m.width && screenHeight > this.images[this.currentIdx].preview_m.height) {
-          this.categorySelected = 'preview_l';
-        }
-        if (screenWidth > this.images[this.currentIdx].preview_l.width && screenHeight > this.images[this.currentIdx].preview_l.height) {
-          this.categorySelected = 'preview_xl';
-        }
-        if (screenWidth > this.images[this.currentIdx].preview_xl.width && screenHeight > this.images[this.currentIdx].preview_xl.height) {
+        if (screenWidth > this.images[this.currentIdx].preview_hd.width || screenHeight > this.images[this.currentIdx].preview_hd.height) {
           this.categorySelected = 'raw';
         }
         break;
       }
       case 'low': {
-        this.categorySelected = 'preview_xxs';
+        this.categorySelected = 'preview_small';
         break;
       }
       case 'mid': {
-        this.categorySelected = 'preview_m';
+        this.categorySelected = 'preview_sd';
         break;
       }
       case 'high': {
-        this.categorySelected = 'raw';
+        this.categorySelected = 'preview_hd';
         break;
       }
       default: {
-        this.categorySelected = 'preview_m';
+        this.categorySelected = 'raw';
       }
     }
   }

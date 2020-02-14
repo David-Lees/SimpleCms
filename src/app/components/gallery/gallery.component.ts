@@ -29,7 +29,7 @@ import { environment } from 'src/environments/environment';
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   gallery: Array<any> = [];
   images: Array<GalleryImage> = [];
-  minimalQualityCategory = 'preview_xxs';
+  minimalQualityCategory = 'preview_small';
   viewerSubscription: Subscription;
   rowIndex = 0;
   rightArrowInactive = false;
@@ -205,7 +205,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
       }
     });
 
-    this.minimalQualityCategory = maximumGalleryImageHeight > 375 ? 'preview_xs' : 'preview_xxs';
+    this.minimalQualityCategory = maximumGalleryImageHeight > 375 ? 'preview_sd' : 'preview_small';
     this.refreshNavigationErrorState();
 
     this.changeDetectorRef.detectChanges();

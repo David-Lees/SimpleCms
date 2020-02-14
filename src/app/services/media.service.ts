@@ -19,12 +19,9 @@ export class MediaService {
   map(x: any[]): GalleryImage[] {
     return x.map(z => {
       return {
-        preview_xxs: z.files.preview_xxs,
-        preview_xs: z.files.preview_xs,
-        preview_s: z.files.preview_s,
-        preview_m: z.files.preview_m,
-        preview_l: z.files.preview_l,
-        preview_xl: z.files.preview_xl,
+        preview_small: z.files.preview_small,
+        preview_sd: z.files.preview_sd,
+        preview_hd: z.files.preview_hd,
         raw: z.files.raw,
         dominantColour: z.dominantColour,
         id: z.id,

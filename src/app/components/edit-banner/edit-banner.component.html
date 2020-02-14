@@ -5,7 +5,7 @@
         <div class="col-sm-4" *ngFor="let img of images">
             <mat-card [ngClass]="{ 'card-active': img.id === section.image.id }" [style.height.%]="100">
                 <button mat-button (click)="set(img)">
-                    <img [src]="prefix + img.preview_xxs.path" class="img-fluid" />
+                    <img [src]="prefix + img.preview_small.path" class="img-fluid" />
                 </button>
             </mat-card>
         </div>

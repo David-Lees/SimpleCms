@@ -50,18 +50,12 @@ export class SectionComponent implements OnInit {
   get bannerUrl(): string {
     const width = window.innerWidth;
     switch (true) {
-      case width < this.bannerSection.image.preview_xxs.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xxs.path}`;
-      case width < this.bannerSection.image.preview_xs.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xs.path}`;
-      case width < this.bannerSection.image.preview_s.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_s.path}`;
-      case width < this.bannerSection.image.preview_m.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_m.path}`;
-      case width < this.bannerSection.image.preview_l.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_l.path}`;
-      case width < this.bannerSection.image.preview_xl.width:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_xl.path}`;
+      case width < this.bannerSection.image.preview_small.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_small.path}`;
+      case width < this.bannerSection.image.preview_sd.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_sd.path}`;
+      case width < this.bannerSection.image.preview_hd.width:
+        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_hd.path}`;
       default:
         return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;
     }

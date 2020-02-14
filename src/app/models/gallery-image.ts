@@ -1,12 +1,9 @@
 import { GalleryImageDetails } from './gallery-image-details';
 
 export interface GalleryImage {
-  preview_xxs: GalleryImageDetails;
-  preview_xs: GalleryImageDetails;
-  preview_s: GalleryImageDetails;
-  preview_m: GalleryImageDetails;
-  preview_l: GalleryImageDetails;
-  preview_xl: GalleryImageDetails;
+  preview_small: GalleryImageDetails;
+  preview_sd: GalleryImageDetails;
+  preview_hd: GalleryImageDetails;
   raw: GalleryImageDetails;
   dominantColour: string;
   id: string;

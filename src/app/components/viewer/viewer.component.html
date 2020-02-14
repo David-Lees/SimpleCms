@@ -21,7 +21,7 @@
           (swiperight)="navigate(-1, $event)" (pan)="pan($event)">
 
           <div *ngFor='let img of images; let j = index' class="image" [class.active]="img['active']"
-               [style.background-image]="img['viewerImageLoaded'] ? 'url('+getImagePath(img[categorySelected]['path'])+')' : math.abs(currentIdx-j) <=1 ? 'url('+getImagePath(img['preview_xxs']['path'])+')' : ''"
+               [style.background-image]="img['viewerImageLoaded'] ? 'url('+getImagePath(img[categorySelected]['path'])+')' : math.abs(currentIdx-j) <=1 ? 'url('+getImagePath(img['preview_small']['path'])+')' : ''"
                [style.left]="transform+'px'" [@imageTransition]="img['transition']">
                <span *ngIf="img.description" class="description">{{ img.description }}</span>
           </div>
