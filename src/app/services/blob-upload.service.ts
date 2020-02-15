@@ -12,7 +12,6 @@ export class BlobUploadService {
   constructor(private http: HttpClient, public adalService: MsAdalAngular6Service) {}
 
   getUserDelegationKey(): Observable<any> {
-    const url = environment.storageUrl + '/?restype=service&comp=userdelegationkey&timeout=120';
     const headers = {
       Authorization: 'bearer ' + this.adalService.accessToken,
       'x-ms-version': '2017-11-09',

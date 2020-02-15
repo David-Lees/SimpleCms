@@ -69,12 +69,6 @@ export class MaterialFileUploadComponent implements OnInit {
     this.blobService.getUserDelegationKey().subscribe(
       key => {
         console.log('Upload key obtained');
-        const headers = {
-          'x-ms-date': moment().toISOString(),
-          'x-ms-version': '2017-11-09',
-          'Content-Type': file.data.type,
-          'x-ms-blob-type': 'BlockBlob',
-        };
 
         const blockid = btoa(
           Math.random()
