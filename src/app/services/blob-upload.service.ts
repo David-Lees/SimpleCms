@@ -5,7 +5,6 @@ import { MsAdalAngular6Service } from 'microsoft-adal-angular6';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -18,9 +17,6 @@ export class BlobUploadService {
       Authorization: 'bearer ' + this.adalService.accessToken,
       'x-ms-version': '2017-11-09',
     };
-    return this.http.post('https://davidleesapi.azurewebsites.net/api/GetSasToken', '', { headers: headers })
+    return this.http.post('https://davidleesapi.azurewebsites.net/api/GetSasToken', '', { headers });
   }
-
-  
-
 }

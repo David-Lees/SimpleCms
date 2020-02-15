@@ -23,11 +23,11 @@ export class PublicViewComponent implements OnInit {
 
   loadSite() {
     if (this.siteService && this.siteService.isLoaded) {
-      if (this.siteService.site.pages.length) {        
+      if (this.siteService.site.pages.length) {
         this.page = this.siteService.site.pages.find(v => {
-          return v.url === this.id;          
+          return v.url === this.id;
         });
-        if(!this.page) {
+        if (!this.page) {
           this.page = this.siteService.site.pages[0];
         }
       } else {

@@ -8,7 +8,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-toasts',
   templateUrl: './toasts.component.html',
-  styleUrls: ['./toasts.component.scss']
+  styleUrls: ['./toasts.component.scss'],
 })
 export class ToastsComponent implements OnInit {
   closeIcon: IconDefinition = faTimes;
@@ -45,5 +45,4 @@ export class ToastsComponent implements OnInit {
   isErrorOrWarning(state: ToastState): boolean {
     return state !== ToastState.Warning && state !== ToastState.Error;
   }
-
 }

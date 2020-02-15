@@ -14,7 +14,3 @@ export interface GalleryImage {
 
   description: string;
 }
-
-export interface Files {
-  
-}

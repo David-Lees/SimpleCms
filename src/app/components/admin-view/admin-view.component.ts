@@ -3,7 +3,7 @@ import { SiteService } from 'src/app/services/site.service';
 import { Site } from 'src/app/models/site';
 import { Page } from 'src/app/models/page';
 import { MediaService } from 'src/app/services/media.service';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ToastService } from 'src/app/services/toast.service';
 import { ToastState } from 'src/app/enums/toast-state.enum';
 
@@ -36,9 +36,7 @@ export class AdminViewComponent implements OnInit {
     this.mediaService.load();
   }
 
-  change() {
-    
-  }
+  change() {}
 
   select(idx: number) {
     this.activePage = idx;

@@ -22,7 +22,7 @@ export class EditBannerComponent implements OnInit {
     this.media.images.subscribe(x => {
       this.images = x;
       if (this.section && this.section.image) {
-        this.section.image = this.images.find(x => x.id === this.section.image.id);
+        this.section.image = this.images.find(y => y.id === this.section.image.id);
       }
     });
   }

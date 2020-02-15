@@ -11,8 +11,7 @@ export class AppComponent implements OnInit {
   loaded = false;
   site: Site;
 
-  constructor(private siteService: SiteService, public adalService: MsAdalAngular6Service) {
-  }
+  constructor(private siteService: SiteService, public adalService: MsAdalAngular6Service) {}
 
   ngOnInit() {
     this.load();

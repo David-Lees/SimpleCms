@@ -20,22 +20,22 @@ import { of, Subscription } from 'rxjs';
   ],
 })
 export class MaterialFileUploadComponent implements OnInit {
-  /** Link text */
+  /* Link text */
   @Input() text = 'Upload';
-  /** Name used in form which will be sent in HTTP request. */
+  /* Name used in form which will be sent in HTTP request. */
   @Input() param = 'file';
-  /** Target URL for file uploading. */
+  /* Target URL for file uploading. */
   @Input() target = 'https://file.io';
-  /** File extension that accepted, same as 'accept' of <input type="file" />. 
-     By the default, it's set to 'image/*'. */
+  /* File extension that accepted, same as 'accept' of <input type="file" />.
+   * By the default, it's set to 'image/*'. */
   @Input() accept = 'image/*';
-  /** Allow you to add handler after its completion. Bubble up response text from remote. */
-  @Output() complete = new EventEmitter<string>();
+  /* Allow you to add handler after its completion. Bubble up response text from remote. */
+  @Output() uploadComplete = new EventEmitter<string>();
 
   public files: Array<FileUploadModel> = [];
 
   constructor(
-    private _http: HttpClient,
+    private http: HttpClient,
     private toast: ToastService,
     private mediaService: MediaService,
     private blobService: BlobUploadService
@@ -46,10 +46,9 @@ export class MaterialFileUploadComponent implements OnInit {
   onClick() {
     const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
     fileUpload.onchange = () => {
-      for (let index = 0; index < fileUpload.files.length; index++) {
-        const file = fileUpload.files[index];
-        this.files.push({ data: file, state: 'in', inProgress: false, progress: 0, canRetry: false, canCancel: true });
-      }
+      Array.from(fileUpload.files).forEach(file =>
+        this.files.push({ data: file, state: 'in', inProgress: false, progress: 0, canRetry: false, canCancel: true })
+      );
       this.uploadFiles();
     };
     fileUpload.click();
@@ -96,7 +95,7 @@ export class MaterialFileUploadComponent implements OnInit {
             reportProgress: true,
           });
           file.inProgress = true;
-          file.sub = this._http
+          file.sub = this.http
             .request(req)
             .pipe(
               map(event => {
@@ -121,12 +120,12 @@ export class MaterialFileUploadComponent implements OnInit {
               console.log('subscribe', event);
               if (typeof event === 'object') {
                 this.removeFileFromArray(file);
-                this.complete.emit(event.body);
+                this.uploadComplete.emit(event.body);
                 const body = `<?xml version="1.0" encoding="utf-8"?>\r\n<BlockList>\r\n<Latest>${blockid}</Latest>\r\n</BlockList>`;
                 console.log('file uploaded, time to process it');
-                this._http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
+                this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
                   y => {
-                    this._http.post<GalleryImage[]>(environment.apiUrl + '/api/ProcessMedia?filename=' + file.data.name, '').subscribe(
+                    this.http.post<GalleryImage[]>(environment.apiUrl + '/api/ProcessMedia?filename=' + file.data.name, '').subscribe(
                       z => {
                         this.mediaService.update(this.mediaService.map(z));
                         this.toast.post({ body: 'Image uploaded', state: ToastState.Success });

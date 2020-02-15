@@ -38,7 +38,5 @@ export class MediaComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  onFileComplete(event: any) {
-
-  }
+  onFileComplete(event: any) {}
 }

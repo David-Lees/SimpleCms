@@ -9,7 +9,7 @@ import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-page',
-  templateUrl: './edit-page.component.html',  
+  templateUrl: './edit-page.component.html',
   styleUrls: ['./edit-page.component.scss'],
 })
 export class EditPageComponent implements OnInit {
@@ -31,7 +31,7 @@ export class EditPageComponent implements OnInit {
   }
 
   update(s: Section, idx: number) {
-    Object.assign(this.page.sections[idx], s);    
+    Object.assign(this.page.sections[idx], s);
   }
 
   addBanner() {
@@ -50,7 +50,7 @@ export class EditPageComponent implements OnInit {
       images: [],
       imageMargin: 3,
       imageSize: 200,
-      rowsPerPage: 200
+      rowsPerPage: 200,
     };
     this.page.sections.push(g);
     this.change();
@@ -72,7 +72,7 @@ export class EditPageComponent implements OnInit {
     this.page.sections = this.page.sections.splice(x);
     this.change();
   }
-  
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.page.sections, event.previousIndex, event.currentIndex);
   }
