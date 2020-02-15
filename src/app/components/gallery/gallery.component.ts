@@ -158,8 +158,9 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   private calcOriginalRowWidth(imgRow: Array<any>): number {
     let originalRowWidth = 0;
     imgRow.forEach(img => {
+      img[this.minimalQualityCategory] = img[this.minimalQualityCategory] || { width: 1, height: 1};
       const individualRatio = this.calcIdealHeight() / img[this.minimalQualityCategory].height;
-      img[this.minimalQualityCategory].width = img[this.minimalQualityCategory].width * individualRatio;
+      img[this.minimalQualityCategory].width = (img[this.minimalQualityCategory].width) * individualRatio;
       img[this.minimalQualityCategory].height = this.calcIdealHeight();
       originalRowWidth += img[this.minimalQualityCategory].width;
     });

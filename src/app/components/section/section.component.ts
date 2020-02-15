@@ -50,11 +50,11 @@ export class SectionComponent implements OnInit {
   get bannerUrl(): string {
     const width = window.innerWidth;
     switch (true) {
-      case width < this.bannerSection.image.preview_small.width:
+      case width < this.bannerSection?.image?.preview_small?.width || 0:
         return `${environment.storageUrl}/images/${this.bannerSection.image.preview_small.path}`;
-      case width < this.bannerSection.image.preview_sd.width:
+      case width < this.bannerSection?.image?.preview_sd?.width || 0:
         return `${environment.storageUrl}/images/${this.bannerSection.image.preview_sd.path}`;
-      case width < this.bannerSection.image.preview_hd.width:
+      case width < this.bannerSection.image?.preview_hd?.width || 0:
         return `${environment.storageUrl}/images/${this.bannerSection.image.preview_hd.path}`;
       default:
         return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;

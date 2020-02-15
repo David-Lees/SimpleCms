@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { ToastMessage } from '../models/toast-message';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ToastService {
   toastSubject = new Subject<ToastMessage>();

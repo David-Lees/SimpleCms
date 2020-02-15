@@ -55,7 +55,7 @@ export class MediaService {
       this.blobService.getUserDelegationKey().subscribe(key => {
         for (let i = 0; i < filesToUpload.length; i++) {
           const headers = {
-            //Authorization: 'bearer ' + this.adalService.accessToken,
+            // Authorization: 'bearer ' + this.adalService.accessToken,
             'x-ms-date': moment().toISOString(),
             'x-ms-version': '2017-11-09',
             'Content-Type': filesToUpload[i].type,
@@ -72,10 +72,10 @@ export class MediaService {
           token = token.substring(1);
           const url = environment.storageUrl + '/image-upload/' + filesToUpload[i].name + '?comp=block&blockid=' + blockid + '&' + token;
 
-          var reader = new FileReader();
+          const reader = new FileReader();
           // define what happens on reading the reader
           reader.onload = () => {
-            this.http.put(url, reader.result, { headers: headers }).subscribe(
+            this.http.put(url, reader.result, { headers }).subscribe(
               x => {
                 const body = `<?xml version="1.0" encoding="utf-8"?>\r\n<BlockList>\r\n<Latest>${blockid}</Latest>\r\n</BlockList>`;
                 this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(

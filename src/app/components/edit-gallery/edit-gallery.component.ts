@@ -3,7 +3,7 @@ import { GallerySection } from 'src/app/models/gallery-section';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
-import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-gallery',

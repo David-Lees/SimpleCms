@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
@@ -72,6 +72,7 @@ export function getAdalConfig() {
       },
     }),
     MsAdalAngular6Module.forRoot(getAdalConfig),
+    HammerModule,
   ],
   providers: [AuthenticationGuard, { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true }],
   bootstrap: [AppComponent],

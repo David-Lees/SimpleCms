@@ -89,7 +89,7 @@ export class MaterialFileUploadComponent implements OnInit {
 
         console.log('Ready to upload to ' + url);
 
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = () => {
           console.log('file has been read');
           const req = new HttpRequest('PUT', url, reader.result, {
@@ -126,17 +126,15 @@ export class MaterialFileUploadComponent implements OnInit {
                 console.log('file uploaded, time to process it');
                 this._http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
                   y => {
-                    this._http
-                      .post<GalleryImage[]>(environment.apiUrl + '/api/ProcessMedia?filename=' + file.data.name, '')
-                      .subscribe(
-                        z => {
-                          this.mediaService.update(this.mediaService.map(z));
-                          this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
-                        },
-                        () => {
-                          this.toast.post({ body: 'Unbale to process uploaded file. May not be an image.', state: ToastState.Error });
-                        }
-                      );
+                    this._http.post<GalleryImage[]>(environment.apiUrl + '/api/ProcessMedia?filename=' + file.data.name, '').subscribe(
+                      z => {
+                        this.mediaService.update(this.mediaService.map(z));
+                        this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
+                      },
+                      () => {
+                        this.toast.post({ body: 'Unbale to process uploaded file. May not be an image.', state: ToastState.Error });
+                      }
+                    );
                   },
                   () => {
                     this.toast.post({ body: 'Unbale to upload file.', state: ToastState.Error });
