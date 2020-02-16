@@ -5,7 +5,6 @@ import { Page } from 'src/app/models/page';
 import { MediaService } from 'src/app/services/media.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ToastService } from 'src/app/services/toast.service';
-import { ToastState } from 'src/app/enums/toast-state.enum';
 
 @Component({
   selector: 'app-admin-view',
@@ -61,9 +60,5 @@ export class AdminViewComponent implements OnInit {
 
   dropPage(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.site.pages, event.previousIndex, event.currentIndex);
-  }
-
-  toast() {
-    this.toastService.post({ body: 'test', state: ToastState.Information });
   }
 }
