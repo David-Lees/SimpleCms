@@ -46,7 +46,7 @@
                     (cdkDropListDropped)="drop($event)">
                     <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img of availableImages">
                         <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img.preview_small.path" class="img-fluid" alt="{{img.description}}" />
+                            <img [src]="prefix + img.preview_small?.path" class="img-fluid" alt="" />
                         </mat-card>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                 <div class="row" cdkDropList [cdkDropListData]="section.images" (cdkDropListDropped)="drop($event)">
                     <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img2 of section.images">
                         <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img2.preview_small.path" class="img-fluid" alt="{{img2.description}}" />
+                            <img [src]="prefix + img2.preview_small?.path" class="img-fluid" alt="" />
                             <mat-form-field appearance="outline" class="width-100">
                                 <mat-label>Description</mat-label>
                                 <input matInput [(ngModel)]="img2.description" (ngModelChange)="change()" type="text" />
