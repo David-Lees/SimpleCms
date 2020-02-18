@@ -64,7 +64,17 @@
             </mat-drawer>
             <mat-drawer-content>
                 <div *ngIf="activeSection >= 0 && activeSection < page.sections.length">
-                    <h5 *ngIf="page.sections[activeSection].name" class="card-title"></h5>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5 *ngIf="page.sections[activeSection].name" class="card-title">{{page.sections[activeSection].name}}</h5>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button mat-raised-button color="accent" (click)="remove(activeSection)">
+                                <mat-icon>remove_circle</mat-icon>
+                                Remove section
+                            </button>
+                        </div>
+                    </div>                                        
                     <app-edit-section [section]="page.sections[activeSection]"
                         (sectionChange)="update($event, activeSection)">
                     </app-edit-section>

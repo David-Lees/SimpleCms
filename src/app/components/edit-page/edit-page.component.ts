@@ -69,7 +69,7 @@ export class EditPageComponent implements OnInit {
   }
 
   remove(x: number) {
-    this.page.sections = this.page.sections.splice(x);
+    this.page.sections.splice(x, 1);
     this.change();
   }
 
