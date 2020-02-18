@@ -35,7 +35,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatIconModule,
     MatSidenavModule,
     MatFormFieldModule,
-    MatInputModule,    
+    MatInputModule,
     MatRadioModule,
     MatCardModule,
     MatStepperModule,

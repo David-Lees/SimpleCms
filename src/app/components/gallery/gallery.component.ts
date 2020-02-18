@@ -212,7 +212,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     this.changeDetectorRef.detectChanges();
   }
 
-  private checkForAsyncLoading(image: any, imageCounter: number): void {    
+  private checkForAsyncLoading(image: any, imageCounter: number): void {
     const imageElements = (this.imageElements || new QueryList<any>()).toArray();
     if (image.galleryImageLoaded || (imageElements.length > 0 && imageElements[imageCounter])) {
       image.galleryImageLoaded = true;
