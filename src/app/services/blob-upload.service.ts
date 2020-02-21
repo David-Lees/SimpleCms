@@ -16,6 +16,6 @@ export class BlobUploadService {
       Authorization: 'bearer ' + this.adalService.accessToken,
       'x-ms-version': '2017-11-09',
     };
-    return this.http.post('https://davidleesapi.azurewebsites.net/api/GetSasToken', '', { headers });
+    return this.http.post(`${environment.apiUrl}/api/GetSasToken`, '', { headers });
   }
 }

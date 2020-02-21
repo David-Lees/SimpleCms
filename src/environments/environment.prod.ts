@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  sasGeneratorUrl: '',
   storageUrl: 'https://davidlees.blob.core.windows.net',
   apiUrl: 'https://davidleesapi.azurewebsites.net',
   config: {

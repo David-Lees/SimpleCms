@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  sasGeneratorUrl: 'https://api.davidlees.uk/api/GetSasToken',
   storageUrl: 'https://davidlees.blob.core.windows.net',
   apiUrl: 'https://davidleesapi.azurewebsites.net',
   config: {
