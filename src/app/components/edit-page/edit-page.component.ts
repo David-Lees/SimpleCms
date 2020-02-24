@@ -49,7 +49,7 @@ export class EditPageComponent implements OnInit {
       galleryName: 'Gallery',
       images: [],
       imageMargin: 3,
-      imageSize: 200,
+      imageSize: 7,
       rowsPerPage: 200,
     };
     this.page.sections.push(g);
