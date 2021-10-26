@@ -1,61 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { SiteService } from 'src/app/services/site.service';
 import { Site } from 'src/app/models/site';
-import { Page, TreePage } from 'src/app/models/page';
+import { Page } from 'src/app/models/page';
 import { MediaService } from 'src/app/services/media.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ToastService } from 'src/app/services/toast.service';
+import { CdkDragMove } from '@angular/cdk/drag-drop';
 import { v4 as uuidv4 } from 'uuid';
-import { SelectionModel } from '@angular/cdk/collections';
-import { ITreeOptions, ITreeState } from '@circlon/angular-tree-component';
+import { DropInfo } from '../../models/gallery-folder';
+import { debounce } from '@agentepsilon/decko';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-admin-view',
   templateUrl: './admin-view.component.html',
+  styleUrls: ['./admin-view.component.scss'],
 })
 export class AdminViewComponent implements OnInit {
   site: Site;
   loaded = false;
   activePage: Page;
-  // expansion model tracks expansion state
-  expansionModel = new SelectionModel<string>(true);
-  dragging = false;
-  expandTimeout: any;
-  expandDelay = 1000;
-  validateDrop = false;
+
+  // ids for connected drop lists
+  dropTargetIds = [];
+  nodeLookup = {};
+  dropActionTodo: DropInfo = null;
+
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private siteService: SiteService,
-    private mediaService: MediaService,
-    private toastService: ToastService,
-  ) {
-  }
-
-  state: ITreeState = {
-    expandedNodeIds: {},
-    hiddenNodeIds: {},
-    activeNodeIds: {},
-  };
-
-  options: ITreeOptions = {
-    allowDrag: (node) => {
-      return true;
-    },
-    allowDrop: (node) => {
-      return true;
-    },
-    useVirtualScroll: true,
-    animateExpand: true,
-    scrollOnActivate: true,
-    animateSpeed: 30,
-    animateAcceleration: 1.2,
-    allowDragoverStyling: true,
-    hasChildrenField: 'pages',
-    getNodeClone: node => ({
-      ...node.data,
-      id: uuidv4(),
-      name: `copy of ${node.data.name}`,
-    }),
-  };
+    private mediaService: MediaService
+  ) {}
 
   save() {
     console.log('saving site', this.site);
@@ -65,13 +38,14 @@ export class AdminViewComponent implements OnInit {
   load() {
     if (this.siteService.isLoaded) {
       this.site = this.siteService.site;
+      if (!this.site.id) this.site.id = uuidv4();
       if (!this.site.hasLogo) this.site.hasLogo = false;
       this.loaded = true;
     } else {
       setTimeout(() => this.load(), 20);
     }
   }
-  
+
   ngOnInit() {
     this.load();
     this.mediaService.load();
@@ -81,7 +55,7 @@ export class AdminViewComponent implements OnInit {
     // do nothing
   }
 
-  select(event: { node: { data: Page; }; }) {
+  select(event: { node: { data: Page } }) {
     console.log(event);
     this.activePage = event.node.data;
   }
@@ -117,9 +91,132 @@ export class AdminViewComponent implements OnInit {
     }
   }
 
-  dropPage(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.site.pages, event.previousIndex, event.currentIndex);
+  nodeClick(node: Page) {
+    node.isExpanded = !node.isExpanded;
+    this.activePage = node;
   }
- 
 
+  prepareDragDrop(nodes: Site | Page) {
+    nodes.pages.forEach(node => {
+      this.dropTargetIds.push(node.id);
+      this.prepareDragDrop(node);
+    });
+  }
+
+  @debounce(50)
+  dragMoved(event: CdkDragMove<any>) {
+    let e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
+
+    if (!e) {
+      this.clearDragInfo();
+      return;
+    }
+    let container = e.classList.contains('node-item') ? e : e.closest('.node-item');
+    if (!container) {
+      this.clearDragInfo();
+      return;
+    }
+    this.dropActionTodo = {
+      targetId: container.getAttribute('data-id'),
+    };
+    const targetRect = container.getBoundingClientRect();
+    const oneThird = targetRect.height / 3;
+
+    if (event.pointerPosition.y - targetRect.top < oneThird) {
+      // before
+      this.dropActionTodo['action'] = 'before';
+    } else if (event.pointerPosition.y - targetRect.top > 2 * oneThird) {
+      // after
+      this.dropActionTodo['action'] = 'after';
+    } else {
+      // inside
+      this.dropActionTodo['action'] = 'inside';
+    }
+    this.showDragInfo();
+  }
+
+  drop(event) {
+    if (!this.dropActionTodo) return;
+
+    const sourceFolder =
+      event.previousContainer.id === 'main'
+        ? this.site
+        : this.getParentNode(event.previousContainer.id);
+
+    const draggedItemId = event.item.data;
+
+    let i = sourceFolder.pages.findIndex(c => c.id === draggedItemId);
+    const draggedItem = sourceFolder.pages.splice(i, 1)[0];
+
+    switch (this.dropActionTodo.action) {
+      case 'before':
+      case 'after':
+        const f = this.getParentNode(this.dropActionTodo.targetId);
+        f.pages = f.pages || [];
+        const targetIndex = f.pages.findIndex(c => c.id === this.dropActionTodo.targetId);
+        if (this.dropActionTodo.action == 'before') {
+          f.pages.splice(targetIndex, 0, draggedItem);
+        } else {
+          f.pages.splice(targetIndex + 1, 0, draggedItem);
+        }
+        break;
+
+      case 'inside':
+        const folder = this.getNode(this.dropActionTodo.targetId);
+        folder.pages.push(draggedItem);
+        folder.isExpanded = true;
+        break;
+    }
+
+    this.clearDragInfo(true);
+  }
+
+  getNode(id: string, nodesToSearch?: Site | Page): Site | Page {
+    if (id === 'main') return this.site;
+    if (!nodesToSearch) {
+      nodesToSearch = this.site;
+    }
+    if (nodesToSearch.id == id) return nodesToSearch;
+    for (let node of nodesToSearch.pages) {
+      let ret = this.getNode(id, node);
+      if (ret) return ret;
+    }
+    return null;
+  }
+
+  getParentNode(id: string, nodesToSearch?: Site | Page): Site | Page {
+    if (id === 'main') return this.site;
+    if (!nodesToSearch) {
+      nodesToSearch = this.site;
+    }
+    for (let node of nodesToSearch.pages || []) {
+      if (node.id == id) return nodesToSearch;
+      let ret = this.getParentNode(id, node);
+      if (ret) return ret;
+    }
+    return null;
+  }
+
+  showDragInfo() {
+    this.clearDragInfo();
+    if (this.dropActionTodo) {
+      this.document
+        .getElementById('node-' + this.dropActionTodo.targetId)
+        .classList.add('drop-' + this.dropActionTodo.action);
+    }
+  }
+  clearDragInfo(dropped = false) {
+    if (dropped) {
+      this.dropActionTodo = null;
+    }
+    this.document
+      .querySelectorAll('.drop-before')
+      .forEach(element => element.classList.remove('drop-before'));
+    this.document
+      .querySelectorAll('.drop-after')
+      .forEach(element => element.classList.remove('drop-after'));
+    this.document
+      .querySelectorAll('.drop-inside')
+      .forEach(element => element.classList.remove('drop-inside'));
+  }
 }

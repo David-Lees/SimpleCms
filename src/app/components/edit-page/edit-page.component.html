@@ -1,91 +1,115 @@
 <div *ngIf="page">
-
-    <div class="row">
-        <div class="col-sm-6">
-            <mat-form-field appearance="outline" class="width-100">
-                <mat-label>Page name</mat-label>
-                <input matInput [(ngModel)]="page.name" (ngModelChange)="change()" type="text"
-                    placeholder="Page name" />
-                <mat-hint>
-                    The name of the page is displayed as the title. It is also displayed in the
-                    navigation bar at the top if the is more than a single page in the site.
-                </mat-hint>
-            </mat-form-field>
-        </div>
-        <div class="col-sm-6">
-            <mat-form-field appearance="outline" class="width-100">
-                <mat-label>Url fragment</mat-label>
-                <input matInput [(ngModel)]="page.url" (ngModelChange)="change()" type="text" placeholder="url" />
-                <mat-hint>
-                    The Url fragment is the identifier for the page that appears in the browsers navigation bar after
-                    the domain.
-                    It should be short and not containing any spaces. It must be unique and for the home page can be
-                    empty.
-                </mat-hint>
-            </mat-form-field>
-        </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <mat-form-field appearance="outline" class="width-100">
+        <mat-label>Page name</mat-label>
+        <input
+          matInput
+          [(ngModel)]="page.name"
+          (ngModelChange)="change()"
+          type="text"
+          placeholder="Page name"
+        />
+        <mat-hint>
+          The name of the page is displayed as the title. It is also displayed in the navigation bar
+          at the top if the is more than a single page in the site.
+        </mat-hint>
+      </mat-form-field>
     </div>
-    
-    <div>
-        <mat-drawer-container class="example-container" autosize>
-            <mat-drawer class="example-sidenav" mode="side" opened>
-                <h3>Sections</h3>
-                <div *ngIf="page.sections && page.sections.length" cdkDropList (cdkDropListDropped)="drop($event)">
-                    <mat-card class="mb-2" *ngFor="let s of page.sections; let idx = index" (click)="select(idx)" cdkDrag
-                        [ngClass]="{ 'card-active': idx === activeSection, 'card-inactive': idx !== activeSection  }">
-                        <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
-                        <mat-icon *ngIf="s.name === 'TextSection'">format_align_justify</mat-icon>
-                        <mat-icon *ngIf="s.name === 'GallerySection'">view_module</mat-icon>
-                        <mat-icon *ngIf="s.name === 'HtmlSection'">code</mat-icon>
-                        <mat-icon *ngIf="!s.name">help</mat-icon>
-                        <ng-container *ngIf="s.name">
-                            {{ s.name?.replace('Section',' Section') }}
-                        </ng-container>
-                    </mat-card>
-                </div>
-
-                <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" class="mt-4">
-                    <mat-icon>add_circle</mat-icon> Add
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="addBanner()">
-                        <mat-icon>photo_camera</mat-icon>
-                        Add banner image
-                    </button>
-                    <button mat-menu-item (click)="addText()">
-                        <mat-icon>format_align_justify</mat-icon>
-                        Add text block
-                    </button>
-                    <button mat-menu-item (click)="addGallery()">
-                        <mat-icon>view_module</mat-icon>
-                        Add image gallery
-                    </button>
-                    
-                    <button mat-menu-item (click)="addHtml()">
-                        <mat-icon>view_module</mat-icon>
-                        Add HTML block
-                    </button>
-                </mat-menu>
-
-            </mat-drawer>
-            <mat-drawer-content>
-                <div *ngIf="activeSection >= 0 && activeSection < page.sections.length">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <h5 *ngIf="page.sections[activeSection].name" class="card-title">{{page.sections[activeSection].name}}</h5>
-                        </div>
-                        <div class="col-sm-4 text-right">
-                            <button mat-raised-button color="accent" (click)="remove(activeSection)">
-                                <mat-icon>remove_circle</mat-icon>
-                                Remove section
-                            </button>
-                        </div>
-                    </div>                                        
-                    <app-edit-section [section]="page.sections[activeSection]"
-                        (sectionChange)="update($event, activeSection)">
-                    </app-edit-section>
-                </div>
-            </mat-drawer-content>
-        </mat-drawer-container>
+    <div class="col-sm-6">
+      <mat-form-field appearance="outline" class="width-100">
+        <mat-label>Url fragment</mat-label>
+        <input
+          matInput
+          [(ngModel)]="page.url"
+          (ngModelChange)="change()"
+          type="text"
+          placeholder="url"
+        />
+        <mat-hint>
+          The Url fragment is the identifier for the page that appears in the browsers navigation
+          bar after the domain. It should be short and not containing any spaces. It must be unique
+          and for the home page can be empty.
+        </mat-hint>
+      </mat-form-field>
     </div>
+  </div>
+
+  <div>
+    <mat-drawer-container class="example-container" autosize>
+      <mat-drawer class="example-sidenav" mode="side" opened>
+        <h3>Sections</h3>
+        <div
+          *ngIf="page.sections && page.sections.length"
+          cdkDropList
+          (cdkDropListDropped)="drop($event)"
+        >
+          <mat-card
+            class="mb-2"
+            *ngFor="let s of page.sections; let idx = index"
+            (click)="select(idx)"
+            cdkDrag
+            [ngClass]="{
+              'card-active': idx === activeSection,
+              'card-inactive': idx !== activeSection
+            }"
+          >
+            <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
+            <mat-icon *ngIf="s.name === 'TextSection'">format_align_justify</mat-icon>
+            <mat-icon *ngIf="s.name === 'GallerySection'">view_module</mat-icon>
+            <mat-icon *ngIf="s.name === 'HtmlSection'">code</mat-icon>
+            <mat-icon *ngIf="!s.name">help</mat-icon>
+            <ng-container *ngIf="s.name">
+              {{ s.name?.replace('Section', ' Section') }}
+            </ng-container>
+          </mat-card>
+        </div>
+
+        <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" class="mt-4">
+          <mat-icon>add_circle</mat-icon> Add
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="addBanner()">
+            <mat-icon>photo_camera</mat-icon>
+            Add banner image
+          </button>
+          <button mat-menu-item (click)="addText()">
+            <mat-icon>format_align_justify</mat-icon>
+            Add text block
+          </button>
+          <button mat-menu-item (click)="addGallery()">
+            <mat-icon>view_module</mat-icon>
+            Add image gallery
+          </button>
+
+          <button mat-menu-item (click)="addHtml()">
+            <mat-icon>view_module</mat-icon>
+            Add HTML block
+          </button>
+        </mat-menu>
+      </mat-drawer>
+      <mat-drawer-content>
+        <div *ngIf="activeSection >= 0 && activeSection < page.sections.length">
+          <div class="row">
+            <div class="col-sm-8">
+              <h5 *ngIf="page.sections[activeSection].name" class="card-title">
+                {{ page.sections[activeSection].name }}
+              </h5>
+            </div>
+            <div class="col-sm-4 text-right">
+              <button mat-raised-button color="accent" (click)="remove(activeSection)">
+                <mat-icon>remove_circle</mat-icon>
+                Remove section
+              </button>
+            </div>
+          </div>
+          <app-edit-section
+            [section]="page.sections[activeSection]"
+            (sectionChange)="update($event, activeSection)"
+          >
+          </app-edit-section>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  </div>
 </div>

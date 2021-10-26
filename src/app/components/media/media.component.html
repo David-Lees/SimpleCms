@@ -11,19 +11,15 @@
   <h2 class="mt-4">Existing Media</h2>
   <div class="row mt-4">
     <div class="col-3">
-        <app-media-tree [nodes]="root" (nodesChange)="select($event)"></app-media-tree>
-      <!-- <tree-root *ngIf="root && root.folders && root.folders.length"
-        [state]="state"
-        [options]="options"
-        [focused]="true"
+      <h5>Select folder:</h5>
+      <app-media-tree
         [nodes]="root"
-        (activate)="select($event)"
-      ></tree-root> -->
-    </div>
-    <div class="col-9" *ngIf="!(currentFolder && currentFolder.images)">
-        Loading images...
+        (nodesChange)="root = $event"
+        (selectChange)="select($event)"
+      ></app-media-tree>
     </div>
     <div class="col-9" *ngIf="currentFolder && currentFolder.images">
+      <h5>Media for folder: {{ currentFolder.name }}</h5>
       <app-media-list
         [images]="currentFolder.images"
         [canSort]="true"
@@ -35,6 +31,7 @@
       ></app-media-list>
     </div>
   </div>
+  <h5>Add Folder</h5>
   <div class="row mb-5">
     <div class="col-sm-4">
       <mat-form-field appearance="outline" class="width-100">
@@ -48,4 +45,4 @@
     </div>
   </div>
 </ng-container>
-<pre>{{root|json}}</pre>
+<pre>{{ root | json }}</pre>

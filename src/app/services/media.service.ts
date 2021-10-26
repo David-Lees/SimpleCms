@@ -18,7 +18,7 @@ export class MediaService {
   constructor(
     private http: HttpClient,
     private blobService: BlobUploadService,
-    private toast: ToastService,
+    private toast: ToastService
   ) {}
 
   load() {
@@ -38,7 +38,7 @@ export class MediaService {
       error => {
         console.log(error);
         this.toast.post({ body: 'Unable to save site', state: ToastState.Error });
-      },
+      }
     );
   }
 
@@ -86,7 +86,7 @@ export class MediaService {
                     this.http
                       .post<GalleryFolder>(
                         `${environment.apiUrl}/api/ProcessMedia?filename=${fileToUpload.name}&description=${fileToUpload.name}`,
-                        '',
+                        ''
                       )
                       .subscribe(
                         z => {
@@ -98,17 +98,17 @@ export class MediaService {
                             body: 'Unable to process uploaded file. May not be an image.',
                             state: ToastState.Error,
                           });
-                        },
+                        }
                       );
                   },
                   () => {
                     this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
-                  },
+                  }
                 );
               },
               () => {
                 this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
-              },
+              }
             );
           };
           // trigger above by reading the reader

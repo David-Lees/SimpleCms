@@ -14,9 +14,8 @@ export class MediaTreeComponent implements OnInit {
   @Output() nodesChange = new EventEmitter<GalleryFolder>();
   @Output() selectChange = new EventEmitter<GalleryFolder>();
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
-  }
-  
+  constructor(@Inject(DOCUMENT) private document: Document) {}
+
   ngOnInit() {
     this.prepareDragDrop(this.nodes);
     this.selectedNodeId = this.nodes.id;
@@ -24,7 +23,6 @@ export class MediaTreeComponent implements OnInit {
 
   // ids for connected drop lists
   dropTargetIds = [];
-  nodeLookup = {};
   dropActionTodo: DropInfo = null;
   selectedNodeId: string;
 
@@ -37,7 +35,6 @@ export class MediaTreeComponent implements OnInit {
   prepareDragDrop(nodes: GalleryFolder) {
     nodes.folders.forEach(node => {
       this.dropTargetIds.push(node.id);
-      this.nodeLookup[node.id] = node;
       this.prepareDragDrop(node);
     });
   }
@@ -77,63 +74,67 @@ export class MediaTreeComponent implements OnInit {
   drop(event) {
     if (!this.dropActionTodo) return;
 
+    const sourceFolder =
+      event.previousContainer.id === 'main'
+        ? this.nodes
+        : this.getParentNode(event.previousContainer.id);
+
     const draggedItemId = event.item.data;
-    const parentItemId = event.previousContainer.id;
-    const targetListId = this.getParentNodeId(
-      this.dropActionTodo.targetId,
-      this.nodes.folders,
-      'main',
-    );
 
-    console.log(
-      '\nmoving\n[' + draggedItemId + '] from list [' + parentItemId + ']',
-      '\n[' +
-        this.dropActionTodo.action +
-        ']\n[' +
-        this.dropActionTodo.targetId +
-        '] from list [' +
-        targetListId +
-        ']',
-    );
-
-    const draggedItem = this.nodeLookup[draggedItemId];
-
-    const oldItemContainer =
-      parentItemId != 'main' ? this.nodeLookup[parentItemId].folders : this.nodes.folders;
-    const newContainer =
-      targetListId != 'main' ? this.nodeLookup[targetListId].folders : this.nodes.folders;
-
-    let i = oldItemContainer.findIndex(c => c.id === draggedItemId);
-    oldItemContainer.splice(i, 1);
+    let i = sourceFolder.folders.findIndex(c => c.id === draggedItemId);
+    const draggedItem = sourceFolder.folders.splice(i, 1)[0];
 
     switch (this.dropActionTodo.action) {
       case 'before':
       case 'after':
-        const targetIndex = newContainer.findIndex(c => c.id === this.dropActionTodo.targetId);
+        const f = this.getParentNode(this.dropActionTodo.targetId);
+        f.folders = f.folders || [];
+        const targetIndex = f.folders.findIndex(c => c.id === this.dropActionTodo.targetId);
         if (this.dropActionTodo.action == 'before') {
-          newContainer.splice(targetIndex, 0, draggedItem);
+          f.folders.splice(targetIndex, 0, draggedItem);
         } else {
-          newContainer.splice(targetIndex + 1, 0, draggedItem);
+          f.folders.splice(targetIndex + 1, 0, draggedItem);
         }
         break;
 
       case 'inside':
-        this.nodeLookup[this.dropActionTodo.targetId].folders.push(draggedItem);
-        this.nodeLookup[this.dropActionTodo.targetId].isExpanded = true;
+        const folder = this.getNode(this.dropActionTodo.targetId);
+        folder.folders.push(draggedItem);
+        folder.isExpanded = true;
         break;
     }
 
     this.clearDragInfo(true);
     this.nodesChange.emit(this.nodes);
+    console.log('after drop', this.nodes);
   }
-  getParentNodeId(id: string, nodesToSearch: GalleryFolder[], parentId: string): string {
-    for (let node of nodesToSearch) {
-      if (node.id == id) return parentId;
-      let ret = this.getParentNodeId(id, node.folders, node.id);
+
+  getNode(id: string, nodesToSearch?: GalleryFolder): GalleryFolder {
+    if (id === 'main') return this.nodes;
+    if (!nodesToSearch) {
+      nodesToSearch = this.nodes;
+    }
+    if (nodesToSearch.id == id) return nodesToSearch;
+    for (let node of nodesToSearch.folders) {
+      let ret = this.getNode(id, node);
       if (ret) return ret;
     }
     return null;
   }
+
+  getParentNode(id: string, nodesToSearch?: GalleryFolder): GalleryFolder {
+    if (id === 'main') return this.nodes;
+    if (!nodesToSearch) {
+      nodesToSearch = this.nodes;
+    }
+    for (let node of nodesToSearch.folders || []) {
+      if (node.id == id) return nodesToSearch;
+      let ret = this.getParentNode(id, node);
+      if (ret) return ret;
+    }
+    return null;
+  }
+
   showDragInfo() {
     this.clearDragInfo();
     if (this.dropActionTodo) {

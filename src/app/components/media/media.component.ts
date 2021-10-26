@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MsAdalAngular6Service } from 'microsoft-adal-angular6';
 import { MediaService } from 'src/app/services/media.service';
 import { Subscription } from 'rxjs';
-import { ITreeOptions, ITreeState } from '@circlon/angular-tree-component';
 import { v4 as uuidv4 } from 'uuid';
 import { GalleryFolder } from 'src/app/models/gallery-folder';
 import { GalleryImage } from 'src/app/models/gallery-image';
@@ -17,39 +16,12 @@ export class MediaComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     public adalService: MsAdalAngular6Service,
-    private mediaService: MediaService,
+    private mediaService: MediaService
   ) {}
   root: GalleryFolder;
   currentFolder: GalleryFolder;
   subscription: Subscription;
   folderName = 'New Folder';
-
-  state: ITreeState = {
-    expandedNodeIds: {},
-    hiddenNodeIds: {},
-    activeNodeIds: {},
-  };
-
-  options: ITreeOptions = {
-    allowDrag: node => {
-      return true;
-    },
-    allowDrop: node => {
-      return true;
-    },
-    useVirtualScroll: true,
-    animateExpand: true,
-    scrollOnActivate: true,
-    animateSpeed: 30,
-    animateAcceleration: 1.2,
-    allowDragoverStyling: true,
-    hasChildrenField: 'folders',
-    getNodeClone: node => ({
-      ...node.data,
-      id: uuidv4(),
-      name: `copy of ${node.data.name}`,
-    }),
-  };
 
   select(folder: GalleryFolder) {
     this.currentFolder = folder;
@@ -107,10 +79,12 @@ export class MediaComponent implements OnInit, OnDestroy {
       name: this.folderName,
       id: uuidv4(),
       folders: [],
-      images: []
+      images: [],
     });
     this.save();
   }
+
+  renameFolder() {}
 
   onFileComplete() {
     this.mediaService.load();

@@ -6,13 +6,5 @@ export interface Page {
   url: string;
   sections: Section[];
   pages: Page[];
-}
-
-export class TreePage {
-  constructor(
-    public expandable: boolean,
-    public page: Page,
-    public level: number,
-    public id: string
-  ) {}
+  isExpanded?: boolean;
 }
