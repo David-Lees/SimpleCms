@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="section">
   <form [formGroup]="formGroup">
     <md-editor name="Content" formControlName="text" [height]="'300px'"></md-editor>
 

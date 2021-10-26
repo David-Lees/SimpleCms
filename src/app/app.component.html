@@ -1,5 +1,5 @@
 <ng-container *ngIf="loaded">
-  <app-header [site]=site></app-header>
+  <app-header [site]="site"></app-header>
   <app-toasts aria-live="polite" aria-atomic="true"></app-toasts>
   <main class="main-body">
     <router-outlet></router-outlet>
@@ -9,7 +9,13 @@
       <div class="col-sm-4 text-left">&copy; {{ site.name }} {{ getYear() }}</div>
       <div class="col-sm-4 text-center"></div>
       <div class="col-sm-4 text-right">
-        <button class="btn btn-link" *ngIf="!adalService.isAuthenticated" (click)="adalService.login()">Sign in</button>
+        <button
+          class="btn btn-link"
+          *ngIf="!adalService.isAuthenticated"
+          (click)="adalService.login()"
+        >
+          Sign in
+        </button>
         <a routerLink="/admin" *ngIf="adalService.isAuthenticated">Admin</a>
       </div>
     </div>

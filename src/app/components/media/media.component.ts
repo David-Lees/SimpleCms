@@ -94,7 +94,8 @@ export class MediaComponent implements OnInit, OnDestroy {
       this.currentFolder &&
       this.currentFolder !== this.root &&
       this.currentFolder.folders.length === 0 &&
-      this.currentFolder.images.length === 0
+      this.currentFolder.images.length === 0 &&
+      confirm('Are you sure you want to delete the "' + this.currentFolder.name + '" folder?')
     ) {
       const parent = this.getParentNode(this.currentFolder.id);
       console.log('parent', parent);

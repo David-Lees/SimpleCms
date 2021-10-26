@@ -23,26 +23,25 @@ export class EditTextComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges() {
-    if (
-      this.formGroup &&
-      this.lastChange.text !== this.section.text &&
-      this.lastChange.align !== this.section.align &&
-      this.lastChange.backgroundColour !== this.section.backgroundColour &&
-      this.lastChange.colour !== this.section.colour
-    ) {
-      console.log('setting text section');
-      this.formGroup.setValue(this.section);
+    if (this.section && this.formGroup) {
+      this.formGroup.setValue({
+        text: this.section.text,
+        backgroundColour: this.section?.backgroundColour,
+        backgroundAlign: this.section?.backgroundAlign,
+        colour: this.section?.colour,
+        align: this.section?.align,
+      });
       this.lastChange = this.formGroup.value;
     }
   }
 
   ngOnInit() {
     this.formGroup = this.builder.group({
-      text: [this.section.text],
-      backgroundColour: [this.section.backgroundColour],
-      backgroundAlign: [this.section.backgroundAlign],
-      colour: [this.section.colour],
-      align: [this.section.align],
+      text: [this.section?.text],
+      backgroundColour: [this.section?.backgroundColour],
+      backgroundAlign: [this.section?.backgroundAlign],
+      colour: [this.section?.colour],
+      align: [this.section?.align],
     });
     this.lastChange = this.formGroup.value;
     this.formGroup.valueChanges.subscribe((x: TextSection) => {
@@ -54,7 +53,6 @@ export class EditTextComponent implements OnChanges, OnInit {
         this.lastChange.name !== x.name ||
         this.lastChange.text !== x.text
       ) {
-        console.log('form change', x);
         this.lastChange = x;
         this.section.align = x.align;
         this.section.backgroundAlign = x.backgroundAlign;

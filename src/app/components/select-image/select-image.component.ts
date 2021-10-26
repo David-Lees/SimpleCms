@@ -17,28 +17,6 @@ export class SelectImageComponent implements OnInit {
   currentFolder: GalleryFolder;
   currentImage: GalleryImage;
 
-  state: ITreeState = {
-    expandedNodeIds: {},
-    hiddenNodeIds: {},
-    activeNodeIds: {},
-  };
-
-  options: ITreeOptions = {
-    allowDrag: node => {
-      return true;
-    },
-    allowDrop: node => {
-      return true;
-    },
-    useVirtualScroll: true,
-    animateExpand: true,
-    scrollOnActivate: true,
-    animateSpeed: 30,
-    animateAcceleration: 1.2,
-    allowDragoverStyling: true,
-    hasChildrenField: 'folders',
-  };
-
   selectFolder(folder: GalleryFolder) {
     this.currentFolder = folder;
   }
@@ -51,7 +29,7 @@ export class SelectImageComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SelectImageComponent>,
     public dialog: MatDialog,
-    protected media: MediaService,
+    protected media: MediaService
   ) {}
 
   ngOnInit(): void {

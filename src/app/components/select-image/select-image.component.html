@@ -1,26 +1,26 @@
 <h2 mat-dialog-title>Select Image:</h2>
 <mat-dialog-content class="mat-typography">
-    <div class="row">
-        <div class="col-3">
-          <tree-root
-            [state]="state"
-            [options]="options"
-            [focused]="true"
-            [nodes]="root"
-            (activate)="selectFolder($event)"
-          ></tree-root>
-        </div>
-        <div class="col-9">
-          <app-media-list
-            [images]="currentFolder.images"
-            [canSort]="false"
-            [canDelete]="false"
-            [canSelect]="true"
-            [canMove]="false"
-            (selected)="selectImage($event)"
-          ></app-media-list>
-        </div>
-      </div>
+  <div class="row mt-4">
+    <div class="col-3">
+      <h5>Select folder:</h5>
+      <app-media-tree
+        [nodes]="root"
+        (nodesChange)="root = $event"
+        (selectChange)="selectFolder($event)"
+      ></app-media-tree>
+    </div>
+    <div class="col-9" *ngIf="currentFolder && currentFolder.images">
+      <h5>Media for folder: {{ currentFolder.name }}</h5>
+      <app-media-list
+        [images]="currentFolder.images"
+        [canSort]="false"
+        [canDelete]="false"
+        [canSelect]="true"
+        [canMove]="false"
+        (selected)="selectImage($event)"
+      ></app-media-list>
+    </div>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>

@@ -38,7 +38,7 @@
   <div>
     <mat-drawer-container class="example-container" autosize>
       <mat-drawer class="example-sidenav" mode="side" opened>
-        <h3>Sections</h3>
+        <h5>Sections</h5>
         <div
           *ngIf="page.sections && page.sections.length"
           cdkDropList
@@ -50,8 +50,8 @@
             (click)="select(idx)"
             cdkDrag
             [ngClass]="{
-              'card-active': idx === activeSection,
-              'card-inactive': idx !== activeSection
+              'card-active': page.sections[idx] === activeSection,
+              'card-inactive': page.sections[idx] !== activeSection
             }"
           >
             <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
@@ -89,24 +89,21 @@
         </mat-menu>
       </mat-drawer>
       <mat-drawer-content>
-        <div *ngIf="activeSection >= 0 && activeSection < page.sections.length">
+        <div *ngIf="activeSection">
           <div class="row">
             <div class="col-sm-8">
-              <h5 *ngIf="page.sections[activeSection].name" class="card-title">
-                {{ page.sections[activeSection].name }}
+              <h5 *ngIf="activeSection.name" class="card-title">
+                {{ activeSection.name.replace('Section', ' Section') }}
               </h5>
             </div>
             <div class="col-sm-4 text-right">
-              <button mat-raised-button color="accent" (click)="remove(activeSection)">
+              <button mat-raised-button color="accent" (click)="remove()">
                 <mat-icon>remove_circle</mat-icon>
                 Remove section
               </button>
             </div>
           </div>
-          <app-edit-section
-            [section]="page.sections[activeSection]"
-            (sectionChange)="update($event, activeSection)"
-          >
+          <app-edit-section [section]="activeSection" (sectionChange)="update($event)">
           </app-edit-section>
         </div>
       </mat-drawer-content>
