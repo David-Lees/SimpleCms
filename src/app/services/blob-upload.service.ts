@@ -12,7 +12,7 @@ export class BlobUploadService {
 
   getUserDelegationKey(): Observable<any> {
     const headers = {
-      Authorization: 'bearer ' + this.adalService.accessToken,
+      'Authorization': 'bearer ' + this.adalService.accessToken,
       'x-ms-version': '2017-11-09',
     };
     return this.http.post(`${environment.apiUrl}/api/GetSasToken`, '', { headers });

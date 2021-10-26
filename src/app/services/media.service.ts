@@ -22,9 +22,17 @@ export class MediaService {
   ) {}
 
   load() {
+    const headers = {
+      'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    };
     this.http
-      .get<GalleryFolder>(environment.storageUrl + '/images/images.json')
+      .get<GalleryFolder>(`${environment.storageUrl}/images/images.json?rnd=${uuidv4()}`, {
+        headers,
+      })
       .subscribe((x: GalleryFolder) => {
+        console.log('loaded', x);
         this.update(x);
       });
   }
@@ -32,8 +40,8 @@ export class MediaService {
   save(data: GalleryFolder) {
     this.http.post<GalleryFolder>(environment.apiUrl + '/api/UpdateMedia', data).subscribe(
       x => {
-        this.update(x);
         this.toast.post({ body: 'Media Saved', state: ToastState.Success });
+        this.update(data);
       },
       error => {
         console.log(error);

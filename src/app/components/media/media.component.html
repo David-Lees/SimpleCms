@@ -31,18 +31,42 @@
       ></app-media-list>
     </div>
   </div>
-  <h5>Add Folder</h5>
+  <h5>Add/Edit Folder</h5>
   <div class="row mb-5">
     <div class="col-sm-4">
       <mat-form-field appearance="outline" class="width-100">
-        <mat-label>New folder name:</mat-label>
+        <mat-label>Folder name:</mat-label>
         <input matInput [(ngModel)]="folderName" type="text" />
         <mat-hint> The name of the new folder to be added </mat-hint>
       </mat-form-field>
     </div>
     <div class="col">
-      <button mat-raised-button color="accent" (click)="addFolder()">Add Folder</button>
+      <button class="mr-2" mat-raised-button color="accent" (click)="addFolder()">
+        Add Folder
+      </button>
+      <button
+        *ngIf="currentFolder && currentFolder !== root"
+        class="mr-2"
+        mat-raised-button
+        color="accent"
+        (click)="renameFolder()"
+      >
+        Rename Folder
+      </button>
+      <button
+        *ngIf="
+          currentFolder &&
+          currentFolder !== root &&
+          currentFolder.folders.length === 0 &&
+          currentFolder.images.length === 0
+        "
+        class="mr-2"
+        mat-raised-button
+        color="accent"
+        (click)="deleteFolder()"
+      >
+        Delete Folder
+      </button>
     </div>
   </div>
 </ng-container>
-<pre>{{ root | json }}</pre>

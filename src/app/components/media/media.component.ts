@@ -30,7 +30,6 @@ export class MediaComponent implements OnInit, OnDestroy {
   save() {
     console.log('saving site', this.root);
     this.mediaService.save(this.root);
-    this.mediaService.load();
   }
 
   ngOnInit() {
@@ -70,7 +69,6 @@ export class MediaComponent implements OnInit, OnDestroy {
         this.currentFolder.images.splice(idx, 1);
       }
       this.mediaService.delete(image.id);
-      this.mediaService.load();
     }
   }
 
@@ -84,7 +82,42 @@ export class MediaComponent implements OnInit, OnDestroy {
     this.save();
   }
 
-  renameFolder() {}
+  renameFolder() {
+    if (this.currentFolder && this.folderName && this.folderName.length) {
+      this.currentFolder.name = this.folderName;
+      this.save();
+    }
+  }
+
+  deleteFolder() {
+    if (
+      this.currentFolder &&
+      this.currentFolder !== this.root &&
+      this.currentFolder.folders.length === 0 &&
+      this.currentFolder.images.length === 0
+    ) {
+      const parent = this.getParentNode(this.currentFolder.id);
+      console.log('parent', parent);
+      if (parent) {
+        let i = parent.folders.findIndex(c => c.id === this.currentFolder.id);
+        parent.folders.splice(i, 1);
+      }
+      this.currentFolder = this.root;
+      this.save();
+    }
+  }
+
+  getParentNode(id: string, nodesToSearch?: GalleryFolder): GalleryFolder {
+    if (!nodesToSearch) {
+      nodesToSearch = this.root;
+    }
+    for (let node of nodesToSearch.folders || []) {
+      if (node.id == id) return nodesToSearch;
+      let ret = this.getParentNode(id, node);
+      if (ret) return ret;
+    }
+    return null;
+  }
 
   onFileComplete() {
     this.mediaService.load();
