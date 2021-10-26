@@ -19,6 +19,32 @@
   <ng-container *ngSwitchCase="sectionTypes.HtmlSection">
     <div [innerHtml]="htmlSection.html | safeHtml"></div>
   </ng-container>
+  <ng-container *ngSwitchCase="sectionTypes.ChildrenSection">
+    <div
+      class="margin-fix"
+      [style.background-color]="textSection.backgroundColour"
+      [style.background-position]="textSection.backgroundAlign"
+      [style.background-image]="getImage()"
+    >
+      <div
+        class="container"
+        [style.color]="textSection.colour"
+        [style.text-align]="textSection.align"
+      >
+        <div class="links">
+          <ng-container *ngFor="let p of page.pages">
+            <a
+              [routerLink]="[p.url]"
+              [style.color]="childrenSection.colour"
+              [style.border-color]="childrenSection.colour"
+              class="page-link"
+              >{{ p.name }}</a
+            >
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </ng-container>
   <ng-container *ngSwitchDefault>
     <!-- assume text -->
     <div

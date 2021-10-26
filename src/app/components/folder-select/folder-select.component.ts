@@ -12,10 +12,7 @@ export class FolderSelectComponent implements OnInit {
   allFolders: Folder[] = [];
   currentFolder: GalleryFolder;
 
-  constructor(
-    public dialogRef: MatDialogRef<FolderSelectComponent>,
-    private media: MediaService,
-  ) {}
+  constructor(public dialogRef: MatDialogRef<FolderSelectComponent>, private media: MediaService) {}
 
   ngOnInit() {
     this.media.root.subscribe(x => {
@@ -41,4 +38,3 @@ export class FolderSelectComponent implements OnInit {
     return name;
   }
 }
-

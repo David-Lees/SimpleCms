@@ -3,4 +3,5 @@ export enum SectionTypes {
   GallerySection = 'GallerySection',
   BannerSection = 'BannerSection',
   HtmlSection = 'HtmlSection',
+  ChildrenSection = 'ChildrenSection',
 }

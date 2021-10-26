@@ -17,7 +17,8 @@ export class MediaListComponent {
   @Output() delete = new EventEmitter<GalleryImage>();
   @Output() selected = new EventEmitter<GalleryImage>();
   @Output() moved = new EventEmitter<GalleryImage>();
-  
+  @Output() imagesChange = new EventEmitter<GalleryImage[]>();
+
   prefix = environment.storageUrl + '/images/';
 
   select(image: GalleryImage) {
@@ -28,6 +29,7 @@ export class MediaListComponent {
     if (this.canSort) {
       console.log(event);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      this.imagesChange.emit(this.images);
     }
   }
 
@@ -37,7 +39,8 @@ export class MediaListComponent {
     }
   }
 
-  move(image:GalleryImage) {
+  move(image: GalleryImage) {
+    console.log('move', image);
     this.moved.next(image);
   }
 }

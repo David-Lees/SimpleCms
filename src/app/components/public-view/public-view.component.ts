@@ -22,11 +22,12 @@ export class PublicViewComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(p => {
       this.id = p.url;
+      console.log('id', this.id);
       this.loadSite();
     });
   }
 
-  findPage(url: string) {
+  findPage(url: string): Page {
     if (!url) {
       return this.siteService.site.pages[0];
     }
@@ -35,7 +36,7 @@ export class PublicViewComponent implements OnInit {
     urls.forEach(x => {
       page = this.findChildPage(x, page);
     });
-    return page || this.siteService.site.pages[0];
+    return (page || this.siteService.site.pages[0]) as Page;
   }
 
   findChildPage(url: string, page: Site | Page): Page {
@@ -45,9 +46,7 @@ export class PublicViewComponent implements OnInit {
   loadSite() {
     if (this.siteService && this.siteService.isLoaded) {
       if (this.siteService.site.pages.length) {
-        this.page = this.siteService.site.pages.find(v => {
-          return v.url === this.id;
-        });
+        this.page = this.findPage(this.id);
         if (!this.page) {
           this.page = this.siteService.site.pages[0];
         }

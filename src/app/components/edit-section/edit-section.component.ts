@@ -5,6 +5,7 @@ import { GallerySection } from 'src/app/models/gallery-section';
 import { Section } from 'src/app/models/section';
 import { BannerSection } from 'src/app/models/banner-section';
 import { HtmlSection } from 'src/app/models/html-section';
+import { ChildrenSection } from 'src/app/models/children-section';
 
 @Component({
   selector: 'app-edit-section',
@@ -47,6 +48,15 @@ export class EditSectionComponent {
   }
 
   set htmlSection(v: HtmlSection) {
+    this.section = v;
+    this.sectionChange.emit(v);
+  }
+
+  get childrenSection(): ChildrenSection {
+    return this.section as ChildrenSection;
+  }
+
+  set childrenSection(v: ChildrenSection) {
     this.section = v;
     this.sectionChange.emit(v);
   }

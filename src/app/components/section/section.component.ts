@@ -6,6 +6,8 @@ import { GallerySection } from 'src/app/models/gallery-section';
 import { BannerSection } from 'src/app/models/banner-section';
 import { environment } from 'src/environments/environment';
 import { HtmlSection } from 'src/app/models/html-section';
+import { ChildrenSection } from 'src/app/models/children-section';
+import { Page } from 'src/app/models/page';
 
 @Component({
   selector: 'app-section',
@@ -16,6 +18,7 @@ export class SectionComponent implements OnInit {
   sectionTypes = SectionTypes;
 
   @Input() section: Section;
+  @Input() page: Page;
   height = 100;
 
   @HostListener('window:resize')
@@ -34,6 +37,10 @@ export class SectionComponent implements OnInit {
 
   ngOnInit() {
     this.onResize();
+  }
+
+  get childrenSection(): ChildrenSection {
+    return this.section as ChildrenSection;
   }
 
   get htmlSection(): HtmlSection {

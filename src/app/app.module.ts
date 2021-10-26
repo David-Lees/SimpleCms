@@ -35,6 +35,7 @@ import { MediaListComponent } from './components/media-list/media-list.component
 import { FolderSelectComponent } from './components/folder-select/folder-select.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MediaTreeComponent } from './components/media-tree/media-tree.component';
+import { EditChildrenComponent } from './components/edit-children/edit-children.component';
 
 export function getAdalConfig() {
   return {
@@ -66,6 +67,7 @@ export function getAdalConfig() {
     MediaListComponent,
     FolderSelectComponent,
     MediaTreeComponent,
+    EditChildrenComponent,
   ],
   imports: [
     AngularMaterialModule,

@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Select Folder:</h2>
 <mat-dialog-content class="mat-typography">
   <select [(ngModel)]="currentFolder">
-    <option *ngFor="let f of allFolders" ngValue="f.folder">{{ f.name }}</option>
+    <option *ngFor="let f of allFolders" [ngValue]="f.folder">{{ f.name }}</option>
   </select>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

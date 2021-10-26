@@ -9,15 +9,16 @@
         "source.fixAll.eslint": true,
     },
     "cSpell.words": [
-      "adal",
-      "agentepsilon",
-      "blockid",
-      "blocklist",
-      "circlon",
-      "Codemirror",
-      "decko",
-      "luxon",
-      "Organise",
-      "uuidv"
+        "adal",
+        "agentepsilon",
+        "blockid",
+        "blocklist",
+        "circlon",
+        "Codemirror",
+        "decko",
+        "keyvalue",
+        "luxon",
+        "Organise",
+        "uuidv"
     ]
 }

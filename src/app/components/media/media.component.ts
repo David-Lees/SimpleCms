@@ -52,11 +52,12 @@ export class MediaComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: GalleryFolder) => {
       console.log('The dialog was closed');
       if (result) {
+        console.log('move result', result);
         const idx = this.currentFolder.images.indexOf(image);
         if (idx >= 0) {
-          this.currentFolder.images.splice(idx, 1);
+          const i = this.currentFolder.images.splice(idx, 1);
+          result.images.push(i[0]);
         }
-        result.images.push(image);
         this.save();
       }
     });

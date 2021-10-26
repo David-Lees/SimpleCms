@@ -1,5 +1,5 @@
 <ng-container *ngIf="page">
   <ng-container *ngFor="let section of page.sections">
-    <app-section [section]="section"></app-section>
+    <app-section [section]="section" [page]="page"></app-section>
   </ng-container>
 </ng-container>

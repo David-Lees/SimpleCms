@@ -7,6 +7,7 @@ import { Section } from 'src/app/models/section';
 import { BannerSection } from 'src/app/models/banner-section';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HtmlSection } from 'src/app/models/html-section';
+import { ChildrenSection } from 'src/app/models/children-section';
 
 @Component({
   selector: 'app-edit-page',
@@ -43,6 +44,17 @@ export class EditPageComponent implements OnInit, OnChanges {
       Object.assign(this.page.sections[idx], s);
       this.change();
     }
+  }
+
+  addChildren() {
+    const c: ChildrenSection = {
+      name: SectionTypes.ChildrenSection,
+      backgroundColour: '#FFFFFF',
+      colour: '#000000',
+      backgroundAlign: 'center center',
+    };
+    this.page.sections.push(c);
+    this.change();
   }
 
   addBanner() {

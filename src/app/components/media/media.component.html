@@ -3,7 +3,10 @@
     <div class="col">
       <h2 class="mt-4">Upload Media</h2>
       <div class="mt-4">
-        <app-material-file-upload (uploadComplete)="onFileComplete()"></app-material-file-upload>
+        <app-material-file-upload
+          [folder]="currentFolder"
+          (uploadComplete)="onFileComplete()"
+        ></app-material-file-upload>
       </div>
     </div>
   </div>
@@ -21,7 +24,7 @@
     <div class="col-9" *ngIf="currentFolder && currentFolder.images">
       <h5>Media for folder: {{ currentFolder.name }}</h5>
       <app-media-list
-        [images]="currentFolder.images"
+        [(images)]="currentFolder.images"
         [canSort]="true"
         [canDelete]="true"
         [canSelect]="false"
@@ -70,3 +73,4 @@
     </div>
   </div>
 </ng-container>
+<pre>{{ root | json }}</pre>

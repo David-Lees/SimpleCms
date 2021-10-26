@@ -8,6 +8,9 @@
   <ng-container *ngSwitchCase="sectionTypes.HtmlSection">
     <app-edit-html [(section)]="htmlSection"></app-edit-html>
   </ng-container>
+  <ng-container *ngSwitchCase="sectionTypes.ChildrenSection">
+    <app-edit-children [(section)]="childrenSection"></app-edit-children>
+  </ng-container>
   <ng-container *ngSwitchDefault>
     <!-- assume text -->
     <app-edit-text [(section)]="textSection"></app-edit-text>

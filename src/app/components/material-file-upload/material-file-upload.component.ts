@@ -42,7 +42,7 @@ export class MaterialFileUploadComponent {
     private http: HttpClient,
     private toast: ToastService,
     private mediaService: MediaService,
-    private blobService: BlobUploadService,
+    private blobService: BlobUploadService
   ) {}
 
   onClick() {
@@ -56,7 +56,7 @@ export class MaterialFileUploadComponent {
           progress: 0,
           canRetry: false,
           canCancel: true,
-        }),
+        })
       );
       this.uploadFiles();
     };
@@ -74,11 +74,8 @@ export class MaterialFileUploadComponent {
   }
 
   private uploadFile(file: FileUploadModel) {
-    console.log('Attempting to get upload key');
     this.blobService.getUserDelegationKey().subscribe(
       key => {
-        console.log('Upload key obtained');
-
         const blockid = btoa(Math.random().toString(36).substring(7));
 
         let token: string = key.token;
@@ -92,11 +89,8 @@ export class MaterialFileUploadComponent {
           '&' +
           token;
 
-        console.log('Ready to upload to ' + url);
-
         const reader = new FileReader();
         reader.onload = () => {
-          console.log('file has been read');
           const req = new HttpRequest('PUT', url, reader.result, {
             reportProgress: true,
           });
@@ -105,7 +99,6 @@ export class MaterialFileUploadComponent {
             .request(req)
             .pipe(
               map(event => {
-                console.log('pipe map', event);
                 switch (event.type) {
                   case HttpEventType.UploadProgress:
                     file.progress = Math.round((event.loaded * 100) / event.total);
@@ -120,7 +113,7 @@ export class MaterialFileUploadComponent {
                 file.inProgress = false;
                 file.canRetry = true;
                 return of(`${file.data.name} upload failed.`);
-              }),
+              })
             )
             .subscribe((event: any) => {
               console.log('subscribe', event);
@@ -128,13 +121,12 @@ export class MaterialFileUploadComponent {
                 this.removeFileFromArray(file);
                 this.uploadComplete.emit(event.body);
                 const body = `<?xml version="1.0" encoding="utf-8"?>\r\n<BlockList>\r\n<Latest>${blockid}</Latest>\r\n</BlockList>`;
-                console.log('file uploaded, time to process it');
                 this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
                   y => {
                     this.http
                       .post<GalleryImage[]>(
-                        `${environment.apiUrl}/api/ProcessMedia?filename=${file.data.name}&folder=${this.folder.id}`,
-                        '',
+                        `${environment.apiUrl}/api/ProcessMedia?filename=${file.data.name}&folder=${this.folder?.id}&description=${file.data.name}`,
+                        ''
                       )
                       .subscribe(
                         z => {
@@ -145,16 +137,15 @@ export class MaterialFileUploadComponent {
                             body: 'Unable to process uploaded file. May not be an image.',
                             state: ToastState.Error,
                           });
-                        },
+                        }
                       );
                   },
                   () => {
                     this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
-                  },
+                  }
                 );
               }
             });
-          console.log('sub', file.sub);
         };
         reader.readAsArrayBuffer(file.data);
       },
@@ -162,7 +153,7 @@ export class MaterialFileUploadComponent {
         this.toast.post({
           body: 'Unable to obtain security token to start upload to storage',
           state: ToastState.Error,
-        }),
+        })
     );
   }
 

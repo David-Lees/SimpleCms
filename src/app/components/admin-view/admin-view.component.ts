@@ -197,6 +197,14 @@ export class AdminViewComponent implements OnInit {
     return null;
   }
 
+  deletePage() {
+    if (this.activePage && confirm('Are you sure you want to delete this page?')) {
+      const sourceFolder = this.getParentNode(this.activePage.id);
+      let i = sourceFolder.pages.findIndex(c => c.id === this.activePage.id);
+      sourceFolder.pages.splice(i, 1);
+    }
+  }
+
   showDragInfo() {
     this.clearDragInfo();
     if (this.dropActionTodo) {
