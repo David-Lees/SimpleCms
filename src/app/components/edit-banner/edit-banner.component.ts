@@ -3,6 +3,9 @@ import { BannerSection } from 'src/app/models/banner-section';
 import { MediaService } from 'src/app/services/media.service';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { environment } from 'src/environments/environment';
+import { GalleryFolder } from 'src/app/models/gallery-folder';
+import { MatDialog } from '@angular/material/dialog';
+import { SelectImageComponent } from '../select-image/select-image.component';
 
 @Component({
   selector: 'app-edit-banner',
@@ -13,22 +16,34 @@ export class EditBannerComponent implements OnInit {
   @Input() section: BannerSection;
   @Output() sectionChange = new EventEmitter<BannerSection>();
 
-  images: GalleryImage[];
+  folder: GalleryFolder;
   prefix = environment.storageUrl + '/images/';
 
-  constructor(private media: MediaService) {}
+  constructor(public dialog: MatDialog, private media: MediaService) {}
 
   ngOnInit() {
-    this.media.images.subscribe(x => {
-      this.images = x;
+    this.media.root.subscribe(x => {
+      this.folder = x;
       if (this.section && this.section.image) {
-        this.section.image = this.images.find(y => y.id === this.section.image.id);
+        this.section.image = this.folder.images.find(y => y.id === this.section.image.id);
       }
     });
   }
 
   change() {
     this.sectionChange.emit(this.section);
+  }
+
+  select() {
+    const dialogRef = this.dialog.open(SelectImageComponent, {
+      width: '90%',
+    });
+
+    dialogRef.afterClosed().subscribe((result: GalleryImage) => {
+      if (result) {
+        this.set(result);
+      }
+    });
   }
 
   set(img: GalleryImage) {

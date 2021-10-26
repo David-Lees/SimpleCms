@@ -1,23 +1,39 @@
 <ng-container [ngSwitch]="section.name">
-    <ng-container *ngSwitchCase="sectionTypes.GallerySection">
-        <div class="container-fluid">
-            <h2 *ngIf="gallerySection.galleryName">{{gallerySection.galleryName}}</h2>
-            <app-gallery [sourceData]="gallerySection" [imageMargin]="gallerySection.imageMargin"
-                [imageSize]="gallerySection.imageSize" [galleryName]="gallerySection.galleryName"
-                [rowsPerPage]="gallerySection.rowsPerPage"></app-gallery>
-        </div>
-    </ng-container>
-    <ng-container *ngSwitchCase="sectionTypes.BannerSection">
-        <div class="jumbotron jumbotron-fluid banner">
-            <img [attr.src]="bannerUrl" alt="" />
-        </div>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-        <!-- assume text -->
-        <div [style.background-color]="textSection.backgroundColour">
-            <div class="container" [style.color]="textSection.colour" [style.text-align]="textSection.align">
-                <markdown *ngIf="textSection.text" [data]="textSection.text"></markdown>
-            </div>
-        </div>
-    </ng-container>
+  <ng-container *ngSwitchCase="sectionTypes.GallerySection">
+    <div class="container-fluid">
+      <h2 *ngIf="gallerySection.galleryName">{{ gallerySection.galleryName }}</h2>
+      <app-gallery
+        [sourceData]="gallerySection"
+        [imageMargin]="gallerySection.imageMargin"
+        [imageSize]="gallerySection.imageSize"
+        [galleryName]="gallerySection.galleryName"
+        [rowsPerPage]="gallerySection.rowsPerPage"
+      ></app-gallery>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="sectionTypes.BannerSection">
+    <div class="jumbotron jumbotron-fluid banner">
+      <img [attr.src]="bannerUrl" alt="" />
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="sectionTypes.HtmlSection">
+    <div [innerHtml]="htmlSection.html | safeHtml"></div>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <!-- assume text -->
+    <div
+      class="margin-fix"
+      [style.background-color]="textSection.backgroundColour"
+      [style.background-position]="textSection.backgroundAlign"
+      [style.background-image]="getImage()"
+    >
+      <div
+        class="container"
+        [style.color]="textSection.colour"
+        [style.text-align]="textSection.align"
+      >
+        <markdown *ngIf="textSection.text" [data]="textSection.text"></markdown>
+      </div>
+    </div>
+  </ng-container>
 </ng-container>

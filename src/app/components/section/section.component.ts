@@ -5,6 +5,7 @@ import { TextSection } from 'src/app/models/text-section';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { BannerSection } from 'src/app/models/banner-section';
 import { environment } from 'src/environments/environment';
+import { HtmlSection } from 'src/app/models/html-section';
 
 @Component({
   selector: 'app-section',
@@ -35,6 +36,10 @@ export class SectionComponent implements OnInit {
     this.onResize();
   }
 
+  get htmlSection(): HtmlSection {
+    return this.section as HtmlSection;
+  }
+
   get textSection(): TextSection {
     return this.section as TextSection;
   }
@@ -58,6 +63,14 @@ export class SectionComponent implements OnInit {
         return `${environment.storageUrl}/images/${this.bannerSection.image.preview_hd.path}`;
       default:
         return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;
+    }
+  }
+
+  getImage() {
+    if (this.textSection.image && this.textSection.image.raw) {
+      return `url('${this.textSection.image.raw.path}')`;
+    } else {
+      return 'none';
     }
   }
 }

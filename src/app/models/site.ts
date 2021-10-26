@@ -5,4 +5,5 @@ export interface Site {
   name: string;
   headerBackground: string;
   headerColour: string;
+  hasLogo: boolean;
 }

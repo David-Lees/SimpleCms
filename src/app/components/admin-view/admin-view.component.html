@@ -1,70 +1,107 @@
 <div class="container-fluid">
-    <h1>Site Administration</h1>
+  <h1>Site Administration</h1>
 
-    <ng-container *ngIf="loaded">
+  <ng-container *ngIf="loaded">
+    <div style="position: fixed; right: 10px; top: 60px; z-index: 1001">
+      <button mat-raised-button color="primary" (click)="save()">Save site</button>
+    </div>
 
-        <mat-horizontal-stepper [linear]="false">
-            <mat-step label="Set global options">
-                <mat-form-field appearance="outline" class="width-100">
-                    <mat-label>Site name</mat-label>
-                    <input matInput [(ngModel)]="site.name" (ngModelChange)="change()" type="text"
-                        placeholder="Site name" />
-                    <mat-hint>The name of the site is displayed in the header.</mat-hint>
-                </mat-form-field>
+    <mat-horizontal-stepper [linear]="false">
+      <mat-step label="Set global options">
+        <mat-form-field appearance="outline" class="width-100">
+          <mat-label>Site name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="site.name"
+            (ngModelChange)="change()"
+            type="text"
+            placeholder="Site name"
+          />
+          <mat-hint>The name of the site is displayed in the header.</mat-hint>
+        </mat-form-field>
 
-                <div class="row mt-4">
-                    <div class="col">
-                        <mat-form-field appearance="outline" class="width-100">
-                            <mat-label>Header bar text colour</mat-label>
-                            <input matInput [(ngModel)]="site.headerColour" (ngModelChange)="change()" type="color" />
-                        </mat-form-field>
-                    </div>
-                    <div class="col">
-                        <mat-form-field appearance="outline" class="width-100">
-                            <mat-label>Header bar background colour</mat-label>
-                            <input matInput [(ngModel)]="site.headerBackground" (ngModelChange)="change()"
-                                type="color" />
-                        </mat-form-field>
-                    </div>
-                </div>
+        <div class="row mt-4">
+          <div class="col" *ngIf="site && (site.hasLogo === false || site.hasLogo === true)">
+            <label>
+              <input
+                type="checkbox"
+                [(ngModel)]="site.hasLogo"
+                [ngModelOptions]="{ standalone: true }"
+              />Site Has Logo?
+            </label>
+          </div>
+          <div class="col">
+            <mat-form-field appearance="outline" class="width-100">
+              <mat-label>Header bar text colour</mat-label>
+              <input
+                matInput
+                [(ngModel)]="site.headerColour"
+                (ngModelChange)="change()"
+                type="color"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field appearance="outline" class="width-100">
+              <mat-label>Header bar background colour</mat-label>
+              <input
+                matInput
+                [(ngModel)]="site.headerBackground"
+                (ngModelChange)="change()"
+                type="color"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-step>
+      <mat-step label="Upload images to site">
+        <app-media></app-media>
+      </mat-step>
+      <mat-step label="Organise content">
+        <ng-container *ngIf="site && site.pages && site.pages.length">
+          <div class="row">
+            <div class="col-3">
+              <h2>Pages</h2>
+              <div class="text-right mt-4">
+                <button (click)="add()" mat-raised-button color="accent" class="ml-2">
+                  <mat-icon>add_circle</mat-icon> Add page
+                </button>
+                <button
+                  class="ml-2"
+                  *ngIf="activePage"
+                  (click)="addChild(activePage)"
+                  mat-raised-button
+                  color="accent"
+                >
+                  <mat-icon>add_circle</mat-icon> Add child page
+                </button>
+              </div>
+              <p>Drag and drop pages to rearrange order.</p>
 
-                <div class="text-right">
-                    <button mat-raised-button color="primary" (click)="save()">Save site</button>
-                </div>
-            </mat-step>
-            <mat-step label="Upload images to site">
-                <app-media></app-media>
-            </mat-step>
-            <mat-step label="Organise content">
-                <ng-container *ngIf="site && site.pages && site.pages.length">
+              <tree-root
+                *ngIf="site && site.pages"
+                [state]="state"
+                [options]="options"
+                [focused]="true"
+                [nodes]="site.pages"
+                (activate)="select($event)"
+              ></tree-root>
+            </div>
+            <div class="col-9">
+              <ng-container *ngIf="activePage">
+                <h2>Properties for {{ activePage.name }}</h2>
+                <app-edit-page [(page)]="activePage"></app-edit-page
+              ></ng-container>
+            </div>
+          </div>
 
-                    <h2>
-                        Pages
-                    </h2>
+          <div class="text-right">
+            <button mat-raised-button color="primary" (click)="save()">Save site</button>
+          </div>
+        </ng-container>
 
-                    <p>Drag and drop pages to rearrange order.</p>
-                    
-                    <div cdkDropList class="row" (cdkDropListDropped)="dropPage($event)">
-                        <mat-card class="col-2" (click)="select(i)" *ngFor="let p of site.pages; let i = index" cdkDrag [ngClass]="{ 'card-active': i === activePage }">
-                            {{ p.name }}
-                        </mat-card>                        
-                    </div>
-
-                    <div class="text-right mt-4">
-                        <button (click)="add()" mat-raised-button color="accent">
-                            <mat-icon>add_circle</mat-icon> Add page
-                        </button>
-                    </div>
-
-                    <h2>Properties for {{site.pages[activePage].name }}</h2>
-                    <app-edit-page [(page)]="site.pages[activePage]"></app-edit-page>
-
-                    <div class="text-right">
-                        <button mat-raised-button color="primary" (click)="save()">Save site</button>
-                    </div>
-                </ng-container>
-            </mat-step>
-        </mat-horizontal-stepper>
-
-    </ng-container>
+        <pre>{{ site.pages | json }}</pre>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </ng-container>
 </div>

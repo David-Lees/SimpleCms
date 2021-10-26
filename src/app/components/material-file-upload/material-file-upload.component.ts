@@ -1,25 +1,29 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-import { HttpClient, HttpResponse, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { catchError, last, map, tap } from 'rxjs/operators';
 import { MediaService } from 'src/app/services/media.service';
 import { BlobUploadService } from 'src/app/services/blob-upload.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ToastState } from 'src/app/enums/toast-state.enum';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { of, Subscription } from 'rxjs';
+import { GalleryFolder } from 'src/app/models/gallery-folder';
 
 @Component({
   selector: 'app-material-file-upload',
   templateUrl: './material-file-upload.component.html',
   styleUrls: ['./material-file-upload.component.scss'],
   animations: [
-    trigger('fadeInOut', [state('in', style({ opacity: 100 })), transition('* => void', [animate(300, style({ opacity: 0 }))])]),
+    trigger('fadeInOut', [
+      state('in', style({ opacity: 100 })),
+      transition('* => void', [animate(300, style({ opacity: 0 }))]),
+    ]),
   ],
 })
-export class MaterialFileUploadComponent implements OnInit {
+export class MaterialFileUploadComponent {
+  @Input() folder: GalleryFolder;
   /* Link text */
   @Input() text = 'Upload';
   /* Name used in form which will be sent in HTTP request. */
@@ -38,16 +42,21 @@ export class MaterialFileUploadComponent implements OnInit {
     private http: HttpClient,
     private toast: ToastService,
     private mediaService: MediaService,
-    private blobService: BlobUploadService
+    private blobService: BlobUploadService,
   ) {}
-
-  ngOnInit() {}
 
   onClick() {
     const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
     fileUpload.onchange = () => {
       Array.from(fileUpload.files).forEach(file =>
-        this.files.push({ data: file, state: 'in', inProgress: false, progress: 0, canRetry: false, canCancel: true })
+        this.files.push({
+          data: file,
+          state: 'in',
+          inProgress: false,
+          progress: 0,
+          canRetry: false,
+          canCancel: true,
+        }),
       );
       this.uploadFiles();
     };
@@ -70,15 +79,18 @@ export class MaterialFileUploadComponent implements OnInit {
       key => {
         console.log('Upload key obtained');
 
-        const blockid = btoa(
-          Math.random()
-            .toString(36)
-            .substring(7)
-        );
+        const blockid = btoa(Math.random().toString(36).substring(7));
 
         let token: string = key.token;
         token = token.substring(1);
-        const url = environment.storageUrl + '/image-upload/' + file.data.name + '?comp=block&blockid=' + blockid + '&' + token;
+        const url =
+          environment.storageUrl +
+          '/image-upload/' +
+          file.data.name +
+          '?comp=block&blockid=' +
+          blockid +
+          '&' +
+          token;
 
         console.log('Ready to upload to ' + url);
 
@@ -108,7 +120,7 @@ export class MaterialFileUploadComponent implements OnInit {
                 file.inProgress = false;
                 file.canRetry = true;
                 return of(`${file.data.name} upload failed.`);
-              })
+              }),
             )
             .subscribe((event: any) => {
               console.log('subscribe', event);
@@ -119,19 +131,26 @@ export class MaterialFileUploadComponent implements OnInit {
                 console.log('file uploaded, time to process it');
                 this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
                   y => {
-                    this.http.post<GalleryImage[]>(environment.apiUrl + '/api/ProcessMedia?filename=' + file.data.name, '').subscribe(
-                      z => {
-                        this.mediaService.update(this.mediaService.map(z));
-                        this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
-                      },
-                      () => {
-                        this.toast.post({ body: 'Unbale to process uploaded file. May not be an image.', state: ToastState.Error });
-                      }
-                    );
+                    this.http
+                      .post<GalleryImage[]>(
+                        `${environment.apiUrl}/api/ProcessMedia?filename=${file.data.name}&folder=${this.folder.id}`,
+                        '',
+                      )
+                      .subscribe(
+                        z => {
+                          this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
+                        },
+                        () => {
+                          this.toast.post({
+                            body: 'Unable to process uploaded file. May not be an image.',
+                            state: ToastState.Error,
+                          });
+                        },
+                      );
                   },
                   () => {
-                    this.toast.post({ body: 'Unbale to upload file.', state: ToastState.Error });
-                  }
+                    this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
+                  },
                 );
               }
             });
@@ -139,7 +158,11 @@ export class MaterialFileUploadComponent implements OnInit {
         };
         reader.readAsArrayBuffer(file.data);
       },
-      () => this.toast.post({ body: 'Unable to obtain security token to start upload to storage', state: ToastState.Error })
+      () =>
+        this.toast.post({
+          body: 'Unable to obtain security token to start upload to storage',
+          state: ToastState.Error,
+        }),
     );
   }
 

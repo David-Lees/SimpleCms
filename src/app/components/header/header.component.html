@@ -1,17 +1,41 @@
-<nav class="navbar navbar-expand-lg navbar-light" [style.backgroundColor]="site.headerBackground"
-    [style.color]="site.headerColour">
-    <a class="navbar-brand" routerLink="/" [style.color]="site.headerColour">{{ site.name }}</a>
-    <ng-container *ngIf="site.pages.length > 1">
-        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto" *ngFor="let page of site.pages">
-                <li class="nav-item">
-                    <a class="nav-link" [routerLink]="['/',page.url]" [style.color]="site.headerColour">{{ page.name }}</a>
-                </li>
-            </ul>
-        </div>
-    </ng-container>
+<nav
+  class="navbar navbar-expand-lg navbar-light"
+  [style.backgroundColor]="site.headerBackground"
+  [style.color]="site.headerColour"
+>
+  <a *ngIf="site.hasLogo" class="navbar-brand" routerLink="/" [style.color]="site.headerColour">
+    <div class="logo-background" [style.backgroundColor]="site.headerBackground"></div>
+    <img [attr.src]="logo()" [attr.alt]="site.name" />
+  </a>
+  <a *ngIf="!site.hasLogo" class="navbar-brand" routerLink="/" [style.color]="site.headerColour">{{
+    site.name
+  }}</a>
+  <ng-container *ngIf="site.pages.length > 1">
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="isMenuCollapsed = !isMenuCollapsed"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div
+      [ngbCollapse]="isMenuCollapsed"
+      class="collapse navbar-collapse"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav mr-auto">
+        <ng-container *ngFor="let page of site.pages">
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/', page.url]" [style.color]="site.headerColour">{{
+              page.name
+            }}</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </ng-container>
 </nav>
+<div class="nav-spacer"></div>

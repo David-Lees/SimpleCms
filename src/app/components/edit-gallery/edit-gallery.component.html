@@ -1,5 +1,4 @@
 <div class="container-fluid">
-
     <div class="row">
         <div class="col">
             <mat-form-field appearance="outline" class="width-100">
@@ -18,7 +17,6 @@
             </p>
         </div>
     </div>
-
     <div class="row mt-3">
         <div class="col">
             <mat-form-field appearance="outline" class="width-100">
@@ -46,11 +44,14 @@
                     (cdkDropListDropped)="drop($event)">
                     <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img of availableImages">
                         <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img.preview_small?.path" class="img-fluid" alt="" />
+                            <img [src]="prefix + img.preview_small?.path" class="img-fluid" [attr.alt]="img.description" />
                         </mat-card>
                     </div>
                 </div>
             </div>
+            <select [(ngModel)]="currentFolder" (ngModelChange)="folderChange()">
+                <option *ngFor="let f of allFolders" ngValue="f.folder">{{f.name}}</option>
+            </select>
         </div>
         <div class="col-sm-6">
             <h4>Selected images</h4>
@@ -58,7 +59,7 @@
                 <div class="row" cdkDropList [cdkDropListData]="section.images" (cdkDropListDropped)="drop($event)">
                     <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img2 of section.images">
                         <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img2.preview_small?.path" class="img-fluid" alt="" />
+                            <img [src]="prefix + img2.preview_small?.path" class="img-fluid" [attr.alt]="img2.description" />
                             <mat-form-field appearance="outline" class="width-100">
                                 <mat-label>Description</mat-label>
                                 <input matInput [(ngModel)]="img2.description" (ngModelChange)="change()" type="text" />
@@ -69,5 +70,4 @@
             </div>
         </div>
     </div>
-
 </div>

@@ -1,8 +1,9 @@
-import { Section } from './section';
+import { BannerSection } from './banner-section';
 
-export interface TextSection extends Section {
+export interface TextSection extends BannerSection {
   text: string; // markdown
   backgroundColour: string;
+  backgroundAlign?: string;
   colour: string;
   align: string;
 }

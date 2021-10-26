@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { Page } from 'src/app/models/page';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { TextSection } from 'src/app/models/text-section';
@@ -6,21 +6,18 @@ import { SectionTypes } from 'src/app/enums/sections';
 import { Section } from 'src/app/models/section';
 import { BannerSection } from 'src/app/models/banner-section';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { HtmlSection } from 'src/app/models/html-section';
 
 @Component({
   selector: 'app-edit-page',
   templateUrl: './edit-page.component.html',
   styleUrls: ['./edit-page.component.scss'],
 })
-export class EditPageComponent implements OnInit {
+export class EditPageComponent {
   @Input() page: Page;
   @Output() pageChange = new EventEmitter<Page>();
 
   activeSection = 0;
-
-  constructor() {}
-
-  ngOnInit() {}
 
   change() {
     this.pageChange.emit(this.page);
@@ -40,6 +37,15 @@ export class EditPageComponent implements OnInit {
       image: null,
     };
     this.page.sections.push(b);
+    this.change();
+  }
+
+  addHtml() {
+    const h: HtmlSection = {
+      name: SectionTypes.HtmlSection,
+      html: '',
+    };
+    this.page.sections.push(h);
     this.change();
   }
 

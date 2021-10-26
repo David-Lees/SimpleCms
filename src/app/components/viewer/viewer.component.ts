@@ -94,7 +94,6 @@ import { MediaService } from 'src/app/services/media.service';
   ],
 })
 export class ViewerComponent {
-  @Input() isAdmin = false;
   showViewer: boolean;
   images: Array<any> = [{}];
   currentIdx = 0;
@@ -129,11 +128,6 @@ export class ViewerComponent {
 
   get rightArrowActive(): boolean {
     return this.currentIdx < this.images.length - 1;
-  }
-
-  delete() {
-    this.mediaService.delete(this.images[this.currentIdx].id);
-    this.closeViewer();
   }
 
   pan(swipe: any): void {

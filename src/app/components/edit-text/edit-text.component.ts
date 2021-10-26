@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { TextSection } from 'src/app/models/text-section';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { BannerSection } from 'src/app/models/banner-section';
 
 let nextTextId = 0;
 
@@ -15,6 +16,11 @@ export class EditTextComponent implements OnChanges, OnInit {
   formGroup: FormGroup;
   lastChange: TextSection;
   id = `radio-${nextTextId++}-`;
+
+  updateImage(section: BannerSection) {
+    this.section.image = section.image;
+    this.sectionChange.emit(this.section);
+  }
 
   ngOnChanges() {
     if (
@@ -34,6 +40,7 @@ export class EditTextComponent implements OnChanges, OnInit {
     this.formGroup = this.builder.group({
       text: [this.section.text],
       backgroundColour: [this.section.backgroundColour],
+      backgroundAlign: [this.section.backgroundAlign],
       colour: [this.section.colour],
       align: [this.section.align],
     });
@@ -41,6 +48,7 @@ export class EditTextComponent implements OnChanges, OnInit {
     this.formGroup.valueChanges.subscribe((x: TextSection) => {
       if (
         this.lastChange.align !== x.align ||
+        this.lastChange.backgroundAlign !== x.backgroundAlign ||
         this.lastChange.backgroundColour !== x.backgroundColour ||
         this.lastChange.colour !== x.colour ||
         this.lastChange.name !== x.name ||
@@ -48,7 +56,12 @@ export class EditTextComponent implements OnChanges, OnInit {
       ) {
         console.log('form change', x);
         this.lastChange = x;
-        this.sectionChange.emit(x);
+        this.section.align = x.align;
+        this.section.backgroundAlign = x.backgroundAlign;
+        this.section.backgroundColour = x.backgroundColour;
+        this.section.colour = x.colour;
+        this.section.text = x.text;
+        this.sectionChange.emit(this.section);
       }
     });
   }

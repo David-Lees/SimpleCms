@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Select Image:</h2>
+<mat-dialog-content class="mat-typography">
+    <div class="row">
+        <div class="col-3">
+          <tree-root
+            [state]="state"
+            [options]="options"
+            [focused]="true"
+            [nodes]="root"
+            (activate)="selectFolder($event)"
+          ></tree-root>
+        </div>
+        <div class="col-9">
+          <app-media-list
+            [images]="currentFolder.images"
+            [canSort]="false"
+            [canDelete]="false"
+            [canSelect]="true"
+            [canMove]="false"
+            (selected)="selectImage($event)"
+          ></app-media-list>
+        </div>
+      </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

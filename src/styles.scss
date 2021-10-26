@@ -1,7 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@use '~@angular/material' as mat;
 
 $font-family-base: 'Roboto', sans-serif;
-@import "node_modules/bootstrap/scss/bootstrap";
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600&display=swap');
+
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/material';
+@import '~@circlon/angular-tree-component/css/angular-tree-component.css';
 
 // @import "node_modules/bootstrap/scss/functions";
 // @import "node_modules/bootstrap/scss/variables";
@@ -11,35 +18,61 @@ $font-family-base: 'Roboto', sans-serif;
 
 // @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-html, body { height: 100%; margin: 0; }
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
 //body { margin: 0; font-family: 'Courgette', cursive; }
 
-
 @import '~@angular/material/theming';
-@include mat-core();
+@include mat.core();
 
-/* ======== Angular material custom themes ======== */ 
+/* ======== Angular material custom themes ======== */
 
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Roboto, cursive',
-  $headline: mat-typography-level(48px, 72px, 700),
-  $body-1: mat-typography-level(24px, 36px, 500),  
-  $body-2: mat-typography-level(24px, 36px, 700),
-  $caption: mat-typography-level(16px, 24px, 500),
-  $input: mat-typography-level(24px, 1, 500),
+  $headline: mat.define-typography-level(48px, 72px, 700),
+  $body-1: mat.define-typography-level(24px, 36px, 500),
+  $body-2: mat.define-typography-level(24px, 36px, 700),
+  $caption: mat.define-typography-level(16px, 24px, 500),
+  $input: mat.define-typography-level(24px, 1, 500),
 );
-@include angular-material-typography($custom-typography);
+@include mat.all-component-typographies($custom-typography);
 
-$my-custom-primary: mat-palette($mat-deep-purple);
-$my-custom-accent: mat-palette($mat-purple);
-$my-custom-warn: mat-palette($mat-red);
+$my-custom-primary: mat.define-palette(mat.$deep-purple-palette);
+$my-custom-accent: mat.define-palette(mat.$purple-palette);
+$my-custom-warn: mat.define-palette(mat.$red-palette);
 
-$my-custom-theme: mat-light-theme($my-custom-primary, $my-custom-accent, $my-custom-warn);
+$my-custom-theme: mat.define-light-theme($my-custom-primary, $my-custom-accent, $my-custom-warn);
 
-@include angular-material-theme($my-custom-theme);
+@include mat.all-component-themes($my-custom-theme);
+
+.mat-tree-node {
+  background-color: rgb(66, 157, 253);
+  color: white;
+  user-select: none;
+  cursor: move;
+
+  &.cdk-drag-preview { // while dragging
+    @include mat-elevation(12);
+  }
+  &.cdk-drag-placeholder { // potential drop area
+    opacity: 0;
+  }
+}
+
+/* items moving away to make room for drop */
+.cdk-drop-list-dragging .mat-tree-node:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+/* item being dropped */
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
 
 .mat-form-field-infix {
-    padding: 0.2em 0 0.4em 0 !important;
+  padding: 0.2em 0 0.4em 0 !important;
 }
 
 .mat-radio-button ~ .mat-radio-button {
@@ -47,59 +80,64 @@ $my-custom-theme: mat-light-theme($my-custom-primary, $my-custom-accent, $my-cus
 }
 
 .mat-form-field-appearance-outline .mat-form-field-label {
-    top: 1.25em;
+  top: 1.25em;
 }
-.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-outline.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
-    top: 1.75em;
+.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+  .mat-form-field-label,
+.mat-form-field-appearance-outline.mat-form-field-can-float
+  .mat-input-server:focus
+  + .mat-form-field-label-wrapper
+  .mat-form-field-label {
+  top: 1.75em;
 }
 
 mat-form-field {
-    &.ng-valid {
-      .mat-form-field-wrapper {
-        padding-bottom: 1.25em;
-      }
-    }
-  
-    &.ng-invalid,
-    &.mat-form-field-invalid {
-      .mat-form-field-wrapper {
-        padding-bottom: 7px;
-      }
-    }
-  
-    &.ng-untouched {
-      .mat-form-field-wrapper {
-        padding-bottom: 1.25em;
-      }
-    }
-  
-    .mat-form-field {
-      &-underline {
-        position: static;
-      }
-  
-      &-subscript-wrapper {
-        position: static;
-      }
+  &.ng-valid {
+    .mat-form-field-wrapper {
+      padding-bottom: 1.25em;
     }
   }
 
+  &.ng-invalid,
+  &.mat-form-field-invalid {
+    .mat-form-field-wrapper {
+      padding-bottom: 7px;
+    }
+  }
+
+  &.ng-untouched {
+    .mat-form-field-wrapper {
+      padding-bottom: 1.25em;
+    }
+  }
+
+  .mat-form-field {
+    &-underline {
+      position: static;
+    }
+
+    &-subscript-wrapper {
+      position: static;
+    }
+  }
+}
+
 .width-100 {
-    width: 100%;
+  width: 100%;
 }
 
 .card-active {
-    background-color: mat-color($mat-purple, 200);
+  background-color: mat.get-color-from-palette(mat.$purple-palette, 200);
 }
 
 .card-inactive {
-  background-color: mat-color($mat-purple, 100);
+  background-color: mat.get-color-from-palette(mat.$purple-palette, 100);
   opacity: 0.75;
 }
 
-.shaded {  
-  background-color: mat-color($mat-purple, 50);
-  border: 1px solid mat-color($mat-purple, 200);
+.shaded {
+  background-color: mat.get-color-from-palette(mat.$purple-palette, 50);
+  border: 1px solid mat.get-color-from-palette(mat.$purple-palette, 200);
   height: 100%;
 }
 
@@ -107,4 +145,18 @@ mat-icon {
   vertical-align: top;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Crimson Text', serif;
+  margin-top: 2em;
+}
 
+h1 {
+  margin-top: 3em;
+}
+
+footer {
+  border-top: 1px solid black;
+}

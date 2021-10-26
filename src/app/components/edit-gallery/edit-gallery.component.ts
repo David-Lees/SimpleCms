@@ -4,6 +4,7 @@ import { GalleryImage } from 'src/app/models/gallery-image';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Folder, GalleryFolder } from 'src/app/models/gallery-folder';
 
 @Component({
   selector: 'app-edit-gallery',
@@ -14,17 +15,41 @@ export class EditGalleryComponent implements OnInit {
   @Input() section: GallerySection;
   @Output() sectionChange = new EventEmitter<GallerySection>();
 
-  images: GalleryImage[];
+  root: GalleryFolder;
+  currentFolder: Folder;
+  allFolders: Folder[] = [];
   availableImages: GalleryImage[];
   prefix = environment.storageUrl + '/images/';
 
   constructor(private media: MediaService) {}
 
   ngOnInit() {
-    this.media.images.subscribe(x => {
-      this.images = x;
-      this.availableImages = [...this.images];
+    this.media.root.subscribe(x => {
+      this.root = x;
+      this.traverse(this.root, 0);
+      this.availableImages = [...this.root.images];
     });
+  }
+
+  traverse(folder: GalleryFolder, level: number) {
+    this.allFolders.push(new Folder(this.getFolderName(folder, level), folder));
+    folder.folders.forEach(element => {
+      this.traverse(element, level + 1);
+    });
+  }
+
+  folderChange() {
+    this.availableImages = this.currentFolder.folder.images;
+  }
+
+  getFolderName(folder: GalleryFolder, level: number) {
+    let name = '';
+    for (let i = 0; i < level; i++) {
+      name += '--';
+    }
+    if (level > 0) name += '>';
+    name += folder.name;
+    return name;
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -32,8 +57,13 @@ export class EditGalleryComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      this.availableImages = [...this.images];
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+      this.availableImages = [...this.root.images];
     }
   }
 

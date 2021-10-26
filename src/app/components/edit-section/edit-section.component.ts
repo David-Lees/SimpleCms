@@ -4,6 +4,7 @@ import { TextSection } from 'src/app/models/text-section';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { Section } from 'src/app/models/section';
 import { BannerSection } from 'src/app/models/banner-section';
+import { HtmlSection } from 'src/app/models/html-section';
 
 @Component({
   selector: 'app-edit-section',
@@ -13,8 +14,6 @@ export class EditSectionComponent {
   sectionTypes = SectionTypes;
   @Input() section: Section;
   @Output() sectionChange = new EventEmitter<Section>();
-
-  constructor() {}
 
   get textSection(): TextSection {
     return this.section as TextSection;
@@ -39,6 +38,15 @@ export class EditSectionComponent {
   }
 
   set bannerSection(v: BannerSection) {
+    this.section = v;
+    this.sectionChange.emit(v);
+  }
+
+  get htmlSection(): HtmlSection {
+    return this.section as HtmlSection;
+  }
+
+  set htmlSection(v: HtmlSection) {
     this.section = v;
     this.sectionChange.emit(v);
   }

@@ -40,7 +40,6 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() imageSize = 7;
   @Input() galleryName = '';
   @Input() rowsPerPage = 200;
-  @Input() isAdmin = false;
 
   @Output() viewerChange = new EventEmitter<boolean>();
 
@@ -148,11 +147,8 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
 
   private calcRowHeight(imgRow: Array<any>): number {
     const originalRowWidth = this.calcOriginalRowWidth(imgRow);
-
     const ratio = (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth;
-    const rowHeight = imgRow[0][this.minimalQualityCategory].height * ratio;
-
-    return rowHeight;
+    return imgRow[0][this.minimalQualityCategory].height * ratio;
   }
 
   private calcOriginalRowWidth(imgRow: Array<any>): number {

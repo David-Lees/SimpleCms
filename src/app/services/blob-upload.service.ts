@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { MsAdalAngular6Service } from 'microsoft-adal-angular6';
-import * as moment from 'moment';
 import { Observable } from 'rxjs';
 
 @Injectable({

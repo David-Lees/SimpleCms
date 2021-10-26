@@ -15,15 +15,29 @@
                     <input matInput formControlName="backgroundColour" type="color" />
                 </mat-form-field>
             </div>
-            <div class="col-6">
-                <label id="justify{{id}}" class="width-100">Alignment</label>
+            <div class="col-3">
+                <label id="justify{{id}}" class="width-100">Text Alignment</label>
                 <mat-radio-group formControlName="align" aria-labelledby="justify{{id}}">
                     <mat-radio-button value="left">Left</mat-radio-button>
                     <mat-radio-button value="center">Centred</mat-radio-button>
                     <mat-radio-button value="right">Right</mat-radio-button>
                 </mat-radio-group>            
             </div>
+            <div class="col-3">
+                <label id="position{{id}}" class="width-100">Image Alignment</label>
+                <mat-radio-group formControlName="backgroundAlign"aria-labelledby="position{{id}}">
+                    <mat-radio-button value="left top">Top left</mat-radio-button>
+                    <mat-radio-button value="left center">Centre Left</mat-radio-button>
+                    <mat-radio-button value="left bottom">Bottom Left</mat-radio-button>
+                    <mat-radio-button value="right top">Top Right</mat-radio-button>
+                    <mat-radio-button value="right center">Centre Right</mat-radio-button>
+                    <mat-radio-button value="right bottom">Bottom Right</mat-radio-button>
+                    <mat-radio-button value="center top">Top Centre</mat-radio-button>
+                    <mat-radio-button value="center center">Centered</mat-radio-button>
+                    <mat-radio-button value="center bottom">Center Bottom</mat-radio-button>
+                </mat-radio-group>
+            </div>
         </div>
-
     </form>
 </div>
+<app-edit-banner [section]="section" (sectionChange)="updateImage($event)"></app-edit-banner>

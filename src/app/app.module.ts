@@ -18,15 +18,23 @@ import { EditTextComponent } from './components/edit-text/edit-text.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditGalleryComponent } from './components/edit-gallery/edit-gallery.component';
 import { EditPageComponent } from './components/edit-page/edit-page.component';
-import { MsAdalAngular6Module } from 'microsoft-adal-angular6';
+import { MsAdalAngular6Module, AuthenticationGuard } from 'microsoft-adal-angular6';
 import { environment } from 'src/environments/environment';
-import { AuthenticationGuard } from 'microsoft-adal-angular6';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditBannerComponent } from './components/edit-banner/edit-banner.component';
 import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
 import { AngularMaterialModule } from './modules/angular-material.module';
 import { MaterialFileUploadComponent } from './components/material-file-upload/material-file-upload.component';
+import { EditHtmlComponent } from './components/edit-html/edit-html.component';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { SafeHtmlPipe } from './safe-html.pipe';
+import { TreeModule } from '@circlon/angular-tree-component';
+import { SelectImageComponent } from './components/select-image/select-image.component';
+import { MediaListComponent } from './components/media-list/media-list.component';
+import { FolderSelectComponent } from './components/folder-select/folder-select.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MediaTreeComponent } from './components/media-tree/media-tree.component';
 
 export function getAdalConfig() {
   return {
@@ -52,9 +60,16 @@ export function getAdalConfig() {
     ToastsComponent,
     EditBannerComponent,
     MaterialFileUploadComponent,
+    EditHtmlComponent,
+    SafeHtmlPipe,
+    SelectImageComponent,
+    MediaListComponent,
+    FolderSelectComponent,
+    MediaTreeComponent,
   ],
   imports: [
     AngularMaterialModule,
+    MatDialogModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -63,6 +78,8 @@ export function getAdalConfig() {
     LMarkdownEditorModule,
     AppRoutingModule,
     NgbModule,
+    CodemirrorModule,
+    TreeModule,
     MarkdownModule.forRoot({
       markedOptions: {
         provide: MarkedOptions,
@@ -74,7 +91,10 @@ export function getAdalConfig() {
     MsAdalAngular6Module.forRoot(getAdalConfig),
     HammerModule,
   ],
-  providers: [AuthenticationGuard, { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true }],
+  providers: [
+    AuthenticationGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: CredentialsInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
