@@ -24,7 +24,8 @@
       class="margin-fix"
       [style.background-color]="textSection.backgroundColour"
       [style.background-position]="textSection.backgroundAlign"
-      [style.background-image]="getImage()"
+      [style.background-image]="backgroundUrl"
+      [attr.data-url]="backgroundUrl"
     >
       <div
         class="container"
@@ -51,7 +52,8 @@
       class="margin-fix"
       [style.background-color]="textSection.backgroundColour"
       [style.background-position]="textSection.backgroundAlign"
-      [style.background-image]="getImage()"
+      [style.background-image]="backgroundUrl"
+      [attr.data-url]="backgroundUrl"
     >
       <div
         class="container"

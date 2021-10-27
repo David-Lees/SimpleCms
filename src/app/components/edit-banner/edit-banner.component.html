@@ -3,7 +3,7 @@
     <div class="col-sm-3" *ngIf="section && section.image">
       <mat-card [style.height.%]="100">
         <img
-          [src]="prefix + section.image.preview_small.path"
+          [src]="prefix + section.image?.files['preview_small']?.path"
           class="img-fluid"
           [attr.alt]="section.image.description"
         />
@@ -17,3 +17,4 @@
     </div>
   </div>
 </div>
+<pre>{{ section | json }}</pre>

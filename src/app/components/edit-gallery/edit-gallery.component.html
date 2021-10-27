@@ -1,73 +1,113 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <mat-form-field appearance="outline" class="width-100">
-                <mat-label>Name</mat-label>
-                <input matInput type="text" [(ngModel)]="section.galleryName" (ngModelChange)="change()" />
-                <mat-hint>If set, this name will appear as a heading above the gallery.</mat-hint>
-            </mat-form-field>
-        </div>
-        <div class="col">
-            <h4 class="mt-0">Margin</h4>
-            <mat-slider class="width-100" min="1" max="20" step="1" [(ngModel)]="section.imageMargin"></mat-slider>
-            <p>
-                The gap between the images when displayed in the gallery:
-                {{ section.imageMargin }}.
-                Tip: User the media section to see how gallery will look.
-            </p>
-        </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field appearance="outline" class="width-100">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" [(ngModel)]="section.galleryName" (ngModelChange)="change()" />
+        <mat-hint>If set, this name will appear as a heading above the gallery.</mat-hint>
+      </mat-form-field>
     </div>
-    <div class="row mt-3">
-        <div class="col">
-            <mat-form-field appearance="outline" class="width-100">
-                <mat-label>Rows per page</mat-label>
-                <input matInput type="number" [(ngModel)]="section.rowsPerPage" (ngModelChange)="change()" />
-                <mat-hint>The number of rows to show on gallery before splitting into multiple pages.</mat-hint>
-            </mat-form-field>
-        </div>
-        <div class="col">
-            <h4 class="mt-0">Image size</h4>
-            <mat-slider class="width-100" min="1" max="20" step="1" [(ngModel)]="section.imageSize"></mat-slider>
-            <p>
-                The height of the row of images: {{ section.imageSize }}.
-                Tip: User the media section to see how gallery will look.
-            </p>
-        </div>
+    <div class="col">
+      <h4 class="mt-0">Margin</h4>
+      <mat-slider
+        class="width-100"
+        min="1"
+        max="20"
+        step="1"
+        [(ngModel)]="section.imageMargin"
+      ></mat-slider>
+      <p>
+        The gap between the images when displayed in the gallery:
+        {{ section.imageMargin }}.
+      </p>
     </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col">
+      <mat-form-field appearance="outline" class="width-100">
+        <mat-label>Rows per page</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="section.rowsPerPage"
+          (ngModelChange)="change()"
+        />
+        <mat-hint
+          >The number of rows to show on gallery before splitting into multiple pages.</mat-hint
+        >
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <h4 class="mt-0">Image size</h4>
+      <mat-slider
+        class="width-100"
+        min="1"
+        max="20"
+        step="1"
+        [(ngModel)]="section.imageSize"
+      ></mat-slider>
+      <p>The height of the row of images: {{ section.imageSize }}.</p>
+    </div>
+  </div>
 
-    <p>Drag and drop images top add or remove them from the gallery and to sort them inside the gallery</p>
-    <div class="row" cdkDropListGroup>
-        <div class="col-sm-6">
-            <h4>Available images</h4>
-            <div class="shaded p-3 scroll-list">
-                <div class="row" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="availableImages"
-                    (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img of availableImages">
-                        <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img.preview_small?.path" class="img-fluid" [attr.alt]="img.description" />
-                        </mat-card>
-                    </div>
-                </div>
-            </div>
-            <select [(ngModel)]="currentFolder" (ngModelChange)="folderChange()">
-                <option *ngFor="let f of allFolders" ngValue="f.folder">{{f.name}}</option>
-            </select>
+  <p>
+    Drag and drop images top add or remove them from the gallery and to sort them inside the gallery
+  </p>
+  <div class="row" cdkDropListGroup>
+    <div class="col-sm-6">
+      <h4>Available images</h4>
+      <div class="shaded p-3 scroll-list">
+        <div
+          class="row"
+          cdkDropList
+          cdkDropListSortingDisabled
+          [cdkDropListData]="availableImages"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img of availableImages">
+            <mat-card [style.height.%]="100">
+              <img
+                [src]="prefix + img.files.preview_small?.path"
+                class="img-fluid"
+                [attr.alt]="img.description"
+              />
+            </mat-card>
+          </div>
         </div>
-        <div class="col-sm-6">
-            <h4>Selected images</h4>
-            <div class="shaded p-3 scroll-list">
-                <div class="row" cdkDropList [cdkDropListData]="section.images" (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img2 of section.images">
-                        <mat-card [style.height.%]="100">
-                            <img [src]="prefix + img2.preview_small?.path" class="img-fluid" [attr.alt]="img2.description" />
-                            <mat-form-field appearance="outline" class="width-100">
-                                <mat-label>Description</mat-label>
-                                <input matInput [(ngModel)]="img2.description" (ngModelChange)="change()" type="text" />
-                            </mat-form-field>
-                        </mat-card>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
+      <select [(ngModel)]="currentFolder" (ngModelChange)="folderChange()">
+        <option *ngFor="let f of allFolders" ngValue="f.folder">{{ f.name }}</option>
+      </select>
     </div>
+    <div class="col-sm-6">
+      <h4>Selected images</h4>
+      <div class="shaded p-3 scroll-list">
+        <div
+          class="row"
+          cdkDropList
+          [cdkDropListData]="section.images"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <div cdkDrag class="col-sm-10 mb-3" *ngFor="let img2 of section.images">
+            <mat-card [style.height.%]="100">
+              <img
+                [src]="prefix + img2.files.preview_small?.path"
+                class="img-fluid"
+                [attr.alt]="img2.description"
+              />
+              <mat-form-field appearance="outline" class="width-100">
+                <mat-label>Description</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="img2.description"
+                  (ngModelChange)="change()"
+                  type="text"
+                />
+              </mat-form-field>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

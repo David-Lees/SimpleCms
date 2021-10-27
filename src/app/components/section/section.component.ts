@@ -24,9 +24,9 @@ export class SectionComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     const s = this.section as BannerSection;
-    if (s && s.image && s.image.raw) {
-      const h = s.image.raw.height;
-      const w = s.image.raw.width;
+    if (s && s.image && s.image.files['raw']) {
+      const h = s.image.files['raw'].height;
+      const w = s.image.files['raw'].width;
       const ww = window.innerWidth;
       const ar = h / w;
       this.height = ar * ww;
@@ -62,20 +62,20 @@ export class SectionComponent implements OnInit {
   get bannerUrl(): string {
     const width = window.innerWidth;
     switch (true) {
-      case width < (this.bannerSection?.image?.preview_small?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_small.path}`;
-      case width < (this.bannerSection?.image?.preview_sd?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_sd.path}`;
-      case width < (this.bannerSection.image?.preview_hd?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_hd.path}`;
+      case width < (this.bannerSection?.image?.files['preview_small']?.width || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.files['preview_small']?.path}`;
+      case width < (this.bannerSection?.image?.files['preview_sd']?.width || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.files['preview_sd']?.path}`;
+      case width < (this.bannerSection.image?.files['preview_hd']?.width || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.files['preview_hd']?.path}`;
       default:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.files['raw']?.path}`;
     }
   }
 
-  getImage() {
-    if (this.textSection.image && this.textSection.image.raw) {
-      return `url('${this.textSection.image.raw.path}')`;
+  get backgroundUrl(): string {
+    if (this.bannerUrl) {
+      return `url("${this.bannerUrl}")`;
     } else {
       return 'none';
     }

@@ -15,15 +15,13 @@ export class SelectImageComponent implements OnInit {
   @Output() selectionChange = new EventEmitter<GalleryImage>();
   root: GalleryFolder;
   currentFolder: GalleryFolder;
-  currentImage: GalleryImage;
 
   selectFolder(folder: GalleryFolder) {
     this.currentFolder = folder;
   }
 
   selectImage(image: GalleryImage) {
-    this.currentImage = image;
-    this.dialogRef.close(this.currentImage);
+    this.dialogRef.close(image);
   }
 
   constructor(

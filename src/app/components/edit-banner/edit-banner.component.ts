@@ -47,7 +47,7 @@ export class EditBannerComponent implements OnInit {
   }
 
   set(img: GalleryImage) {
-    this.section.image = img;
+    this.section.image = JSON.parse(JSON.stringify(img));
     this.change();
   }
 }
