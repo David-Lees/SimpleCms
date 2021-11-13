@@ -1,18 +1,12 @@
-import { GalleryImage } from './gallery-image';
-
 export interface GalleryFolder {
+  partitionKey: string;
+  rowKey: string;
   name: string;
-  id: string;
-  images?: GalleryImage[];
-  folders?: GalleryFolder[];
-  isExpanded?:boolean;
-}
 
-export class Folder {
-  constructor(public name: string, public folder: GalleryFolder, public isExpanded?:boolean) {}
+  level?: number;
 }
 
 export interface DropInfo {
-    targetId: string;
-    action?: string;
+  targetId: string;
+  action?: string;
 }

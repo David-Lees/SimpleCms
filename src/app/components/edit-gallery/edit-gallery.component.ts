@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GallerySection } from 'src/app/models/gallery-section';
 import { GalleryImage } from 'src/app/models/gallery-image';
 import { environment } from 'src/environments/environment';
-import { MediaService } from 'src/app/services/media.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Folder, GalleryFolder } from 'src/app/models/gallery-folder';
+import { FolderService } from 'src/app/services/folder.service';
+import { GalleryFolder } from 'src/app/models/gallery-folder';
+import { MatDialog } from '@angular/material/dialog';
+import { FolderSelectComponent } from '../folder-select/folder-select.component';
 
 @Component({
   selector: 'app-edit-gallery',
@@ -15,45 +17,32 @@ export class EditGalleryComponent implements OnInit {
   @Input() section: GallerySection;
   @Output() sectionChange = new EventEmitter<GallerySection>();
 
-  root: GalleryFolder;
-  currentFolder: Folder;
-  allFolders: Folder[] = [];
+  currentFolder: GalleryFolder;
+  allFolders: GalleryFolder[] = [];
   availableImages: GalleryImage[];
   prefix = environment.storageUrl + '/images/';
 
-  constructor(private media: MediaService) {}
+  constructor(public dialog: MatDialog, private folderService: FolderService) {}
 
   ngOnInit() {
-    this.media.root.subscribe(x => {
-      this.root = x;
-      this.traverse(this.root, 0);
-      this.availableImages = [...this.root.images];
+    this.folderService.getFolders().subscribe(x => {
+      this.allFolders = x;
+      this.currentFolder = this.allFolders[0];
+      this.folderService
+        .getImages(this.currentFolder)
+        .subscribe(y => (this.availableImages = [...y]));
     });
   }
 
-  traverse(folder: GalleryFolder, level: number) {
-    this.allFolders.push(new Folder(this.getFolderName(folder, level), folder));
-    folder.folders.forEach(element => {
-      this.traverse(element, level + 1);
-    });
-  }
-
-  folderChange() {
-    this.availableImages = this.currentFolder.folder.images;
-  }
-
-  getFolderName(folder: GalleryFolder, level: number) {
-    let name = '';
-    for (let i = 0; i < level; i++) {
-      name += '--';
-    }
-    if (level > 0) name += '>';
-    name += folder.name;
-    return name;
+  folderChange(folder: GalleryFolder) {
+    console.log(folder);
+    this.currentFolder = folder;
+    this.folderService
+      .getImages(this.currentFolder)
+      .subscribe(y => (this.availableImages = [...y]));
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -61,9 +50,11 @@ export class EditGalleryComponent implements OnInit {
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        event.currentIndex
       );
-      this.availableImages = [...this.root.images];
+      this.folderService
+        .getImages(this.currentFolder)
+        .subscribe(y => (this.availableImages = [...y]));
     }
   }
 
@@ -72,7 +63,7 @@ export class EditGalleryComponent implements OnInit {
   }
 
   add(img: GalleryImage) {
-    this.section.images.push(img);
+    this.section.images.push(JSON.parse(JSON.stringify(img)));
     this.change();
   }
 

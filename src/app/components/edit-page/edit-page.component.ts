@@ -8,6 +8,9 @@ import { BannerSection } from 'src/app/models/banner-section';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HtmlSection } from 'src/app/models/html-section';
 import { ChildrenSection } from 'src/app/models/children-section';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { AdminSortSectionsComponent } from '../admin-sort-sections/admin-sort-sections.component';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-page',
@@ -19,6 +22,13 @@ export class EditPageComponent implements OnInit, OnChanges {
   @Output() pageChange = new EventEmitter<Page>();
 
   activeSection: Section;
+
+  constructor(private _bottomSheet: MatBottomSheet) {}
+
+  sectionDescription(s: Section) {
+    const text = (s as HtmlSection).html || '' || (s as TextSection).text || '';
+    return text.length > 80 ? text.substring(0, 80) + '...' : text;
+  }
 
   ngOnInit() {
     if (this.page && this.page.sections && this.page.sections.length) {
@@ -110,7 +120,7 @@ export class EditPageComponent implements OnInit, OnChanges {
     }
   }
 
-  drop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.page.sections, event.previousIndex, event.currentIndex);
+  sortSections() {
+    this._bottomSheet.open(AdminSortSectionsComponent, { data: this.page });
   }
 }

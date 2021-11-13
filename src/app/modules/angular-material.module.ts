@@ -12,6 +12,13 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatExpansionModule } from '@angular/material/expansion';
+import {
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+  MAT_BOTTOM_SHEET_DATA,
+} from '@angular/material/bottom-sheet';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -28,6 +35,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatSliderModule,
     DragDropModule,
     MatMenuModule,
+    MatBottomSheetModule,
+    MatTooltipModule,
+    MatExpansionModule,
   ],
   exports: [
     MatButtonModule,
@@ -42,7 +52,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatSliderModule,
     DragDropModule,
     MatMenuModule,
+    MatBottomSheetModule,
+    MatTooltipModule,
+    MatExpansionModule,
   ],
-  providers: [],
+  providers: [
+    { provide: MatBottomSheetRef, useValue: {} },
+    { provide: MAT_BOTTOM_SHEET_DATA, useValue: {} },
+  ],
 })
 export class AngularMaterialModule {}

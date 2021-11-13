@@ -43,9 +43,9 @@
       [class.active]="img['active']"
       [style.background-image]="
         img['viewerImageLoaded']
-          ? 'url(' + getImagePath(img[categorySelected]['path']) + ')'
+          ? 'url(' + getImagePath(img.files[categorySelected].path) + ')'
           : math.abs(currentIdx - j) <= 1
-          ? 'url(' + getImagePath(img['preview_small']['path']) + ')'
+          ? 'url(' + getImagePath(img.files['preview_small'].path) + ')'
           : ''
       "
       [style.left]="transform + 'px'"
@@ -58,7 +58,9 @@
       *ngFor="let img of images; let j = index"
       class="preloading-image"
       (load)="imageLoaded(img)"
-      src="{{ math.abs(currentIdx - j) <= 1 ? getImagePath(img[categorySelected]['path']) : '' }}"
+      src="{{
+        math.abs(currentIdx - j) <= 1 ? getImagePath(img.files[categorySelected].path) : ''
+      }}"
       alt=""
     />
   </div>

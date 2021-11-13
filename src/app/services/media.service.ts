@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ToastService } from './toast.service';
@@ -8,61 +8,54 @@ import { DateTime } from 'luxon';
 import { ToastState } from '../enums/toast-state.enum';
 import { GalleryFolder } from '../models/gallery-folder';
 import { v4 as uuidv4 } from 'uuid';
+import { GalleryImage } from '../models/gallery-image';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MediaService {
-  root = new ReplaySubject<GalleryFolder>(1);
-
   constructor(
     private http: HttpClient,
     private blobService: BlobUploadService,
     private toast: ToastService
   ) {}
 
-  load() {
-    const headers = {
-      'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
-      'Pragma': 'no-cache',
-      'Expires': '0',
-    };
-    this.http
-      .get<GalleryFolder>(`${environment.storageUrl}/images/images.json?rnd=${uuidv4()}`, {
-        headers,
-      })
-      .subscribe((x: GalleryFolder) => {
-        console.log('loaded', x);
-        this.update(x);
-      });
+  load(f: GalleryFolder) {
+    return new Observable(obs => {
+      const headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      };
+      this.http
+        .get<GalleryImage[]>(`${environment.apiUrl}/api/folder/${f.rowKey}`, {
+          headers,
+        })
+        .subscribe((x: GalleryImage[]) => {
+          obs.next(x);
+          obs.complete();
+        });
+    });
   }
 
-  save(data: GalleryFolder) {
-    this.http.post<GalleryFolder>(environment.apiUrl + '/api/UpdateMedia', data).subscribe(
-      x => {
-        this.toast.post({ body: 'Media Saved', state: ToastState.Success });
-        this.update(data);
-      },
-      error => {
-        console.log(error);
-        this.toast.post({ body: 'Unable to save site', state: ToastState.Error });
-      }
-    );
-  }
-
-  update(f: GalleryFolder) {
-    this.root.next(f);
-  }
-
-  delete(id: string) {
+  delete(i: GalleryImage) {
     if (confirm('Delete this image?')) {
       this.http
-        .delete<GalleryFolder>(environment.apiUrl + '/api/DeleteMedia/' + id)
-        .subscribe(x => {
-          this.update(x);
+        .delete(`${environment.apiUrl}/api/folder/${i.partitionKey}/${i.rowKey}`)
+        .subscribe(() => {
           this.toast.post({ body: 'Image deleted', state: ToastState.Success });
         });
     }
+  }
+
+  move(i: GalleryImage, f: GalleryFolder) {
+    this.http
+      .delete(
+        `${environment.apiUrl}/api/MoveImage?oldParent=${i.partitionKey}&newParent=${f.rowKey}&id=${i.rowKey}`
+      )
+      .subscribe(() => {
+        this.toast.post({ body: 'Image deleted', state: ToastState.Success });
+      });
   }
 
   upload(filesToUpload: FileList): void {
@@ -92,13 +85,12 @@ export class MediaService {
                 this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
                   y => {
                     this.http
-                      .post<GalleryFolder>(
+                      .post(
                         `${environment.apiUrl}/api/ProcessMedia?filename=${fileToUpload.name}&description=${fileToUpload.name}`,
                         ''
                       )
                       .subscribe(
-                        z => {
-                          this.update(z);
+                        () => {
                           this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
                         },
                         () => {

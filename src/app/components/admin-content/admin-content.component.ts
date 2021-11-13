@@ -1,23 +1,41 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { SiteService } from 'src/app/services/site.service';
-import { Site } from 'src/app/models/site';
-import { Page } from 'src/app/models/page';
-import { MediaService } from 'src/app/services/media.service';
-import { CdkDragMove } from '@angular/cdk/drag-drop';
-import { v4 as uuidv4 } from 'uuid';
-import { DropInfo } from '../../models/gallery-folder';
 import { debounce } from '@agentepsilon/decko';
+import { CdkDragMove } from '@angular/cdk/drag-drop';
 import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
+import {
+  faCaretDown,
+  faCaretRight,
+  faEllipsisH,
+  faFolder,
+  faFolderOpen,
+  faFolderPlus,
+  faList,
+} from '@fortawesome/free-solid-svg-icons';
+import { DropInfo } from 'src/app/models/gallery-folder';
+import { Page } from 'src/app/models/page';
+import { Site } from 'src/app/models/site';
+import { MediaService } from 'src/app/services/media.service';
+import { SiteService } from 'src/app/services/site.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
-  selector: 'app-admin-view',
-  templateUrl: './admin-view.component.html',
-  styleUrls: ['./admin-view.component.scss'],
+  selector: 'app-admin-content',
+  templateUrl: './admin-content.component.html',
+  styleUrls: ['./admin-content.component.scss'],
 })
-export class AdminViewComponent implements OnInit {
+export class AdminContentComponent implements OnInit {
+  showPages = true;
+  list = faList;
+  activePage: Page;
   site: Site;
   loaded = false;
-  activePage: Page;
+  ellipse = faEllipsisH;
+  folder = faFolder;
+  folderOpen = faFolderOpen;
+  folderPlus = faFolderPlus;
+  caretRight = faCaretRight;
+  caretDown = faCaretDown;
+  expandedNodes = [];
 
   // ids for connected drop lists
   dropTargetIds = [];
@@ -30,8 +48,39 @@ export class AdminViewComponent implements OnInit {
     private mediaService: MediaService
   ) {}
 
+  ngOnInit(): void {
+    this.load();
+  }
+
+  addPage() {
+    this.site.pages.push(this.newPage());
+  }
+
+  addChild(page: Page) {
+    page.pages.push(this.newPage());
+  }
+
+  canDelete() {
+    return false;
+  }
+
+  newPage(): Page {
+    return {
+      id: uuidv4(),
+      name: 'New page',
+      url: 'new-page',
+      sections: [],
+      pages: [],
+    };
+  }
+
+  remove(x: number) {
+    if (this.site.pages.length > 1) {
+      this.site.pages = this.site.pages.splice(x);
+    }
+  }
+
   save() {
-    console.log('saving site', this.site);
     this.siteService.save(this.site);
   }
 
@@ -41,59 +90,26 @@ export class AdminViewComponent implements OnInit {
       if (!this.site.id) this.site.id = uuidv4();
       if (!this.site.hasLogo) this.site.hasLogo = false;
       this.loaded = true;
+      if (this.site.pages && this.site.pages.length) {
+        this.activePage = this.site.pages[0];
+      }
     } else {
       setTimeout(() => this.load(), 20);
     }
   }
 
-  ngOnInit() {
-    this.load();
-    this.mediaService.load();
-  }
-
-  change() {
-    // do nothing
-  }
-
-  select(event: { node: { data: Page } }) {
-    console.log(event);
-    this.activePage = event.node.data;
-  }
-
-  add() {
-    const p: Page = {
-      id: uuidv4(),
-      name: 'New page',
-      url: 'new-page',
-      sections: [],
-      pages: [],
-    };
-    this.site.pages.push(p);
-    this.change();
-  }
-
-  addChild(page: Page) {
-    const p: Page = {
-      id: uuidv4(),
-      name: 'New page',
-      url: 'new-page',
-      sections: [],
-      pages: [],
-    };
-    page.pages.push(p);
-    this.change();
-  }
-
-  remove(x: number) {
-    if (this.site.pages.length > 1) {
-      this.site.pages = this.site.pages.splice(x);
-      this.change();
-    }
+  isExpanded(id: string) {
+    return this.expandedNodes.includes(id);
   }
 
   nodeClick(node: Page) {
-    node.isExpanded = !node.isExpanded;
-    this.activePage = node;
+    if (this.expandedNodes.includes(node.id)) {
+      this.expandedNodes.splice(this.expandedNodes.indexOf(node.id), 1);
+    } else {
+      this.expandedNodes.push(node.id);
+    }
+    var p = this.getNode(node.id);
+    this.activePage = p as Page;
   }
 
   prepareDragDrop(nodes: Site | Page) {
@@ -135,18 +151,21 @@ export class AdminViewComponent implements OnInit {
     this.showDragInfo();
   }
 
-  drop(event) {
+  drop(event: any) {
+    console.log('drop', event, this.dropActionTodo);
     if (!this.dropActionTodo) return;
 
-    const sourceFolder =
+    const sourcePage =
       event.previousContainer.id === 'main'
         ? this.site
         : this.getParentNode(event.previousContainer.id);
 
+    console.log('sourcePage', event.previousContainer.id, sourcePage);
     const draggedItemId = event.item.data;
 
-    let i = sourceFolder.pages.findIndex(c => c.id === draggedItemId);
-    const draggedItem = sourceFolder.pages.splice(i, 1)[0];
+    let i = sourcePage.pages.findIndex(c => c.id === draggedItemId);
+    const draggedItem = sourcePage.pages.splice(i, 1)[0];
+    console.log('draggedItem', draggedItem);
 
     switch (this.dropActionTodo.action) {
       case 'before':
@@ -154,6 +173,7 @@ export class AdminViewComponent implements OnInit {
         const f = this.getParentNode(this.dropActionTodo.targetId);
         f.pages = f.pages || [];
         const targetIndex = f.pages.findIndex(c => c.id === this.dropActionTodo.targetId);
+        console.log('before/after', f, targetIndex);
         if (this.dropActionTodo.action == 'before') {
           f.pages.splice(targetIndex, 0, draggedItem);
         } else {
@@ -163,8 +183,11 @@ export class AdminViewComponent implements OnInit {
 
       case 'inside':
         const folder = this.getNode(this.dropActionTodo.targetId);
+        console.log('inside', folder);
         folder.pages.push(draggedItem);
-        folder.isExpanded = true;
+        if (!this.expandedNodes.includes(folder.id)) {
+          this.expandedNodes.push(folder.id);
+        }
         break;
     }
 
@@ -176,7 +199,7 @@ export class AdminViewComponent implements OnInit {
     if (!nodesToSearch) {
       nodesToSearch = this.site;
     }
-    if (nodesToSearch.id == id) return nodesToSearch;
+    if (nodesToSearch.id === id) return nodesToSearch;
     for (let node of nodesToSearch.pages) {
       let ret = this.getNode(id, node);
       if (ret) return ret;
@@ -190,7 +213,7 @@ export class AdminViewComponent implements OnInit {
       nodesToSearch = this.site;
     }
     for (let node of nodesToSearch.pages || []) {
-      if (node.id == id) return nodesToSearch;
+      if (node.id === id) return nodesToSearch;
       let ret = this.getParentNode(id, node);
       if (ret) return ret;
     }

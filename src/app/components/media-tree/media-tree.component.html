@@ -1,60 +1,38 @@
-<ng-template #tmplNode let-node="node">
-  <div class="node-item" [attr.data-id]="node.id" [attr.id]="'node-' + node.id">
-    <div
-      class="node-title"
-      (click)="nodeClick(node)"
-      [ngClass]="{ selected: selectedNodeId === node.id }"
-    >
-      {{ node.folders.length ? (node.isExpanded ? '-&nbsp;' : '+') : '&nbsp;&nbsp;&nbsp;' }}
-      &nbsp;&nbsp;&nbsp; {{ node.name }}
-    </div>
-
-    <div
-      *ngIf="node.isExpanded && node.folders.length"
-      class="node-children"
-      cdkDropList
-      [cdkDropListData]="node.folders"
-      [id]="node.id"
-      [cdkDropListConnectedTo]="dropTargetIds"
-      (cdkDropListDropped)="drop($event)"
-      [cdkDropListSortingDisabled]="true"
-    >
-      <div
-        *ngFor="let child of node.folders"
-        cdkDrag
-        [cdkDragData]="child.id"
-        (cdkDragMoved)="dragMoved($event)"
-      >
-        <ng-container *ngTemplateOutlet="tmplNode; context: { node: child }"></ng-container>
-      </div>
+<ng-template #nodeTemplateRef let-node="node">
+  <div class="m-0 p-0">
+    <a (click)="selectNode(node)" class="node__label" [class.selected]="node === selectedFolder">
+      <ng-container *ngIf="hasChildren(node.rowKey)">
+        <fa-icon *ngIf="isExpanded(node.rowKey)" [icon]="caretDown" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="isExpanded(node.rowKey)" [icon]="folderOpen" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="!isExpanded(node.rowKey)" [icon]="caretRight" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="!isExpanded(node.rowKey)" [icon]="folder" [fixedWidth]="true"></fa-icon>
+      </ng-container>
+      <ng-container *ngIf="!hasChildren(node.rowKey)">
+        <fa-icon [icon]="caretRight" [fixedWidth]="true" [style.opacity]="0"></fa-icon>
+        <fa-icon [icon]="folder" [fixedWidth]="true"></fa-icon>
+      </ng-container>
+      {{ node.name }}
+    </a>
+    <div class="m-0 pl-4" *ngIf="isExpanded(node.rowKey)">
+      <ng-template ngFor let-child [ngForOf]="getChildren(node.rowKey)">
+        <!-- Invoke the recursive template. -->
+        <ng-template
+          [ngTemplateOutlet]="nodeTemplateRef"
+          [ngTemplateOutletContext]="{ node: child }"
+        >
+          <!--
+        Because we are using nested ngTemplates (rather than the template
+        input of the ngFor directive), we have more control over how the
+        data is made available to the recursive template. In this case,
+        we're passing "child" through as "node".
+      -->
+        </ng-template>
+      </ng-template>
     </div>
   </div>
 </ng-template>
 
-<div class="ng-star-inserted">
-  <div
-    class="node-title"
-    (click)="nodeClick(nodes)"
-    [ngClass]="{ selected: selectedNodeId === nodes.id }"
-  >
-    Media
-  </div>
-
-  <div
-    cdkDropList
-    [cdkDropListData]="nodes"
-    [id]="'main'"
-    [cdkDropListConnectedTo]="dropTargetIds"
-    (cdkDropListDropped)="drop($event)"
-    [cdkDropListSortingDisabled]="true"
-  >
-    <div
-      *ngFor="let node of nodes.folders"
-      cdkDrag
-      [cdkDragData]="node.id"
-      (cdkDragMoved)="dragMoved($event)"
-    >
-      <ng-container *ngTemplateOutlet="tmplNode; context: { node: node }"></ng-container>
-    </div>
-  </div>
-</div>
+<ng-container *ngIf="folders">
+  <ng-template [ngTemplateOutlet]="nodeTemplateRef" [ngTemplateOutletContext]="{ node: getRoot() }">
+  </ng-template>
+</ng-container>

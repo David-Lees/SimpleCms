@@ -54,12 +54,16 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     this.render();
   }
 
-  constructor(public imageService: ImageService, public http: HttpClient, public changeDetectorRef: ChangeDetectorRef) {}
+  constructor(
+    public imageService: ImageService,
+    public http: HttpClient,
+    public changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.fetchDataAndRender();
-    this.viewerSubscription = this.imageService.showImageViewerChanged$.subscribe((visibility: boolean) =>
-      this.viewerChange.emit(visibility)
+    this.viewerSubscription = this.imageService.showImageViewerChanged$.subscribe(
+      (visibility: boolean) => this.viewerChange.emit(visibility)
     );
   }
 
@@ -88,7 +92,10 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
    * direction (-1: left, 1: right)
    */
   navigate(direction: number): void {
-    if ((direction === 1 && this.rowIndex < this.gallery.length - this.rowsPerPage) || (direction === -1 && this.rowIndex > 0)) {
+    if (
+      (direction === 1 && this.rowIndex < this.gallery.length - this.rowsPerPage) ||
+      (direction === -1 && this.rowIndex > 0)
+    ) {
       this.rowIndex += this.rowsPerPage * direction;
     }
     this.refreshNavigationErrorState();
@@ -147,16 +154,21 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
 
   private calcRowHeight(imgRow: Array<any>): number {
     const originalRowWidth = this.calcOriginalRowWidth(imgRow);
-    const ratio = (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth;
+    const ratio =
+      (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth;
     return imgRow[0][this.minimalQualityCategory].height * ratio;
   }
 
   private calcOriginalRowWidth(imgRow: Array<any>): number {
     let originalRowWidth = 0;
     imgRow.forEach(img => {
-      img[this.minimalQualityCategory] = img[this.minimalQualityCategory] || { width: 1, height: 1 };
+      img[this.minimalQualityCategory] = img[this.minimalQualityCategory] || {
+        width: 1,
+        height: 1,
+      };
       const individualRatio = this.calcIdealHeight() / img[this.minimalQualityCategory].height;
-      img[this.minimalQualityCategory].width = img[this.minimalQualityCategory].width * individualRatio;
+      img[this.minimalQualityCategory].width =
+        img[this.minimalQualityCategory].width * individualRatio;
       img[this.minimalQualityCategory].height = this.calcIdealHeight();
       originalRowWidth += img[this.minimalQualityCategory].width;
     });
@@ -184,7 +196,9 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
       const originalRowWidth = this.calcOriginalRowWidth(imgRow);
 
       if (imgRow !== this.gallery[this.gallery.length - 1]) {
-        const ratio = (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth;
+        const ratio =
+          (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) /
+          originalRowWidth;
 
         imgRow.forEach((img: any) => {
           img.width = img[this.minimalQualityCategory].width * ratio;
@@ -208,11 +222,12 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     this.changeDetectorRef.detectChanges();
   }
 
-  private checkForAsyncLoading(image: any, imageCounter: number): void {
+  private checkForAsyncLoading(image: GalleryImage, imageCounter: number): void {
     const imageElements = (this.imageElements || new QueryList<any>()).toArray();
     if (image.galleryImageLoaded || (imageElements.length > 0 && imageElements[imageCounter])) {
       image.galleryImageLoaded = true;
-      image.srcAfterFocus = environment.storageUrl + '/images/' + image[this.minimalQualityCategory].path;
+      image.srcAfterFocus =
+        environment.storageUrl + '/images/' + image.files[this.minimalQualityCategory].path;
     } else {
       image.srcAfterFocus = '';
     }

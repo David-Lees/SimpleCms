@@ -1,0 +1,15 @@
+<div class="navbar">
+  <mat-toolbar color="primary">
+    <img src="/assets/favicon-32x32.png" alt="Administration" />
+    <a class="nav-link" [routerLink]="['/admin']" [style.color]="headerColour">Content</a>
+    <a class="nav-link" [routerLink]="['/admin', 'library']" [style.color]="headerColour">
+      Image Library
+    </a>
+    <a class="nav-link" [routerLink]="['/admin', 'settings']" [style.color]="headerColour">
+      Settings
+    </a>
+    <span class="example-spacer"></span>
+    <a class="nav-link" routerLink="/" [style.color]="headerColour">View Site</a>
+  </mat-toolbar>
+</div>
+<div class="nav-spacer"></div>

@@ -27,7 +27,6 @@ export class MediaListComponent {
 
   drop(event: CdkDragDrop<string[]>) {
     if (this.canSort) {
-      console.log(event);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       this.imagesChange.emit(this.images);
     }
@@ -40,7 +39,6 @@ export class MediaListComponent {
   }
 
   move(image: GalleryImage) {
-    console.log('move', image);
     this.moved.next(image);
   }
 }

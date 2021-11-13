@@ -6,9 +6,7 @@ import { ViewerComponent } from './components/viewer/viewer.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AppRoutingModule } from './modules/app-routing.module';
 import { PublicViewComponent } from './components/public-view/public-view.component';
-import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MediaComponent } from './components/media/media.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SectionComponent } from './components/section/section.component';
 import { EditSectionComponent } from './components/edit-section/edit-section.component';
@@ -36,6 +34,16 @@ import { FolderSelectComponent } from './components/folder-select/folder-select.
 import { MatDialogModule } from '@angular/material/dialog';
 import { MediaTreeComponent } from './components/media-tree/media-tree.component';
 import { EditChildrenComponent } from './components/edit-children/edit-children.component';
+import { AdminHeaderComponent } from './components/admin-header/admin-header.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminLibraryComponent } from './components/admin-library/admin-library.component';
+import { AdminTreeComponent } from './components/admin-tree/admin-tree.component';
+import { AdminContentComponent } from './components/admin-content/admin-content.component';
+import { AdminSettingsComponent } from './components/admin-settings/admin-settings.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AdminAddFolderComponent } from './components/admin-add-folder/admin-add-folder.component';
+import { AdminRenameFolderComponent } from './components/admin-rename-folder/admin-rename-folder.component';
+import { AdminSortSectionsComponent } from './components/admin-sort-sections/admin-sort-sections.component';
 
 export function getAdalConfig() {
   return {
@@ -50,8 +58,6 @@ export function getAdalConfig() {
     GalleryComponent,
     ViewerComponent,
     PublicViewComponent,
-    AdminViewComponent,
-    MediaComponent,
     SectionComponent,
     EditSectionComponent,
     HeaderComponent,
@@ -68,6 +74,15 @@ export function getAdalConfig() {
     FolderSelectComponent,
     MediaTreeComponent,
     EditChildrenComponent,
+    AdminHeaderComponent,
+    AdminComponent,
+    AdminLibraryComponent,
+    AdminTreeComponent,
+    AdminContentComponent,
+    AdminSettingsComponent,
+    AdminAddFolderComponent,
+    AdminRenameFolderComponent,
+    AdminSortSectionsComponent,
   ],
   imports: [
     AngularMaterialModule,
@@ -92,6 +107,7 @@ export function getAdalConfig() {
     }),
     MsAdalAngular6Module.forRoot(getAdalConfig),
     HammerModule,
+    FontAwesomeModule,
   ],
   providers: [
     AuthenticationGuard,

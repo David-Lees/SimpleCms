@@ -20,7 +20,6 @@ export class EditHtmlComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.html !== this.section.html) {
-      console.log('setting text section');
       this.lastChange.name = this.section.name;
       this.lastChange.html = this.section.html;
     }
@@ -33,7 +32,6 @@ export class EditHtmlComponent implements OnInit, OnChanges {
   }
 
   change() {
-    console.log('form change', this.html);
     this.lastChange.html = this.html;
     this.sectionChange.emit(this.lastChange);
   }

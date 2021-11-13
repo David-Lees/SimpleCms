@@ -22,12 +22,9 @@ export class EditBannerComponent implements OnInit {
   constructor(public dialog: MatDialog, private media: MediaService) {}
 
   ngOnInit() {
-    this.media.root.subscribe(x => {
-      this.folder = x;
-      if (this.section && this.section.image) {
-        this.section.image = this.folder.images.find(y => y.id === this.section.image.id);
-      }
-    });
+    // this.media.root.subscribe(x => {
+    //   this.folder = x;
+    // });
   }
 
   change() {

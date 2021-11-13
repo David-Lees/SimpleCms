@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { HttpClient, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
 import { catchError, last, map, tap } from 'rxjs/operators';
@@ -8,8 +8,10 @@ import { ToastService } from 'src/app/services/toast.service';
 import { ToastState } from 'src/app/enums/toast-state.enum';
 import { environment } from 'src/environments/environment';
 import { GalleryImage } from 'src/app/models/gallery-image';
-import { of, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { GalleryFolder } from 'src/app/models/gallery-folder';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-material-file-upload',
@@ -23,7 +25,6 @@ import { GalleryFolder } from 'src/app/models/gallery-folder';
   ],
 })
 export class MaterialFileUploadComponent {
-  @Input() folder: GalleryFolder;
   /* Link text */
   @Input() text = 'Upload';
   /* Name used in form which will be sent in HTTP request. */
@@ -37,12 +38,15 @@ export class MaterialFileUploadComponent {
   @Output() uploadComplete = new EventEmitter<string>();
 
   public files: Array<FileUploadModel> = [];
+  times = faTimes;
 
   constructor(
     private http: HttpClient,
     private toast: ToastService,
     private mediaService: MediaService,
-    private blobService: BlobUploadService
+    private blobService: BlobUploadService,
+    private _bottomSheetRef: MatBottomSheetRef<MaterialFileUploadComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public folder: GalleryFolder
   ) {}
 
   onClick() {
@@ -58,9 +62,15 @@ export class MaterialFileUploadComponent {
           canCancel: true,
         })
       );
-      this.uploadFiles();
+      this.uploadFiles().subscribe(() => {
+        this._bottomSheetRef.dismiss(true);
+      });
     };
     fileUpload.click();
+  }
+
+  dismiss() {
+    this._bottomSheetRef.dismiss(false);
   }
 
   cancelFile(file: FileUploadModel) {
@@ -74,96 +84,107 @@ export class MaterialFileUploadComponent {
   }
 
   private uploadFile(file: FileUploadModel) {
-    this.blobService.getUserDelegationKey().subscribe(
-      key => {
-        const blockid = btoa(Math.random().toString(36).substring(7));
+    return new Observable(obs => {
+      this.blobService.getUserDelegationKey().subscribe(
+        key => {
+          const blockid = btoa(Math.random().toString(36).substring(7));
 
-        let token: string = key.token;
-        token = token.substring(1);
-        const url =
-          environment.storageUrl +
-          '/image-upload/' +
-          file.data.name +
-          '?comp=block&blockid=' +
-          blockid +
-          '&' +
-          token;
+          let token: string = key.token;
+          token = token.substring(token.indexOf('?') + 1);
+          const url =
+            environment.storageUrl +
+            '/image-upload/' +
+            file.data.name +
+            '?comp=block&blockid=' +
+            blockid +
+            '&' +
+            token;
 
-        const reader = new FileReader();
-        reader.onload = () => {
-          const req = new HttpRequest('PUT', url, reader.result, {
-            reportProgress: true,
-          });
-          file.inProgress = true;
-          file.sub = this.http
-            .request(req)
-            .pipe(
-              map(event => {
-                switch (event.type) {
-                  case HttpEventType.UploadProgress:
-                    file.progress = Math.round((event.loaded * 100) / event.total);
-                    break;
-                  case HttpEventType.Response:
-                    return event;
-                }
-              }),
-              tap(message => {}),
-              last(),
-              catchError((error: HttpErrorResponse) => {
-                file.inProgress = false;
-                file.canRetry = true;
-                return of(`${file.data.name} upload failed.`);
-              })
-            )
-            .subscribe((event: any) => {
-              console.log('subscribe', event);
-              if (typeof event === 'object') {
-                this.removeFileFromArray(file);
-                this.uploadComplete.emit(event.body);
-                const body = `<?xml version="1.0" encoding="utf-8"?>\r\n<BlockList>\r\n<Latest>${blockid}</Latest>\r\n</BlockList>`;
-                this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
-                  y => {
-                    this.http
-                      .post<GalleryImage[]>(
-                        `${environment.apiUrl}/api/ProcessMedia?filename=${file.data.name}&folder=${this.folder?.id}&description=${file.data.name}`,
-                        ''
-                      )
-                      .subscribe(
-                        z => {
-                          this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
-                        },
-                        () => {
-                          this.toast.post({
-                            body: 'Unable to process uploaded file. May not be an image.',
-                            state: ToastState.Error,
-                          });
-                        }
-                      );
-                  },
-                  () => {
-                    this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
-                  }
-                );
-              }
+          const reader = new FileReader();
+          reader.onload = () => {
+            const req = new HttpRequest('PUT', url, reader.result, {
+              reportProgress: true,
             });
-        };
-        reader.readAsArrayBuffer(file.data);
-      },
-      () =>
-        this.toast.post({
-          body: 'Unable to obtain security token to start upload to storage',
-          state: ToastState.Error,
-        })
-    );
+            file.inProgress = true;
+            file.sub = this.http
+              .request(req)
+              .pipe(
+                map(event => {
+                  switch (event.type) {
+                    case HttpEventType.UploadProgress:
+                      file.progress = Math.round((event.loaded * 100) / event.total);
+                      break;
+                    case HttpEventType.Response:
+                      return event;
+                  }
+                }),
+                tap(message => {}),
+                last(),
+                catchError((error: HttpErrorResponse) => {
+                  file.inProgress = false;
+                  file.canRetry = true;
+                  obs.error();
+                  return of(`${file.data.name} upload failed.`);
+                })
+              )
+              .subscribe((event: any) => {
+                if (typeof event === 'object') {
+                  this.removeFileFromArray(file);
+                  this.uploadComplete.emit(event.body);
+                  const body = `<?xml version="1.0" encoding="utf-8"?>\r\n<BlockList>\r\n<Latest>${blockid}</Latest>\r\n</BlockList>`;
+                  this.http.put(url.replace('comp=block&', 'comp=blocklist&'), body).subscribe(
+                    y => {
+                      this.http
+                        .post(
+                          `${environment.apiUrl}/api/ProcessUpload?filename=${file.data.name}&folder=${this.folder?.rowKey}&description=${file.data.name}`,
+                          ''
+                        )
+                        .subscribe(
+                          () => {
+                            obs.next(true);
+                            obs.complete();
+                            console.log('Image processed', file.data.name);
+                            this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
+                          },
+                          () => {
+                            this.toast.post({
+                              body: 'Unable to process uploaded file. May not be an image.',
+                              state: ToastState.Error,
+                            });
+                            obs.error();
+                          }
+                        );
+                    },
+                    () => {
+                      this.toast.post({ body: 'Unable to upload file.', state: ToastState.Error });
+                      obs.error();
+                    }
+                  );
+                }
+              });
+          };
+          reader.readAsArrayBuffer(file.data);
+        },
+        () => {
+          this.toast.post({
+            body: 'Unable to obtain security token to start upload to storage',
+            state: ToastState.Error,
+          });
+          obs.error();
+        }
+      );
+    });
   }
 
   private uploadFiles() {
     const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
     fileUpload.value = '';
 
+    const tasks = [];
     this.files.forEach(file => {
-      this.uploadFile(file);
+      tasks.push(this.uploadFile(file));
     });
+    return forkJoin(tasks);
   }
 
   private removeFileFromArray(file: FileUploadModel) {

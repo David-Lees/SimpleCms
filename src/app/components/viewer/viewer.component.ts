@@ -3,6 +3,7 @@ import { Component, HostListener, Input } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
+import { GalleryImage } from 'src/app/models/gallery-image';
 
 @Component({
   selector: 'app-viewer',
@@ -95,7 +96,7 @@ import { MediaService } from 'src/app/services/media.service';
 })
 export class ViewerComponent {
   showViewer: boolean;
-  images: Array<any> = [{}];
+  images: GalleryImage[] = [];
   currentIdx = 0;
   leftArrowVisible = true;
   rightArrowVisible = true;
@@ -160,7 +161,10 @@ export class ViewerComponent {
    * swipe (user swiped)
    */
   navigate(direction: number, swipe: any): void {
-    if ((direction === 1 && this.currentIdx < this.images.length - 1) || (direction === -1 && this.currentIdx > 0)) {
+    if (
+      (direction === 1 && this.currentIdx < this.images.length - 1) ||
+      (direction === -1 && this.currentIdx > 0)
+    ) {
       if (direction === -1) {
         this.images[this.currentIdx].transition = 'leaveToRight';
         this.images[this.currentIdx - 1].transition = 'enterFromLeft';
@@ -192,7 +196,9 @@ export class ViewerComponent {
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    const prevent = ['ArrowLeft', 'ArrowRight', 'Escape', 'Home', 'End'].find(no => no === event.key);
+    const prevent = ['ArrowLeft', 'ArrowRight', 'Escape', 'Home', 'End'].find(
+      no => no === event.key
+    );
     if (prevent) {
       event.preventDefault();
     }
@@ -260,15 +266,21 @@ export class ViewerComponent {
       case 'auto': {
         this.categorySelected = 'preview_small';
         if (
-          screenWidth > this.images[this.currentIdx].preview_small.width ||
-          screenHeight > this.images[this.currentIdx].preview_small.height
+          screenWidth > this.images[this.currentIdx].files.preview_small.width ||
+          screenHeight > this.images[this.currentIdx].files.preview_small.height
         ) {
           this.categorySelected = 'preview_sd';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_sd.width || screenHeight > this.images[this.currentIdx].preview_sd.height) {
+        if (
+          screenWidth > this.images[this.currentIdx].files.preview_sd.width ||
+          screenHeight > this.images[this.currentIdx].files.preview_sd.height
+        ) {
           this.categorySelected = 'preview_hd';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_hd.width || screenHeight > this.images[this.currentIdx].preview_hd.height) {
+        if (
+          screenWidth > this.images[this.currentIdx].files.preview_hd.width ||
+          screenHeight > this.images[this.currentIdx].files.preview_hd.height
+        ) {
           this.categorySelected = 'raw';
         }
         break;

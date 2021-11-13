@@ -35,83 +35,56 @@
     </div>
   </div>
 
-  <div>
-    <mat-drawer-container class="example-container" autosize>
-      <mat-drawer class="example-sidenav" mode="side" opened>
-        <h5>Sections</h5>
-        <div
-          *ngIf="page.sections && page.sections.length"
-          cdkDropList
-          (cdkDropListDropped)="drop($event)"
-        >
-          <mat-card
-            class="mb-2"
-            *ngFor="let s of page.sections; let idx = index"
-            (click)="select(idx)"
-            cdkDrag
-            [ngClass]="{
-              'card-active': page.sections[idx] === activeSection,
-              'card-inactive': page.sections[idx] !== activeSection
-            }"
-          >
-            <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
-            <mat-icon *ngIf="s.name === 'TextSection'">format_align_justify</mat-icon>
-            <mat-icon *ngIf="s.name === 'GallerySection'">view_module</mat-icon>
-            <mat-icon *ngIf="s.name === 'HtmlSection'">code</mat-icon>
-            <mat-icon *ngIf="!s.name">help</mat-icon>
-            <ng-container *ngIf="s.name">
-              {{ s.name?.replace('Section', ' Section') }}
-            </ng-container>
-          </mat-card>
-        </div>
+  <div style="text-align: right">
+    <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" class="m-2">
+      <mat-icon>add_circle</mat-icon> Add Section
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="addBanner()">
+        <mat-icon>photo_camera</mat-icon>
+        Add banner image
+      </button>
+      <button mat-menu-item (click)="addText()">
+        <mat-icon>format_align_justify</mat-icon>
+        Add text block
+      </button>
+      <button mat-menu-item (click)="addGallery()">
+        <mat-icon>view_module</mat-icon>
+        Add image gallery
+      </button>
 
-        <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" class="mt-4">
-          <mat-icon>add_circle</mat-icon> Add
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="addBanner()">
-            <mat-icon>photo_camera</mat-icon>
-            Add banner image
-          </button>
-          <button mat-menu-item (click)="addText()">
-            <mat-icon>format_align_justify</mat-icon>
-            Add text block
-          </button>
-          <button mat-menu-item (click)="addGallery()">
-            <mat-icon>view_module</mat-icon>
-            Add image gallery
-          </button>
+      <button mat-menu-item (click)="addHtml()">
+        <mat-icon>view_module</mat-icon>
+        Add HTML block
+      </button>
 
-          <button mat-menu-item (click)="addHtml()">
-            <mat-icon>view_module</mat-icon>
-            Add HTML block
-          </button>
-
-          <button mat-menu-item (click)="addChildren()">
-            <mat-icon>view_module</mat-icon>
-            Add child page list
-          </button>
-        </mat-menu>
-      </mat-drawer>
-      <mat-drawer-content>
-        <div *ngIf="activeSection">
-          <div class="row">
-            <div class="col-sm-8">
-              <h5 *ngIf="activeSection.name" class="card-title">
-                {{ activeSection.name.replace('Section', ' Section') }}
-              </h5>
-            </div>
-            <div class="col-sm-4 text-right">
-              <button mat-raised-button color="accent" (click)="remove()">
-                <mat-icon>remove_circle</mat-icon>
-                Remove section
-              </button>
-            </div>
-          </div>
-          <app-edit-section [section]="activeSection" (sectionChange)="update($event)">
-          </app-edit-section>
-        </div>
-      </mat-drawer-content>
-    </mat-drawer-container>
+      <button mat-menu-item (click)="addChildren()">
+        <mat-icon>view_module</mat-icon>
+        Add child page list
+      </button>
+    </mat-menu>
+    <button class="m-2" mat-raised-button color="accent" (click)="sortSections()">
+      Sort Sections
+    </button>
   </div>
+
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let s of page.sections; let idx = index">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
+          <mat-icon *ngIf="s.name === 'TextSection'">format_align_justify</mat-icon>
+          <mat-icon *ngIf="s.name === 'GallerySection'">view_module</mat-icon>
+          <mat-icon *ngIf="s.name === 'HtmlSection'">code</mat-icon>
+          <mat-icon *ngIf="s.name === 'ChildrenSection'">list</mat-icon>
+          <mat-icon *ngIf="!s.name">help</mat-icon>
+          <ng-container *ngIf="s.name">{{ s.name?.replace('Section', ' Section') }} </ng-container>
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ sectionDescription(s) }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-edit-section [section]="s" (sectionChange)="update($event)"> </app-edit-section>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

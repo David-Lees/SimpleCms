@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Folder, GalleryFolder } from 'src/app/models/gallery-folder';
-import { MediaService } from 'src/app/services/media.service';
+import { GalleryFolder } from 'src/app/models/gallery-folder';
 import { MatDialogRef } from '@angular/material/dialog';
+import { FolderService } from 'src/app/services/folder.service';
+import {
+  faCaretDown,
+  faCaretRight,
+  faFolder,
+  faFolderOpen,
+  faFolderPlus,
+  faList,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-folder-select',
@@ -9,32 +17,40 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./folder-select.component.scss'],
 })
 export class FolderSelectComponent implements OnInit {
-  allFolders: Folder[] = [];
+  allFolders: GalleryFolder[] = [];
   currentFolder: GalleryFolder;
+  list = faList;
+  folder = faFolder;
+  folderOpen = faFolderOpen;
+  folderPlus = faFolderPlus;
+  caretRight = faCaretRight;
+  caretDown = faCaretDown;
 
-  constructor(public dialogRef: MatDialogRef<FolderSelectComponent>, private media: MediaService) {}
+  constructor(
+    public dialogRef: MatDialogRef<FolderSelectComponent>,
+    private folderService: FolderService
+  ) {}
 
   ngOnInit() {
-    this.media.root.subscribe(x => {
-      this.traverse(x, 0);
-      this.currentFolder = x;
+    this.folderService.getFolders().subscribe(x => {
+      this.allFolders = x;
+      this.currentFolder = this.allFolders.find(y => y.rowKey === this.folderService.empty);
     });
   }
 
-  traverse(folder: GalleryFolder, level: number) {
-    this.allFolders.push(new Folder(this.getFolderName(folder, level), folder));
-    folder.folders.forEach(element => {
-      this.traverse(element, level + 1);
-    });
+  getRoot() {
+    return this.allFolders.find(
+      x => x.partitionKey === this.folderService.empty && x.rowKey === this.folderService.empty
+    );
   }
 
-  getFolderName(folder: GalleryFolder, level: number) {
-    let name = '';
-    for (let i = 0; i < level; i++) {
-      name += '--';
-    }
-    if (level > 0) name += '>';
-    name += folder.name;
-    return name;
+  hasChildren(parentId: string) {
+    return this.getChildren(parentId).length > 0;
+  }
+
+  getChildren(parentId: string) {
+    return this.allFolders.filter(
+      x => x.partitionKey === parentId && x.rowKey !== this.folderService.empty
+    );
   }
 }

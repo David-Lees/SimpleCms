@@ -22,7 +22,6 @@ export class PublicViewComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(p => {
       this.id = p.url;
-      console.log('id', this.id);
       this.loadSite();
     });
   }
@@ -40,7 +39,10 @@ export class PublicViewComponent implements OnInit {
   }
 
   findChildPage(url: string, page: Site | Page): Page {
-    return page.pages.find(x => x.url.toLowerCase() === url.toLowerCase());
+    if (page && page.pages) {
+      return page.pages.find(x => x.url.toLowerCase() === url.toLowerCase());
+    }
+    return null;
   }
 
   loadSite() {
@@ -53,7 +55,6 @@ export class PublicViewComponent implements OnInit {
       } else {
         this.page = this.siteService.site.pages[0];
       }
-      console.log(this.page, this.siteService);
       this.titleService.setTitle(`${this.page.name} - ${this.siteService.site.name}`);
     } else {
       setTimeout(() => this.loadSite(), 10);
