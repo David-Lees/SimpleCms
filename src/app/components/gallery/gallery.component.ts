@@ -29,7 +29,7 @@ import { environment } from 'src/environments/environment';
 export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
   gallery: Array<any> = [];
   images: Array<GalleryImage> = [];
-  minimalQualityCategory = 'preview_small';
+  minimalQualityCategory = 'previewSmall';
   viewerSubscription: Subscription;
   rowIndex = 0;
   rightArrowInactive = false;
@@ -82,7 +82,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  openImageViewer(img: any): void {
+  openImageViewer(img: GalleryImage): void {
     this.imageService.updateImages(this.images);
     this.imageService.updateSelectedImageIndex(this.images.indexOf(img));
     this.imageService.showImageViewer(true);
@@ -131,7 +131,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     let currentRowIndex = 0;
     let i = 0;
 
-    for (i; i < this.images.length; i++) {
+    while (i < this.images.length) {
       while (this.images[i + 1] && this.shouldAddCandidate(tempRow, this.images[i + 1])) {
         i++;
       }
@@ -140,36 +140,33 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
       }
       this.gallery[currentRowIndex++] = tempRow;
       tempRow = [this.images[i + 1]];
+      i++;
     }
     this.scaleGallery();
   }
 
-  private shouldAddCandidate(imgRow: Array<any>, candidate: any): boolean {
+  private shouldAddCandidate(imgRow: Array<GalleryImage>, candidate: GalleryImage): boolean {
     const oldDifference = this.calcIdealHeight() - this.calcRowHeight(imgRow);
     imgRow.push(candidate);
     const newDifference = this.calcIdealHeight() - this.calcRowHeight(imgRow);
-
     return Math.abs(oldDifference) > Math.abs(newDifference);
   }
 
-  private calcRowHeight(imgRow: Array<any>): number {
+  private calcRowHeight(imgRow: Array<GalleryImage>): number {
     const originalRowWidth = this.calcOriginalRowWidth(imgRow);
     const ratio =
       (this.getGalleryWidth() - (imgRow.length - 1) * this.calcImageMargin()) / originalRowWidth;
-    return imgRow[0][this.minimalQualityCategory].height * ratio;
+    return imgRow[0][this.minimalQualityCategory + 'Height'] * ratio;
   }
 
-  private calcOriginalRowWidth(imgRow: Array<any>): number {
+  private calcOriginalRowWidth(imgRow: Array<GalleryImage>): number {
     let originalRowWidth = 0;
     imgRow.forEach(img => {
-      img[this.minimalQualityCategory] = img[this.minimalQualityCategory] || {
-        width: 1,
-        height: 1,
-      };
-      const individualRatio = this.calcIdealHeight() / img[this.minimalQualityCategory].height;
-      img[this.minimalQualityCategory].width =
-        img[this.minimalQualityCategory].width * individualRatio;
-      img[this.minimalQualityCategory].height = this.calcIdealHeight();
+      const individualRatio =
+        this.calcIdealHeight() / (img[this.minimalQualityCategory + 'Height'] || 1);
+      img[this.minimalQualityCategory + 'Width'] =
+        img[this.minimalQualityCategory + 'Width'] * individualRatio;
+      img[this.minimalQualityCategory + 'Height'] = this.calcIdealHeight();
       originalRowWidth += img[this.minimalQualityCategory].width;
     });
 
@@ -201,24 +198,27 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
           originalRowWidth;
 
         imgRow.forEach((img: any) => {
-          img.width = img[this.minimalQualityCategory].width * ratio;
-          img.height = img[this.minimalQualityCategory].height * ratio;
+          img.width = img[this.minimalQualityCategory + 'Width'] * ratio;
+          img.height = img[this.minimalQualityCategory + 'Height'] * ratio;
           maximumGalleryImageHeight = Math.max(maximumGalleryImageHeight, img.height);
           this.checkForAsyncLoading(img, imageCounter++);
         });
       } else {
         imgRow.forEach((img: any) => {
-          img.width = img[this.minimalQualityCategory].width;
-          img.height = img[this.minimalQualityCategory].height;
+          img.width = img[this.minimalQualityCategory + 'Width'];
+          img.height = img[this.minimalQualityCategory + 'Height'];
           maximumGalleryImageHeight = Math.max(maximumGalleryImageHeight, img.height);
           this.checkForAsyncLoading(img, imageCounter++);
         });
       }
     });
 
-    this.minimalQualityCategory = maximumGalleryImageHeight > 375 ? 'preview_sd' : 'preview_small';
-    this.refreshNavigationErrorState();
+    this.minimalQualityCategory = 'previewSmall';
+    if (maximumGalleryImageHeight > 375) this.minimalQualityCategory = 'previewMeduim';
+    if (maximumGalleryImageHeight > 768) this.minimalQualityCategory = 'previewLarge';
+    if (maximumGalleryImageHeight > 1080) this.minimalQualityCategory = 'raw';
 
+    this.refreshNavigationErrorState();
     this.changeDetectorRef.detectChanges();
   }
 
@@ -227,7 +227,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
     if (image.galleryImageLoaded || (imageElements.length > 0 && imageElements[imageCounter])) {
       image.galleryImageLoaded = true;
       image.srcAfterFocus =
-        environment.storageUrl + '/images/' + image.files[this.minimalQualityCategory].path;
+        environment.storageUrl + '/images/' + image[this.minimalQualityCategory + 'Path'];
     } else {
       image.srcAfterFocus = '';
     }

@@ -1,13 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  faEllipsisH,
-  faFolder,
-  faFolderOpen,
-  faFolderPlus,
-  faList,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faList, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { MsAdalAngular6Service } from 'microsoft-adal-angular6';
 import { Subscription } from 'rxjs';
 import { GalleryFolder } from 'src/app/models/gallery-folder';
@@ -15,7 +8,6 @@ import { GalleryImage } from 'src/app/models/gallery-image';
 import { FolderService } from 'src/app/services/folder.service';
 import { MediaService } from 'src/app/services/media.service';
 import { FolderSelectComponent } from '../folder-select/folder-select.component';
-import { v4 as uuidv4 } from 'uuid';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MaterialFileUploadComponent } from '../material-file-upload/material-file-upload.component';
 import { AdminAddFolderComponent } from '../admin-add-folder/admin-add-folder.component';
@@ -26,7 +18,7 @@ import { AdminRenameFolderComponent } from '../admin-rename-folder/admin-rename-
   templateUrl: './admin-library.component.html',
   styleUrls: ['./admin-library.component.scss'],
 })
-export class AdminLibraryComponent implements OnInit, OnDestroy {
+export class AdminLibraryComponent implements OnInit {
   subscription: Subscription;
   folders: GalleryFolder[] = [];
   list = faList;
@@ -46,14 +38,14 @@ export class AdminLibraryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.folderService.getFolders().subscribe(x => {
+    this.loadFolders();
+  }
+
+  loadFolders() {
+    this.folderService.getFolders().subscribe(x => {
       this.folders = [...x];
       this.folderChange(this.folders.find(y => y.rowKey === this.folderService.empty));
     });
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   upload() {
@@ -81,17 +73,19 @@ export class AdminLibraryComponent implements OnInit, OnDestroy {
   }
 
   delete(image: GalleryImage) {
-    if (confirm('Are you sure you want to delete this image?')) {
-      this.mediaService.delete(image);
-    }
+    this.mediaService.delete(image).subscribe(() => {
+      this.folderChange(this.currentFolder);
+    });
   }
 
   addFolder() {
-    this._bottomSheet.open(AdminAddFolderComponent, { data: this.currentFolder });
+    const ref = this._bottomSheet.open(AdminAddFolderComponent, { data: this.currentFolder });
+    ref.afterDismissed().subscribe(() => this.loadFolders());
   }
 
   renameFolder() {
-    this._bottomSheet.open(AdminRenameFolderComponent, { data: this.currentFolder });
+    const ref = this._bottomSheet.open(AdminRenameFolderComponent, { data: this.currentFolder });
+    ref.afterDismissed().subscribe(() => this.loadFolders());
   }
 
   deleteFolder() {
@@ -103,7 +97,7 @@ export class AdminLibraryComponent implements OnInit, OnDestroy {
       confirm('Are you sure you want to delete the "' + this.currentFolder.name + '" folder?')
     ) {
       this.folderService.delete(this.currentFolder);
-      this.currentFolder = this.folders.find(x => x.rowKey == this.folderService.empty);
+      this.loadFolders();
     }
   }
 

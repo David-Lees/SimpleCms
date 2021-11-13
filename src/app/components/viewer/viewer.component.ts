@@ -1,5 +1,5 @@
 import { ImageService } from '../../services/image.service';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
@@ -100,7 +100,7 @@ export class ViewerComponent {
   currentIdx = 0;
   leftArrowVisible = true;
   rightArrowVisible = true;
-  categorySelected = 'preview_small';
+  categorySelected = 'previewSmall';
   transform: number;
   math: Math;
   private qualitySelectorShown = false;
@@ -254,8 +254,8 @@ export class ViewerComponent {
     }, 500);
   }
 
-  getImagePath(file: string) {
-    return environment.storageUrl + '/images/' + file;
+  getImagePath(image: GalleryImage, quality: string) {
+    return environment.storageUrl + '/images/' + image[quality + 'Path'];
   }
 
   private updateQuality(): void {
@@ -264,37 +264,37 @@ export class ViewerComponent {
 
     switch (this.qualitySelected) {
       case 'auto': {
-        this.categorySelected = 'preview_small';
+        this.categorySelected = 'previewSmall';
         if (
-          screenWidth > this.images[this.currentIdx].files.preview_small.width ||
-          screenHeight > this.images[this.currentIdx].files.preview_small.height
+          screenWidth > this.images[this.currentIdx].previewSmallWidth ||
+          screenHeight > this.images[this.currentIdx].previewSmallHeight
         ) {
-          this.categorySelected = 'preview_sd';
+          this.categorySelected = 'previewMedium';
         }
         if (
-          screenWidth > this.images[this.currentIdx].files.preview_sd.width ||
-          screenHeight > this.images[this.currentIdx].files.preview_sd.height
+          screenWidth > this.images[this.currentIdx].previewMediumWidth ||
+          screenHeight > this.images[this.currentIdx].previewMediumHeight
         ) {
-          this.categorySelected = 'preview_hd';
+          this.categorySelected = 'previewLarge';
         }
         if (
-          screenWidth > this.images[this.currentIdx].files.preview_hd.width ||
-          screenHeight > this.images[this.currentIdx].files.preview_hd.height
+          screenWidth > this.images[this.currentIdx].previewLargeWidth ||
+          screenHeight > this.images[this.currentIdx].previewLargeHeight
         ) {
           this.categorySelected = 'raw';
         }
         break;
       }
       case 'low': {
-        this.categorySelected = 'preview_small';
+        this.categorySelected = 'previewSmall';
         break;
       }
       case 'mid': {
-        this.categorySelected = 'preview_sd';
+        this.categorySelected = 'previewMedium';
         break;
       }
       case 'high': {
-        this.categorySelected = 'preview_hd';
+        this.categorySelected = 'previewLarge';
         break;
       }
       default: {

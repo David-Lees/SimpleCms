@@ -1,40 +1,41 @@
 <div *ngIf="page">
-  <div class="row">
-    <div class="col-sm-6">
-      <mat-form-field appearance="outline" class="width-100">
-        <mat-label>Page name</mat-label>
-        <input
-          matInput
-          [(ngModel)]="page.name"
-          (ngModelChange)="change()"
-          type="text"
-          placeholder="Page name"
-        />
-        <mat-hint>
-          The name of the page is displayed as the title. It is also displayed in the navigation bar
-          at the top if the is more than a single page in the site.
-        </mat-hint>
-      </mat-form-field>
-    </div>
-    <div class="col-sm-6">
-      <mat-form-field appearance="outline" class="width-100">
-        <mat-label>Url fragment</mat-label>
-        <input
-          matInput
-          [(ngModel)]="page.url"
-          (ngModelChange)="change()"
-          type="text"
-          placeholder="url"
-        />
-        <mat-hint>
-          The Url fragment is the identifier for the page that appears in the browsers navigation
-          bar after the domain. It should be short and not containing any spaces. It must be unique
-          and for the home page can be empty.
-        </mat-hint>
-      </mat-form-field>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field appearance="outline" class="width-100">
+          <mat-label>Page name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="page.name"
+            (ngModelChange)="change()"
+            type="text"
+            placeholder="Page name"
+          />
+          <mat-hint>
+            The name of the page is displayed as the title. It is also displayed in the navigation
+            bar at the top if the is more than a single page in the site.
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field appearance="outline" class="width-100">
+          <mat-label>Url fragment</mat-label>
+          <input
+            matInput
+            [(ngModel)]="page.url"
+            (ngModelChange)="change()"
+            type="text"
+            placeholder="url"
+          />
+          <mat-hint>
+            The Url fragment is the identifier for the page that appears in the browsers navigation
+            bar after the domain. It should be short and not containing any spaces. It must be
+            unique and for the home page can be empty.
+          </mat-hint>
+        </mat-form-field>
+      </div>
     </div>
   </div>
-
   <div style="text-align: right">
     <button mat-raised-button color="accent" [matMenuTriggerFor]="menu" class="m-2">
       <mat-icon>add_circle</mat-icon> Add Section
@@ -84,7 +85,10 @@
           {{ sectionDescription(s) }}
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <app-edit-section [section]="s" (sectionChange)="update($event)"> </app-edit-section>
+      <div class="text-right">
+        <button mat-raised-button color="warn" (click)="remove(idx)">Delete</button>
+      </div>
+      <app-edit-section [section]="s" (sectionChange)="update($event, idx)"> </app-edit-section>
     </mat-expansion-panel>
   </mat-accordion>
 </div>

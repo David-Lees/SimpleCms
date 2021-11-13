@@ -59,14 +59,7 @@
     <h5 class="mt-0" *ngIf="!activePage">Edit Page</h5>
     <h5 class="mt-0" *ngIf="activePage">Edit Page: {{ activePage.name }}</h5>
     <ng-container *ngIf="site && site.pages && site.pages.length && activePage">
-      <h2 class="container-fluid">
-        <div class="row">
-          <div class="col-10">Properties for {{ activePage.name }}</div>
-          <div class="col-2">
-            <button mat-raised-button color="warn" (click)="deletePage()">Delete</button>
-          </div>
-        </div>
-      </h2>
+      <h2 class="container-fluid">Properties for {{ activePage.name }}</h2>
       <app-edit-page [(page)]="activePage"></app-edit-page>
     </ng-container>
   </div>
@@ -86,11 +79,11 @@
         <fa-icon [icon]="caretRight" [fixedWidth]="true" [style.opacity]="0"></fa-icon>
         <fa-icon [icon]="folder" [fixedWidth]="true"></fa-icon>
       </ng-container>
-      {{ node.name }} {{ node.id }}
+      {{ node.name }}
     </a>
 
     <div
-      *ngIf="node.isExpanded && node.pages.length"
+      *ngIf="isExpanded(node.id) && node.pages.length"
       class="node-children"
       cdkDropList
       [cdkDropListData]="node.pages"
@@ -115,7 +108,3 @@
     </div>
   </div>
 </ng-template>
-
-<pre>{{ dropTargetIds | json }}</pre>
-<pre>{{ dropActionTodo | json }}</pre>
-<pre>{{ site | json }}</pre>

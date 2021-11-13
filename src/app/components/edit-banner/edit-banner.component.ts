@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { BannerSection } from 'src/app/models/banner-section';
 import { MediaService } from 'src/app/services/media.service';
 import { GalleryImage } from 'src/app/models/gallery-image';
@@ -12,7 +12,7 @@ import { SelectImageComponent } from '../select-image/select-image.component';
   templateUrl: './edit-banner.component.html',
   styleUrls: ['./edit-banner.component.scss'],
 })
-export class EditBannerComponent implements OnInit {
+export class EditBannerComponent {
   @Input() section: BannerSection;
   @Output() sectionChange = new EventEmitter<BannerSection>();
 
@@ -20,12 +20,6 @@ export class EditBannerComponent implements OnInit {
   prefix = environment.storageUrl + '/images/';
 
   constructor(public dialog: MatDialog, private media: MediaService) {}
-
-  ngOnInit() {
-    // this.media.root.subscribe(x => {
-    //   this.folder = x;
-    // });
-  }
 
   change() {
     this.sectionChange.emit(this.section);

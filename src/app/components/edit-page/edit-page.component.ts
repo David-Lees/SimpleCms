@@ -44,12 +44,7 @@ export class EditPageComponent implements OnInit, OnChanges {
     this.pageChange.emit(this.page);
   }
 
-  select(idx: number) {
-    this.activeSection = this.page.sections[idx];
-  }
-
-  update(s: Section) {
-    const idx = this.page.sections.findIndex(x => x === this.activeSection);
+  update(s: Section, idx: number) {
     if (idx >= 0) {
       Object.assign(this.page.sections[idx], s);
       this.change();
@@ -110,9 +105,8 @@ export class EditPageComponent implements OnInit, OnChanges {
     this.change();
   }
 
-  remove() {
-    if (this.activeSection && confirm('Are you sure you want to remove this section?')) {
-      const idx = this.page.sections.findIndex(x => x === this.activeSection);
+  remove(idx: number) {
+    if (confirm('Are you sure you want to remove this section?')) {
       if (idx >= 0) {
         this.page.sections.splice(idx, 1);
         this.change();

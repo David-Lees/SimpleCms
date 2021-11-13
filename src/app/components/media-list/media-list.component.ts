@@ -33,7 +33,7 @@ export class MediaListComponent {
   }
 
   remove(image: GalleryImage) {
-    if (confirm('Are you sure you want to remove this image?')) {
+    if (confirm(`Are you sure you want to remove ${image.description}?`)) {
       this.delete.next(image);
     }
   }

@@ -61,7 +61,7 @@ export class AdminContentComponent implements OnInit {
   }
 
   canDelete() {
-    return false;
+    return true;
   }
 
   newPage(): Page {
@@ -112,13 +112,6 @@ export class AdminContentComponent implements OnInit {
     this.activePage = p as Page;
   }
 
-  prepareDragDrop(nodes: Site | Page) {
-    nodes.pages.forEach(node => {
-      this.dropTargetIds.push(node.id);
-      this.prepareDragDrop(node);
-    });
-  }
-
   @debounce(50)
   dragMoved(event: CdkDragMove<any>) {
     let e = this.document.elementFromPoint(event.pointerPosition.x, event.pointerPosition.y);
@@ -152,20 +145,13 @@ export class AdminContentComponent implements OnInit {
   }
 
   drop(event: any) {
-    console.log('drop', event, this.dropActionTodo);
+    console.log('drop', event.item.data, this.dropActionTodo);
     if (!this.dropActionTodo) return;
 
-    const sourcePage =
-      event.previousContainer.id === 'main'
-        ? this.site
-        : this.getParentNode(event.previousContainer.id);
+    var oldParent = this.getParentNode(event.item.data);
 
-    console.log('sourcePage', event.previousContainer.id, sourcePage);
-    const draggedItemId = event.item.data;
-
-    let i = sourcePage.pages.findIndex(c => c.id === draggedItemId);
-    const draggedItem = sourcePage.pages.splice(i, 1)[0];
-    console.log('draggedItem', draggedItem);
+    let i = oldParent.pages.findIndex(c => c.id === event.item.data);
+    const draggedItem = oldParent.pages.splice(i, 1)[0];
 
     switch (this.dropActionTodo.action) {
       case 'before':
@@ -173,7 +159,6 @@ export class AdminContentComponent implements OnInit {
         const f = this.getParentNode(this.dropActionTodo.targetId);
         f.pages = f.pages || [];
         const targetIndex = f.pages.findIndex(c => c.id === this.dropActionTodo.targetId);
-        console.log('before/after', f, targetIndex);
         if (this.dropActionTodo.action == 'before') {
           f.pages.splice(targetIndex, 0, draggedItem);
         } else {
@@ -182,11 +167,11 @@ export class AdminContentComponent implements OnInit {
         break;
 
       case 'inside':
-        const folder = this.getNode(this.dropActionTodo.targetId);
-        console.log('inside', folder);
-        folder.pages.push(draggedItem);
-        if (!this.expandedNodes.includes(folder.id)) {
-          this.expandedNodes.push(folder.id);
+        const newParent = this.getNode(this.dropActionTodo.targetId);
+        newParent.pages = newParent.pages || [];
+        newParent.pages = [...newParent.pages, draggedItem];
+        if (!this.expandedNodes.includes(newParent.id)) {
+          this.expandedNodes.push(newParent.id);
         }
         break;
     }

@@ -10,7 +10,8 @@ export class ImageService {
   private showImageViewerSource = new Subject<boolean>();
 
   imagesUpdated$: Observable<Array<any>> = this.imagesUpdatedSource.asObservable();
-  imageSelectedIndexUpdated$: Observable<number> = this.imageSelectedIndexUpdatedSource.asObservable();
+  imageSelectedIndexUpdated$: Observable<number> =
+    this.imageSelectedIndexUpdatedSource.asObservable();
   showImageViewerChanged$: Observable<boolean> = this.showImageViewerSource.asObservable();
 
   updateImages(images: Array<any>): void {

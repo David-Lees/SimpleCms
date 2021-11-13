@@ -25,7 +25,7 @@ import { CredentialsInterceptor } from './interceptors/credentials.interceptor';
 import { AngularMaterialModule } from './modules/angular-material.module';
 import { MaterialFileUploadComponent } from './components/material-file-upload/material-file-upload.component';
 import { EditHtmlComponent } from './components/edit-html/edit-html.component';
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { CodeMirrorModule } from '@robotcoral/ngx-codemirror6';
 import { SafeHtmlPipe } from './safe-html.pipe';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { SelectImageComponent } from './components/select-image/select-image.component';
@@ -95,7 +95,7 @@ export function getAdalConfig() {
     LMarkdownEditorModule,
     AppRoutingModule,
     NgbModule,
-    CodemirrorModule,
+    CodeMirrorModule,
     TreeModule,
     MarkdownModule.forRoot({
       markedOptions: {

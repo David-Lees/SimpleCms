@@ -58,6 +58,7 @@
       <div
         class="container"
         [style.color]="textSection.colour"
+        [style.filter]="textFilter"
         [style.text-align]="textSection.align"
       >
         <markdown *ngIf="textSection.text" [data]="textSection.text"></markdown>

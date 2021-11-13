@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ToastService } from './toast.service';
@@ -38,14 +38,21 @@ export class MediaService {
     });
   }
 
-  delete(i: GalleryImage) {
-    if (confirm('Delete this image?')) {
-      this.http
-        .delete(`${environment.apiUrl}/api/folder/${i.partitionKey}/${i.rowKey}`)
-        .subscribe(() => {
+  delete(i: GalleryImage): Observable<any> {
+    return new Observable(obs => {
+      this.http.delete(`${environment.apiUrl}/api/folder/${i.partitionKey}/${i.rowKey}`).subscribe(
+        () => {
           this.toast.post({ body: 'Image deleted', state: ToastState.Success });
-        });
-    }
+          obs.next(true);
+          obs.complete();
+        },
+        () => {
+          this.toast.post({ body: 'Unable to delete image', state: ToastState.Error });
+          obs.error();
+          obs.complete();
+        }
+      );
+    });
   }
 
   move(i: GalleryImage, f: GalleryFolder) {
