@@ -1,11 +1,3 @@
 <div class="container-fluid">
-  <ngx-codemirror
-    [(ngModel)]="html"
-    (ngModelChange)="change()"
-    [options]="{
-      lineNumbers: true,
-      theme: 'material',
-      mode: 'text/html'
-    }"
-  ></ngx-codemirror>
+  <div #codemirrorhost class="codemirrorhost"></div>
 </div>

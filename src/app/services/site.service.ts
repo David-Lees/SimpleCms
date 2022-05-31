@@ -34,7 +34,7 @@ export class SiteService {
         this.toast.post({ body: 'Site Saved', state: ToastState.Success });
       },
       error => {
-        console.log(error);
+        console.error(error);
         this.toast.post({ body: 'Unable to save site', state: ToastState.Error });
       }
     );

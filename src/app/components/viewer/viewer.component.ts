@@ -1,8 +1,9 @@
 import { ImageService } from '../../services/image.service';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { environment } from 'src/environments/environment';
 import { MediaService } from 'src/app/services/media.service';
+import { GalleryImage } from 'src/app/models/gallery-image';
 
 @Component({
   selector: 'app-viewer',
@@ -95,11 +96,11 @@ import { MediaService } from 'src/app/services/media.service';
 })
 export class ViewerComponent {
   showViewer: boolean;
-  images: Array<any> = [{}];
+  images: GalleryImage[] = [];
   currentIdx = 0;
   leftArrowVisible = true;
   rightArrowVisible = true;
-  categorySelected = 'preview_small';
+  categorySelected = 'previewSmall';
   transform: number;
   math: Math;
   private qualitySelectorShown = false;
@@ -160,7 +161,10 @@ export class ViewerComponent {
    * swipe (user swiped)
    */
   navigate(direction: number, swipe: any): void {
-    if ((direction === 1 && this.currentIdx < this.images.length - 1) || (direction === -1 && this.currentIdx > 0)) {
+    if (
+      (direction === 1 && this.currentIdx < this.images.length - 1) ||
+      (direction === -1 && this.currentIdx > 0)
+    ) {
       if (direction === -1) {
         this.images[this.currentIdx].transition = 'leaveToRight';
         this.images[this.currentIdx - 1].transition = 'enterFromLeft';
@@ -192,7 +196,9 @@ export class ViewerComponent {
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    const prevent = ['ArrowLeft', 'ArrowRight', 'Escape', 'Home', 'End'].find(no => no === event.key);
+    const prevent = ['ArrowLeft', 'ArrowRight', 'Escape', 'Home', 'End'].find(
+      no => no === event.key
+    );
     if (prevent) {
       event.preventDefault();
     }
@@ -248,8 +254,8 @@ export class ViewerComponent {
     }, 500);
   }
 
-  getImagePath(file: string) {
-    return environment.storageUrl + '/images/' + file;
+  getImagePath(image: GalleryImage, quality: string) {
+    return environment.storageUrl + '/images/' + image[quality + 'Path'];
   }
 
   private updateQuality(): void {
@@ -258,31 +264,37 @@ export class ViewerComponent {
 
     switch (this.qualitySelected) {
       case 'auto': {
-        this.categorySelected = 'preview_small';
+        this.categorySelected = 'previewSmall';
         if (
-          screenWidth > this.images[this.currentIdx].preview_small.width ||
-          screenHeight > this.images[this.currentIdx].preview_small.height
+          screenWidth > this.images[this.currentIdx].previewSmallWidth ||
+          screenHeight > this.images[this.currentIdx].previewSmallHeight
         ) {
-          this.categorySelected = 'preview_sd';
+          this.categorySelected = 'previewMedium';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_sd.width || screenHeight > this.images[this.currentIdx].preview_sd.height) {
-          this.categorySelected = 'preview_hd';
+        if (
+          screenWidth > this.images[this.currentIdx].previewMediumWidth ||
+          screenHeight > this.images[this.currentIdx].previewMediumHeight
+        ) {
+          this.categorySelected = 'previewLarge';
         }
-        if (screenWidth > this.images[this.currentIdx].preview_hd.width || screenHeight > this.images[this.currentIdx].preview_hd.height) {
+        if (
+          screenWidth > this.images[this.currentIdx].previewLargeWidth ||
+          screenHeight > this.images[this.currentIdx].previewLargeHeight
+        ) {
           this.categorySelected = 'raw';
         }
         break;
       }
       case 'low': {
-        this.categorySelected = 'preview_small';
+        this.categorySelected = 'previewSmall';
         break;
       }
       case 'mid': {
-        this.categorySelected = 'preview_sd';
+        this.categorySelected = 'previewMedium';
         break;
       }
       case 'high': {
-        this.categorySelected = 'preview_hd';
+        this.categorySelected = 'previewLarge';
         break;
       }
       default: {

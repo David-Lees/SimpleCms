@@ -9,23 +9,50 @@
       <div class="row m-2">
         <div class="col-3">
           <img
-            [src]="prefix + img.files?.preview_small?.path"
+            [src]="prefix + img.previewSmallPath"
             class="img-fluid"
             [attr.alt]="img.description"
           />
         </div>
         <div class="col-6">
           <h4 class="m-1">{{ img.description }}</h4>
-          <p *ngFor="let file of img.files | keyvalue" class="m-1">
-            {{ file.key }}: {{ file.value?.width }} x {{ file.value?.height }} px
+          <p class="m-1">
+            <a [attr.href]="prefix + img.previewSmallPath" target="_blank">Small</a>:
+            {{ img.previewSmallWidth }} x {{ img.previewSmallHeight }} px
+          </p>
+          <p class="m-1">
+            <a [attr.href]="prefix + img.previewMediumPath" target="_blank">Medium</a>:
+            {{ img.previewMediumWidth }} x {{ img.previewMediumHeight }} px
+          </p>
+          <p class="m-1">
+            <a [attr.href]="prefix + img.previewLargePath" target="_blank">Large</a>:
+            {{ img.previewLargeWidth }} x {{ img.previewLargeHeight }} px
+          </p>
+          <p class="m-1">
+            <a [attr.href]="prefix + img.rawPath" target="_blank">Original</a>: {{ img.rawWidth }} x
+            {{ img.rawHeight }} px
           </p>
         </div>
         <div class="col-3">
-          <button *ngIf="canSelect" mat-raised-button color="accent" (click)="select(img)">
+          <button
+            class="m-1"
+            *ngIf="canSelect"
+            mat-raised-button
+            color="accent"
+            (click)="select(img)"
+          >
             Select
           </button>
-          <button *ngIf="canMove" mat-raised-button color="accent" (click)="move(img)">Move</button>
-          <button *ngIf="canDelete" mat-raised-button color="warn" (click)="remove(img)">
+          <button class="m-1" *ngIf="canMove" mat-raised-button color="accent" (click)="move(img)">
+            Move
+          </button>
+          <button
+            class="m-1"
+            *ngIf="canDelete"
+            mat-raised-button
+            color="warn"
+            (click)="remove(img)"
+          >
             Delete
           </button>
         </div>

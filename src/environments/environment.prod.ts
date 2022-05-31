@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   storageUrl: 'https://broadlanders.blob.core.windows.net',
+  tableUrl: 'https://broadlanders.table.core.windows.net',
   apiUrl: 'https://broadlandersapi.azurewebsites.net',
   config: {
     tenant: 'd3349c10-c856-4f37-ab6b-360639105705',

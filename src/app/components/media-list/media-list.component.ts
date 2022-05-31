@@ -27,20 +27,18 @@ export class MediaListComponent {
 
   drop(event: CdkDragDrop<string[]>) {
     if (this.canSort) {
-      console.log(event);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       this.imagesChange.emit(this.images);
     }
   }
 
   remove(image: GalleryImage) {
-    if (confirm('Are you sure you want to remove this image?')) {
+    if (confirm(`Are you sure you want to remove ${image.description}?`)) {
       this.delete.next(image);
     }
   }
 
   move(image: GalleryImage) {
-    console.log('move', image);
     this.moved.next(image);
   }
 }

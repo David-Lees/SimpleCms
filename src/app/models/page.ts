@@ -6,5 +6,4 @@ export interface Page {
   url: string;
   sections: Section[];
   pages: Page[];
-  isExpanded?: boolean;
 }

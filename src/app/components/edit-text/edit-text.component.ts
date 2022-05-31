@@ -2,8 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { TextSection } from 'src/app/models/text-section';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BannerSection } from 'src/app/models/banner-section';
-
-let nextTextId = 0;
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-edit-text',
@@ -14,11 +13,10 @@ export class EditTextComponent implements OnChanges, OnInit {
   @Output() sectionChange = new EventEmitter<TextSection>();
 
   formGroup: FormGroup;
-  lastChange: TextSection;
-  id = `radio-${nextTextId++}-`;
+  id = uuidv4();
 
   updateImage(section: BannerSection) {
-    this.section.image = section.image;
+    this.section.image = JSON.parse(JSON.stringify(section.image));
     this.sectionChange.emit(this.section);
   }
 
@@ -31,7 +29,6 @@ export class EditTextComponent implements OnChanges, OnInit {
         colour: this.section?.colour,
         align: this.section?.align,
       });
-      this.lastChange = this.formGroup.value;
     }
   }
 
@@ -43,24 +40,13 @@ export class EditTextComponent implements OnChanges, OnInit {
       colour: [this.section?.colour],
       align: [this.section?.align],
     });
-    this.lastChange = this.formGroup.value;
     this.formGroup.valueChanges.subscribe((x: TextSection) => {
-      if (
-        this.lastChange.align !== x.align ||
-        this.lastChange.backgroundAlign !== x.backgroundAlign ||
-        this.lastChange.backgroundColour !== x.backgroundColour ||
-        this.lastChange.colour !== x.colour ||
-        this.lastChange.name !== x.name ||
-        this.lastChange.text !== x.text
-      ) {
-        this.lastChange = x;
-        this.section.align = x.align;
-        this.section.backgroundAlign = x.backgroundAlign;
-        this.section.backgroundColour = x.backgroundColour;
-        this.section.colour = x.colour;
-        this.section.text = x.text;
-        this.sectionChange.emit(this.section);
-      }
+      this.section.align = x.align;
+      this.section.backgroundAlign = x.backgroundAlign;
+      this.section.backgroundColour = x.backgroundColour;
+      this.section.colour = x.colour;
+      this.section.text = x.text;
+      this.sectionChange.emit(this.section);
     });
   }
 

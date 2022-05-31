@@ -8,6 +8,9 @@ import { BannerSection } from 'src/app/models/banner-section';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { HtmlSection } from 'src/app/models/html-section';
 import { ChildrenSection } from 'src/app/models/children-section';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { AdminSortSectionsComponent } from '../admin-sort-sections/admin-sort-sections.component';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-page',
@@ -19,6 +22,13 @@ export class EditPageComponent implements OnInit, OnChanges {
   @Output() pageChange = new EventEmitter<Page>();
 
   activeSection: Section;
+
+  constructor(private _bottomSheet: MatBottomSheet) {}
+
+  sectionDescription(s: Section) {
+    const text = (s as HtmlSection).html || '' || (s as TextSection).text || '';
+    return text.length > 80 ? text.substring(0, 80) + '...' : text;
+  }
 
   ngOnInit() {
     if (this.page && this.page.sections && this.page.sections.length) {
@@ -34,12 +44,7 @@ export class EditPageComponent implements OnInit, OnChanges {
     this.pageChange.emit(this.page);
   }
 
-  select(idx: number) {
-    this.activeSection = this.page.sections[idx];
-  }
-
-  update(s: Section) {
-    const idx = this.page.sections.findIndex(x => x === this.activeSection);
+  update(s: Section, idx: number) {
     if (idx >= 0) {
       Object.assign(this.page.sections[idx], s);
       this.change();
@@ -100,9 +105,8 @@ export class EditPageComponent implements OnInit, OnChanges {
     this.change();
   }
 
-  remove() {
-    if (this.activeSection && confirm('Are you sure you want to remove this section?')) {
-      const idx = this.page.sections.findIndex(x => x === this.activeSection);
+  remove(idx: number) {
+    if (confirm('Are you sure you want to remove this section?')) {
       if (idx >= 0) {
         this.page.sections.splice(idx, 1);
         this.change();
@@ -110,7 +114,7 @@ export class EditPageComponent implements OnInit, OnChanges {
     }
   }
 
-  drop(event: CdkDragDrop<any[]>) {
-    moveItemInArray(this.page.sections, event.previousIndex, event.currentIndex);
+  sortSections() {
+    this._bottomSheet.open(AdminSortSectionsComponent, { data: this.page });
   }
 }

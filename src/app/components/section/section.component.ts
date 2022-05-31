@@ -24,16 +24,14 @@ export class SectionComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     const s = this.section as BannerSection;
-    if (s && s.image && s.image.raw) {
-      const h = s.image.raw.height;
-      const w = s.image.raw.width;
+    if (s && s.image) {
+      const h = s.image.rawHeight;
+      const w = s.image.rawWidth;
       const ww = window.innerWidth;
       const ar = h / w;
       this.height = ar * ww;
     }
   }
-
-  constructor() {}
 
   ngOnInit() {
     this.onResize();
@@ -62,20 +60,28 @@ export class SectionComponent implements OnInit {
   get bannerUrl(): string {
     const width = window.innerWidth;
     switch (true) {
-      case width < (this.bannerSection?.image?.preview_small?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_small.path}`;
-      case width < (this.bannerSection?.image?.preview_sd?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_sd.path}`;
-      case width < (this.bannerSection.image?.preview_hd?.width || 0):
-        return `${environment.storageUrl}/images/${this.bannerSection.image.preview_hd.path}`;
+      case width < (this.bannerSection?.image?.previewSmallWidth || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.previewSmallPath}`;
+      case width < (this.bannerSection?.image?.previewMediumWidth || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.previewMediumPath}`;
+      case width < (this.bannerSection.image?.previewLargeWidth || 0):
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.previewLargePath}`;
       default:
-        return `${environment.storageUrl}/images/${this.bannerSection.image.raw.path}`;
+        return `${environment.storageUrl}/images/${this.bannerSection?.image?.rawPath}`;
     }
   }
 
-  getImage() {
-    if (this.textSection.image && this.textSection.image.raw) {
-      return `url('${this.textSection.image.raw.path}')`;
+  get backgroundUrl(): string {
+    if (this.textSection.image) {
+      return `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("${this.bannerUrl}")`;
+    } else {
+      return 'none';
+    }
+  }
+
+  get textFilter(): string {
+    if (this.textSection.image) {
+      return `drop-shadow(0 0 0.75rem ${this.textSection.backgroundColour}) drop-shadow(0 0 0.25rem ${this.textSection.backgroundColour})`;
     } else {
       return 'none';
     }

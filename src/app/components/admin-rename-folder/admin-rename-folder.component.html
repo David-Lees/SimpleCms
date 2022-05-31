@@ -1,0 +1,12 @@
+<button class="float-right" mat-button type="button" (click)="dismiss()">
+  <fa-icon [icon]="times"></fa-icon>
+</button>
+<h3 class="mt-0">Rename Folder "{{ folder.name }}"</h3>
+<mat-form-field appearance="outline" class="width-100">
+  <mat-label>Folder name:</mat-label>
+  <input matInput [(ngModel)]="folderName" type="text" />
+  <mat-hint> The new name of the folder</mat-hint>
+</mat-form-field>
+<button class="mr-2" mat-raised-button color="accent" (click)="renameFolder()">
+  Rename Folder
+</button>

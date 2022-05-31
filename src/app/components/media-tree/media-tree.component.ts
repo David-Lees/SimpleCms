@@ -3,6 +3,15 @@ import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular
 import { DropInfo, GalleryFolder } from 'src/app/models/gallery-folder';
 import { debounce } from '@agentepsilon/decko';
 import { CdkDragMove } from '@angular/cdk/drag-drop';
+import { FolderService } from 'src/app/services/folder.service';
+import {
+  faCaretDown,
+  faCaretRight,
+  faFolder,
+  faFolderOpen,
+  faFolderPlus,
+  faList,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-media-tree',
@@ -10,15 +19,37 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
   styleUrls: ['./media-tree.component.scss'],
 })
 export class MediaTreeComponent implements OnInit {
-  @Input() nodes: GalleryFolder;
+  folders: GalleryFolder[];
+  @Input() selectedFolder: GalleryFolder;
   @Output() nodesChange = new EventEmitter<GalleryFolder>();
   @Output() selectChange = new EventEmitter<GalleryFolder>();
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  expandedNodes = [];
+
+  list = faList;
+  folder = faFolder;
+  folderOpen = faFolderOpen;
+  folderPlus = faFolderPlus;
+  caretRight = faCaretRight;
+  caretDown = faCaretDown;
+
+  constructor(@Inject(DOCUMENT) private document: Document, private folderService: FolderService) {}
+
+  selectNode(folder: GalleryFolder) {
+    this.selectedFolder = folder;
+    this.nodeClick(folder);
+  }
 
   ngOnInit() {
-    this.prepareDragDrop(this.nodes);
-    this.selectedNodeId = this.nodes.id;
+    this.expandedNodes.push(this.folderService.empty);
+    this.prepareDragDrop();
+    this.folderService.getFolders().subscribe(x => {
+      this.folders = [...x];
+      if (!this.selectedFolder) {
+        this.selectedFolder = this.folders.find(y => y.rowKey === this.folderService.empty);
+      }
+      this.selectedNodeId = this.selectedFolder.rowKey;
+    });
   }
 
   // ids for connected drop lists
@@ -26,17 +57,42 @@ export class MediaTreeComponent implements OnInit {
   dropActionTodo: DropInfo = null;
   selectedNodeId: string;
 
+  isExpanded(id: string) {
+    return this.expandedNodes.includes(id);
+  }
+
+  getRoot() {
+    return this.folders.find(
+      x => x.partitionKey === this.folderService.empty && x.rowKey === this.folderService.empty
+    );
+  }
+
+  getChildren(parentId: string) {
+    return this.folders.filter(
+      x => x.partitionKey === parentId && x.rowKey !== this.folderService.empty
+    );
+  }
+
+  hasChildren(parentId: string) {
+    return this.getChildren(parentId).length > 0;
+  }
+
   nodeClick(node: GalleryFolder) {
-    node.isExpanded = !node.isExpanded;
-    this.selectedNodeId = node.id;
+    if (this.expandedNodes.includes(node.rowKey)) {
+      this.expandedNodes.splice(this.expandedNodes.indexOf(node.rowKey), 1);
+    } else {
+      this.expandedNodes.push(node.rowKey);
+    }
+    this.selectedNodeId = node.rowKey;
     this.selectChange.emit(node);
   }
 
-  prepareDragDrop(nodes: GalleryFolder) {
-    nodes.folders.forEach(node => {
-      this.dropTargetIds.push(node.id);
-      this.prepareDragDrop(node);
-    });
+  prepareDragDrop() {
+    if (this.folders && this.folders.length) {
+      this.folders.forEach(node => {
+        this.dropTargetIds.push(node.rowKey);
+      });
+    }
   }
 
   @debounce(50)
@@ -69,70 +125,6 @@ export class MediaTreeComponent implements OnInit {
       this.dropActionTodo['action'] = 'inside';
     }
     this.showDragInfo();
-  }
-
-  drop(event) {
-    if (!this.dropActionTodo) return;
-
-    const sourceFolder =
-      event.previousContainer.id === 'main'
-        ? this.nodes
-        : this.getParentNode(event.previousContainer.id);
-
-    const draggedItemId = event.item.data;
-
-    let i = sourceFolder.folders.findIndex(c => c.id === draggedItemId);
-    const draggedItem = sourceFolder.folders.splice(i, 1)[0];
-
-    switch (this.dropActionTodo.action) {
-      case 'before':
-      case 'after':
-        const f = this.getParentNode(this.dropActionTodo.targetId);
-        f.folders = f.folders || [];
-        const targetIndex = f.folders.findIndex(c => c.id === this.dropActionTodo.targetId);
-        if (this.dropActionTodo.action == 'before') {
-          f.folders.splice(targetIndex, 0, draggedItem);
-        } else {
-          f.folders.splice(targetIndex + 1, 0, draggedItem);
-        }
-        break;
-
-      case 'inside':
-        const folder = this.getNode(this.dropActionTodo.targetId);
-        folder.folders.push(draggedItem);
-        folder.isExpanded = true;
-        break;
-    }
-
-    this.clearDragInfo(true);
-    this.nodesChange.emit(this.nodes);
-    console.log('after drop', this.nodes);
-  }
-
-  getNode(id: string, nodesToSearch?: GalleryFolder): GalleryFolder {
-    if (id === 'main') return this.nodes;
-    if (!nodesToSearch) {
-      nodesToSearch = this.nodes;
-    }
-    if (nodesToSearch.id == id) return nodesToSearch;
-    for (let node of nodesToSearch.folders) {
-      let ret = this.getNode(id, node);
-      if (ret) return ret;
-    }
-    return null;
-  }
-
-  getParentNode(id: string, nodesToSearch?: GalleryFolder): GalleryFolder {
-    if (id === 'main') return this.nodes;
-    if (!nodesToSearch) {
-      nodesToSearch = this.nodes;
-    }
-    for (let node of nodesToSearch.folders || []) {
-      if (node.id == id) return nodesToSearch;
-      let ret = this.getParentNode(id, node);
-      if (ret) return ret;
-    }
-    return null;
   }
 
   showDragInfo() {

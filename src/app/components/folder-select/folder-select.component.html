@@ -1,10 +1,42 @@
 <h2 mat-dialog-title>Select Folder:</h2>
 <mat-dialog-content class="mat-typography">
-  <select [(ngModel)]="currentFolder">
-    <option *ngFor="let f of allFolders" [ngValue]="f.folder">{{ f.name }}</option>
-  </select>
+  <ng-container *ngIf="allFolders">
+    <ng-template
+      [ngTemplateOutlet]="nodeTemplateRef"
+      [ngTemplateOutletContext]="{ node: getRoot(), level: 0 }"
+    >
+    </ng-template>
+  </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-button [mat-dialog-close]="currentFolder" cdkFocusInitial>OK</button>
 </mat-dialog-actions>
+
+<ng-template #nodeTemplateRef let-node="node" let-level="level">
+  <button
+    mat-button
+    (click)="currentFolder = node"
+    class="node__label"
+    [class.selected]="node === currentFolder"
+  >
+    <span class="spacer" [style.width.px]="level * 32">&nbsp;</span>
+    <ng-container *ngIf="hasChildren(node.rowKey)">
+      <fa-icon [icon]="caretDown" [fixedWidth]="true"></fa-icon>
+      <fa-icon [icon]="folderOpen" [fixedWidth]="true"></fa-icon>
+    </ng-container>
+    <ng-container *ngIf="!hasChildren(node.rowKey)">
+      <fa-icon [icon]="caretRight" [fixedWidth]="true" [style.opacity]="0"></fa-icon>
+      <fa-icon [icon]="folder" [fixedWidth]="true"></fa-icon>
+    </ng-container>
+    {{ node.name }}
+  </button>
+  <ng-template ngFor let-child [ngForOf]="getChildren(node.rowKey)">
+    <!-- Invoke the recursive template. -->
+    <ng-template
+      [ngTemplateOutlet]="nodeTemplateRef"
+      [ngTemplateOutletContext]="{ node: child, level: level + 1 }"
+    >
+    </ng-template>
+  </ng-template>
+</ng-template>

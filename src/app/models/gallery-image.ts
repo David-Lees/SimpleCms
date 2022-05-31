@@ -1,16 +1,32 @@
 import { GalleryImageDetails } from './gallery-image-details';
 
 export interface GalleryImage {
-  preview_small: GalleryImageDetails;
-  preview_sd: GalleryImageDetails;
-  preview_hd: GalleryImageDetails;
-  raw: GalleryImageDetails;
+  files: { [key: string]: GalleryImageDetails };
+
+  partitionKey: string;
+  rowKey: string;
+  description: string;
   dominantColour: string;
-  id: string;
+
+  previewSmallPath: string;
+  previewSmallWidth: number;
+  previewSmallHeight: number;
+
+  previewMediumPath: string;
+  previewMediumWidth: number;
+  previewMediumHeight: number;
+
+  previewLargePath: string;
+  previewLargeWidth: number;
+  previewLargeHeight: number;
+
+  rawPath: string;
+  rawWidth: number;
+  rawHeight: number;
 
   galleryImageLoaded?: boolean;
   viewerImageLoaded?: boolean;
   srcAfterFocus?: string;
-
-  description: string;
+  active?: boolean;
+  transition?: string;
 }

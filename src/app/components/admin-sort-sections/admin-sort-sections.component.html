@@ -1,0 +1,17 @@
+<button class="float-right" mat-button type="button" (click)="dismiss()">
+  <fa-icon [icon]="times"></fa-icon>
+</button>
+<h5>Reorder Sections</h5>
+<p class="mat-body">Drag and drop sections to reorder</p>
+<div *ngIf="page.sections && page.sections.length" cdkDropList (cdkDropListDropped)="drop($event)">
+  <mat-card class="mb-2" *ngFor="let s of page.sections; let idx = index" cdkDrag>
+    <mat-icon *ngIf="s.name === 'BannerSection'">photo_camera</mat-icon>
+    <mat-icon *ngIf="s.name === 'TextSection'">format_align_justify</mat-icon>
+    <mat-icon *ngIf="s.name === 'GallerySection'">view_module</mat-icon>
+    <mat-icon *ngIf="s.name === 'HtmlSection'">code</mat-icon>
+    <mat-icon *ngIf="s.name === 'ChildrenSection'">list</mat-icon>
+    <ng-container *ngIf="s.name">
+      {{ s.name?.replace('Section', ' Section') }}
+    </ng-container>
+  </mat-card>
+</div>

@@ -1,13 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @use '~@angular/material' as mat;
 
-$font-family-base: 'Roboto', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+$font-family-base: 'Noto Sans', sans-serif;
 @import 'node_modules/bootstrap/scss/bootstrap';
-
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@600&display=swap');
-
-@import '~codemirror/lib/codemirror';
-@import '~codemirror/theme/material';
 @import '~@circlon/angular-tree-component/css/angular-tree-component.css';
 
 // @import "node_modules/bootstrap/scss/functions";
@@ -20,9 +16,23 @@ $font-family-base: 'Roboto', sans-serif;
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
+  font-family: $font-family-base;
+  font-size: 20px;
+  line-height: 1.5rem;
 }
+
+p {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &:first {
+    margin-top: 2em;
+  }
+}
+
 //body { margin: 0; font-family: 'Courgette', cursive; }
 
 @import '~@angular/material/theming';
@@ -31,12 +41,12 @@ body {
 /* ======== Angular material custom themes ======== */
 
 $custom-typography: mat.define-typography-config(
-  $font-family: 'Roboto, cursive',
+  $font-family: 'Noto Sans, cursive',
   $headline: mat.define-typography-level(48px, 72px, 700),
-  $body-1: mat.define-typography-level(24px, 36px, 500),
-  $body-2: mat.define-typography-level(24px, 36px, 700),
-  $caption: mat.define-typography-level(16px, 24px, 500),
-  $input: mat.define-typography-level(24px, 1, 500),
+  $body-1: mat.define-typography-level(20px, 30px, 400),
+  $body-2: mat.define-typography-level(20px, 30px, 700),
+  $caption: mat.define-typography-level(16px, 24px, 400),
+  $input: mat.define-typography-level(18px, 1, 400),
 );
 @include mat.all-component-typographies($custom-typography);
 
@@ -54,10 +64,12 @@ $my-custom-theme: mat.define-light-theme($my-custom-primary, $my-custom-accent, 
   user-select: none;
   cursor: move;
 
-  &.cdk-drag-preview { // while dragging
+  &.cdk-drag-preview {
+    // while dragging
     @include mat-elevation(12);
   }
-  &.cdk-drag-placeholder { // potential drop area
+  &.cdk-drag-placeholder {
+    // potential drop area
     opacity: 0;
   }
 }
@@ -154,9 +166,19 @@ h4 {
 }
 
 h1 {
-  margin-top: 3em;
+  margin-top: 2em;
 }
 
 footer {
   border-top: 1px solid black;
+}
+
+.nav-link {
+ font-size: 16px;
+ padding: 0 1em;
+ font-weight: bold;
+} 
+
+.nav-bar {
+  min-height: 64px;
 }

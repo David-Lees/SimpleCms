@@ -8,7 +8,6 @@ import {
   UrlSegmentGroup,
 } from '@angular/router';
 import { PublicViewComponent } from '../components/public-view/public-view.component';
-import { AdminViewComponent } from '../components/admin-view/admin-view.component';
 import { AuthenticationGuard } from 'microsoft-adal-angular6';
 
 function filepathMatcher(
@@ -31,7 +30,11 @@ function filepathMatcher(
 }
 
 const routes: Routes = [
-  { path: 'admin', component: AdminViewComponent, canActivate: [AuthenticationGuard] },
+  {
+    path: 'admin',
+    canActivate: [AuthenticationGuard],
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+  },
   { matcher: filepathMatcher, component: PublicViewComponent },
   { path: '', component: PublicViewComponent },
 ];

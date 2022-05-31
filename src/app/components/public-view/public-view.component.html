@@ -1,5 +1,8 @@
-<ng-container *ngIf="page">
-  <ng-container *ngFor="let section of page.sections">
-    <app-section [section]="section" [page]="page"></app-section>
+<ng-container *ngIf="siteService.isLoaded">
+  <app-header [site]="siteService.site"></app-header>
+  <ng-container *ngIf="page">
+    <ng-container *ngFor="let section of page.sections">
+      <app-section [section]="section" [page]="page"></app-section>
+    </ng-container>
   </ng-container>
 </ng-container>

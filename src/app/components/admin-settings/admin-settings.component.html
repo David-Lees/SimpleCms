@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <div *ngIf="loaded" class="float-right mt-1">
+    <button mat-raised-button color="primary" (click)="save()">Save site</button>
+  </div>
+  <h1 class="mt-0">Site Settings</h1>
+
+  <ng-container *ngIf="loaded">
+    <mat-form-field appearance="outline" class="width-100">
+      <mat-label>Site name</mat-label>
+      <input matInput [(ngModel)]="site.name" type="text" placeholder="Site name" />
+      <mat-hint>The name of the site is displayed in the header.</mat-hint>
+    </mat-form-field>
+
+    <div class="row mt-4">
+      <div class="col" *ngIf="site && (site.hasLogo === false || site.hasLogo === true)">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="site.hasLogo"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          Site Has Logo?
+        </label>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="width-100">
+          <mat-label>Header bar text colour</mat-label>
+          <input matInput [(ngModel)]="site.headerColour" type="color" />
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field appearance="outline" class="width-100">
+          <mat-label>Header bar background colour</mat-label>
+          <input matInput [(ngModel)]="site.headerBackground" type="color" />
+        </mat-form-field>
+      </div>
+    </div>
+  </ng-container>
+</div>
