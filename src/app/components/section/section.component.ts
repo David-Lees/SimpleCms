@@ -72,7 +72,7 @@ export class SectionComponent implements OnInit {
   }
 
   get backgroundUrl(): string {
-    if (this.bannerUrl) {
+    if (this.textSection.image) {
       return `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("${this.bannerUrl}")`;
     } else {
       return 'none';
@@ -80,8 +80,8 @@ export class SectionComponent implements OnInit {
   }
 
   get textFilter(): string {
-    if (this.bannerUrl) {
-      return `drop-shadow(0 0 0.75rem ${this.textSection.backgroundColour})`;
+    if (this.textSection.image) {
+      return `drop-shadow(0 0 0.75rem ${this.textSection.backgroundColour}) drop-shadow(0 0 0.25rem ${this.textSection.backgroundColour})`;
     } else {
       return 'none';
     }

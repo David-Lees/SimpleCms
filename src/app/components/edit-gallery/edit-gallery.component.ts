@@ -35,7 +35,6 @@ export class EditGalleryComponent implements OnInit {
   }
 
   folderChange(folder: GalleryFolder) {
-    console.log(folder);
     this.currentFolder = folder;
     this.folderService
       .getImages(this.currentFolder)

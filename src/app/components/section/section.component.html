@@ -1,7 +1,9 @@
 <ng-container [ngSwitch]="section.name">
   <ng-container *ngSwitchCase="sectionTypes.GallerySection">
     <div class="container-fluid">
-      <h2 *ngIf="gallerySection.galleryName">{{ gallerySection.galleryName }}</h2>
+      <h1 *ngIf="gallerySection.galleryName" class="text-center">
+        {{ gallerySection.galleryName }}
+      </h1>
       <app-gallery
         [sourceData]="gallerySection"
         [imageMargin]="gallerySection.imageMargin"
@@ -25,6 +27,7 @@
       [style.background-color]="textSection.backgroundColour"
       [style.background-position]="textSection.backgroundAlign"
       [style.background-image]="backgroundUrl"
+      [style.background-size]="'cover'"
       [attr.data-url]="backgroundUrl"
     >
       <div
@@ -53,6 +56,7 @@
       [style.background-color]="textSection.backgroundColour"
       [style.background-position]="textSection.backgroundAlign"
       [style.background-image]="backgroundUrl"
+      [style.background-size]="'cover'"
       [attr.data-url]="backgroundUrl"
     >
       <div

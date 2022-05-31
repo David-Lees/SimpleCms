@@ -145,7 +145,6 @@ export class AdminContentComponent implements OnInit {
   }
 
   drop(event: any) {
-    console.log('drop', event.item.data, this.dropActionTodo);
     if (!this.dropActionTodo) return;
 
     var oldParent = this.getParentNode(event.item.data);

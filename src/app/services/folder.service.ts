@@ -15,10 +15,9 @@ export class FolderService {
 
   constructor(private http: HttpClient) {}
 
-  getFolders(): Observable<GalleryFolder[]> {
+  getFolders(reload = false): Observable<GalleryFolder[]> {
     return new Observable(obs => {
-      if (this.isLoaded) {
-        console.log('existing folders', this.folders);
+      if (this.isLoaded && !reload) {
         obs.next(this.folders);
         obs.complete();
       } else {
@@ -26,24 +25,21 @@ export class FolderService {
           .get<GalleryFolder[]>(`${environment.apiUrl}/api/folder`)
           .subscribe((x: GalleryFolder[]) => {
             x.sort((a, b) => a.name.localeCompare(b.name));
-            console.log('get folders', x);
             this.isLoaded = true;
             this.folders = x;
             obs.next(this.folders);
             obs.complete();
-            console.log('set folders', this.folders);
           });
       }
     });
   }
 
-  private reload() {
+  reload() {
     this.http
       .get<GalleryFolder[]>(`${environment.apiUrl}/api/folder`)
       .subscribe((x: GalleryFolder[]) => {
         x.sort((a, b) => a.name.localeCompare(b.name));
         this.folders = x;
-        console.log('reload folders', this.folders);
         this.isLoaded = true;
       });
   }

@@ -48,6 +48,14 @@ export class AdminLibraryComponent implements OnInit {
     });
   }
 
+  reload() {
+    const current = this.currentFolder.rowKey;
+    this.folderService.getFolders(true).subscribe(x => {
+      this.folders = [...x];
+      this.folderChange(this.folders.find(y => y.rowKey === current));
+    });
+  }
+
   upload() {
     const ref = this._bottomSheet.open(MaterialFileUploadComponent, { data: this.currentFolder });
     ref.afterDismissed().subscribe(dataFromChild => {
@@ -80,12 +88,12 @@ export class AdminLibraryComponent implements OnInit {
 
   addFolder() {
     const ref = this._bottomSheet.open(AdminAddFolderComponent, { data: this.currentFolder });
-    ref.afterDismissed().subscribe(() => this.loadFolders());
+    ref.afterDismissed().subscribe(() => this.reload());
   }
 
   renameFolder() {
     const ref = this._bottomSheet.open(AdminRenameFolderComponent, { data: this.currentFolder });
-    ref.afterDismissed().subscribe(() => this.loadFolders());
+    ref.afterDismissed().subscribe(() => this.reload());
   }
 
   deleteFolder() {
@@ -97,7 +105,12 @@ export class AdminLibraryComponent implements OnInit {
       confirm('Are you sure you want to delete the "' + this.currentFolder.name + '" folder?')
     ) {
       this.folderService.delete(this.currentFolder);
-      this.loadFolders();
+      const i = this.folders.findIndex(x => x === this.currentFolder);
+      if (i > -1) {
+        this.folders.splice(i, 1);
+        this.folderService.update(this.folders);
+      }
+      this.reload();
     }
   }
 

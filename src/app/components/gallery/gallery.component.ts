@@ -167,7 +167,7 @@ export class GalleryComponent implements OnInit, OnDestroy, OnChanges {
       img[this.minimalQualityCategory + 'Width'] =
         img[this.minimalQualityCategory + 'Width'] * individualRatio;
       img[this.minimalQualityCategory + 'Height'] = this.calcIdealHeight();
-      originalRowWidth += img[this.minimalQualityCategory].width;
+      originalRowWidth += img[this.minimalQualityCategory + 'Width'];
     });
 
     return originalRowWidth;

@@ -24,10 +24,15 @@ export class AdminAddFolderComponent {
   }
 
   addFolder() {
-    this.folderService.create({
+    const newFolder: GalleryFolder = {
       partitionKey: this.folder.rowKey,
       rowKey: uuidv4(),
       name: this.folderName,
+    };
+    this.folderService.create(newFolder);
+    this.folderService.getFolders().subscribe(f => {
+      f.push(newFolder);
+      this.folderService.update(f);
     });
     this.dismiss();
   }

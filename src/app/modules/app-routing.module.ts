@@ -9,10 +9,6 @@ import {
 } from '@angular/router';
 import { PublicViewComponent } from '../components/public-view/public-view.component';
 import { AuthenticationGuard } from 'microsoft-adal-angular6';
-import { AdminComponent } from '../components/admin/admin.component';
-import { AdminContentComponent } from '../components/admin-content/admin-content.component';
-import { AdminLibraryComponent } from '../components/admin-library/admin-library.component';
-import { AdminSettingsComponent } from '../components/admin-settings/admin-settings.component';
 
 function filepathMatcher(
   segments: UrlSegment[],
@@ -36,13 +32,8 @@ function filepathMatcher(
 const routes: Routes = [
   {
     path: 'admin',
-    component: AdminComponent,
     canActivate: [AuthenticationGuard],
-    children: [
-      { path: '', component: AdminContentComponent },
-      { path: 'library', component: AdminLibraryComponent },
-      { path: 'settings', component: AdminSettingsComponent },
-    ],
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
   },
   { matcher: filepathMatcher, component: PublicViewComponent },
   { path: '', component: PublicViewComponent },

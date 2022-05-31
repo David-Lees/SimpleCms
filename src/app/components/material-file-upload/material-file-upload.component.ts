@@ -143,7 +143,6 @@ export class MaterialFileUploadComponent {
                           () => {
                             obs.next(true);
                             obs.complete();
-                            console.log('Image processed', file.data.name);
                             this.toast.post({ body: 'Image uploaded', state: ToastState.Success });
                           },
                           () => {

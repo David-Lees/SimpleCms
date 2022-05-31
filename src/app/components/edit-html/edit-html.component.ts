@@ -79,7 +79,6 @@ export class EditHtmlComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.lastChange.html !== this.html) {
       this.lastChange.html = this.html;
       this.sectionChange.emit(this.lastChange);
-      console.log(this.section, this.lastChange, this.html);
     }
   }
 }
